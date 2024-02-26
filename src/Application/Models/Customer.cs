@@ -5,9 +5,9 @@ namespace Application.Models;
 
 public partial class Customer
 {
-    public int CustomerId { get; set; }
+    public int CustomerKey { get; set; }
 
-    public int? UserId { get; set; }
+    public int? UserKey { get; set; }
 
     public string? FirstName { get; set; }
 
@@ -17,7 +17,9 @@ public partial class Customer
 
     public string? Address { get; set; }
 
+    public string? CreateBy { get; set; }
+
     public virtual ICollection<Card> Cards { get; } = new List<Card>();
 
-    public virtual User? User { get; set; }
+    public virtual User? UserKeyNavigation { get; set; }
 }

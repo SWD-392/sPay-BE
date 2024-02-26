@@ -5,7 +5,7 @@ namespace Application.Models;
 
 public partial class User
 {
-    public int UserId { get; set; }
+    public int UserKey { get; set; }
 
     public string? Username { get; set; }
 
@@ -19,7 +19,5 @@ public partial class User
 
     public virtual Customer? Customer { get; set; }
 
-    public virtual StoreOwner? StoreOwner { get; set; }
-
-    public virtual ICollection<TopupMember> TopupMembers { get; } = new List<TopupMember>();
+    public virtual ICollection<StoreOwner> StoreOwners { get; } = new List<StoreOwner>();
 }

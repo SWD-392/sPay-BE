@@ -5,11 +5,13 @@ namespace Application.Models;
 
 public partial class Admin
 {
-    public int AdminId { get; set; }
+    public int AdminKey { get; set; }
 
-    public int? UserId { get; set; }
+    public int UserKey { get; set; }
 
     public string? AdminName { get; set; }
 
-    public virtual User? User { get; set; }
+    public string? CreateAt { get; set; }
+
+    public virtual User UserKeyNavigation { get; set; } = null!;
 }

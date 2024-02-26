@@ -5,9 +5,9 @@ namespace Application.Models;
 
 public partial class StoreWithdrawal
 {
-    public int WithdrawalId { get; set; }
+    public int StoreWithdrawalKey { get; set; }
 
-    public int? StoreId { get; set; }
+    public int StoreKey { get; set; }
 
     public int? Amount { get; set; }
 
@@ -15,5 +15,7 @@ public partial class StoreWithdrawal
 
     public bool? Status { get; set; }
 
-    public virtual Store? Store { get; set; }
+    public virtual Store StoreKeyNavigation { get; set; } = null!;
+
+    public virtual ICollection<Transaction> Transactions { get; } = new List<Transaction>();
 }

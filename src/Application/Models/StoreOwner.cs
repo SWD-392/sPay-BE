@@ -5,15 +5,17 @@ namespace Application.Models;
 
 public partial class StoreOwner
 {
-    public int StoreOwnerId { get; set; }
+    public int StoreOwnerKey { get; set; }
 
-    public int? UserId { get; set; }
+    public int UserKey { get; set; }
 
     public string? OwnerName { get; set; }
 
-    public int? StoreId { get; set; }
+    public int? StoreKey { get; set; }
 
-    public virtual Store? Store { get; set; }
+    public string? CreateAt { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual Store? StoreKeyNavigation { get; set; }
+
+    public virtual User UserKeyNavigation { get; set; } = null!;
 }

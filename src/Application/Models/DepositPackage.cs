@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace Application.Models;
 
-public partial class CardType
+public partial class DepositPackage
 {
-    public int CardTypeKey { get; set; }
+    public int DepositPackageKey { get; set; }
 
     public string? Name { get; set; }
 
     public string? Description { get; set; }
 
-    public virtual ICollection<CardStoreCategory> CardStoreCategories { get; } = new List<CardStoreCategory>();
-
-    public virtual ICollection<Card> Cards { get; } = new List<Card>();
+    public int? Price { get; set; }
 
     public virtual ICollection<DepositPackageCardType> DepositPackageCardTypes { get; } = new List<DepositPackageCardType>();
+
+    public virtual ICollection<Deposit> Deposits { get; } = new List<Deposit>();
 }

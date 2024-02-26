@@ -5,13 +5,13 @@ namespace Application.Models;
 
 public partial class CardStoreCategory
 {
-    public int Id { get; set; }
+    public int CardStoreCategoryKey { get; set; }
 
-    public int? CardTypeId { get; set; }
+    public int CardTypeKey { get; set; }
 
-    public int? StoreCategoryId { get; set; }
+    public int StoreCategoryKey { get; set; }
 
-    public virtual CardType? CardType { get; set; }
+    public virtual CardType CardTypeKeyNavigation { get; set; } = null!;
 
-    public virtual StoreCategory? StoreCategory { get; set; }
+    public virtual StoreCategory StoreCategoryKeyNavigation { get; set; } = null!;
 }

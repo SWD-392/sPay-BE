@@ -5,7 +5,7 @@ namespace Application.Models;
 
 public partial class StoreCategory
 {
-    public int StoreCategoryId { get; set; }
+    public int StoreCategoryKey { get; set; }
 
     public string? Name { get; set; }
 
