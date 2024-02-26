@@ -21,7 +21,7 @@ namespace Application
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
             services.AddMediatR(typeof(DependencyInjection).Assembly);
-            //services.AddDbContext<SpayDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("SpayDB")));
+            services.AddDbContext<SpayDBContext>(options => options.UseNpgsql(configuration.GetConnectionString("SpayDB")));
             return services;
         }
 
