@@ -1,4 +1,5 @@
 ﻿using Application;
+using Application.Common.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +34,6 @@ public class Startup
         }
 
         app.UseHttpsRedirection();
-        app.UseAuthorization();
         app.UseRouting();
         app.UseMiddleware<ErrorHandlingMiddleware>(new List<string> { "GET", "POST", "PUT", "DELETE" });
         app.UseEndpoints(endpoints =>
