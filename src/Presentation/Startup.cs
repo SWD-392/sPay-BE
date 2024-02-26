@@ -1,5 +1,4 @@
 ﻿using Application;
-using Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,9 +16,8 @@ public class Startup
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddApplication();
+        services.AddApplication(Configuration);
         services.AddMasterServices();
-        services.AddInfrashtructure(Configuration);
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });

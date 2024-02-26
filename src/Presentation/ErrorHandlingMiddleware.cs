@@ -34,7 +34,7 @@ public class ErrorHandlingMiddleware
             {
                 var errorDetails = GetErrorDetails(ex, context);
 
-                context.Response.StatusCode = errorDetails.Status;
+                //context.Response.StatusCode = errorDetails.Status;
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(errorDetails));
@@ -78,7 +78,7 @@ public class ErrorHandlingMiddleware
             return new
             {
                 title = "Internal Server Error",
-                message = customException.Message,
+                //message = customException.Message,
                 status = (int)HttpStatusCode.InternalServerError,
             };
         }
