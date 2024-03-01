@@ -118,12 +118,13 @@ namespace SPay.API
 
             app.UseCors("AllowAnyOrigin");
 
-            if (env.IsDevelopment())
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(options => 
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IT Center v1"));
-            }
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "IT Center v1");
+                options.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 
