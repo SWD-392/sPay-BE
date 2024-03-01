@@ -26,7 +26,7 @@ namespace SPay.API.Controllers
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "value";
+            return "Haha";
         }
 
         // POST api/<CustomerController>
