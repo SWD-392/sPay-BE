@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -24,22 +25,9 @@ namespace SPay.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidIssuer = Configuration["Jwt:Issuer"],
-                        ValidAudience = Configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                    };
-                });
-
             services.AddControllers();
-
+            services.AddApplication(Configuration);
+            services.AddMasterServices();
             //----------zone for adding scope/automapper
 
             #region RepositoryScopes
@@ -53,18 +41,16 @@ namespace SPay.API
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICourseService, CourseService>();
             services.AddScoped<ICategoriesRepository, CategoriesRepository>();
-            services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped<ICustomerService, CustomerService>();
             #endregion
 
             services.AddScoped<ITCenterContext>();
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddAutoMapper(typeof(MappingProfile));
+            //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            //services.AddAutoMapper(typeof(MappingProfile));
             //----------
-            services.AddDbContext<SPayDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("ConnectionString"));
-            });
+            //services.AddDbContext<SPayDbContext>(options =>
+            //{
+            //    options.UseSqlServer(Configuration.GetConnectionString("ConnectionString"));
+            //});
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
@@ -118,13 +104,29 @@ namespace SPay.API
 
             app.UseCors("AllowAnyOrigin");
 
-            app.UseDeveloperExceptionPage();
-            app.UseSwagger();
-            app.UseSwaggerUI(options => 
+            //app.UseDeveloperExceptionPage();
+            //app.UseSwagger();
+            //app.UseSwaggerUI(options => 
+            //{
+            //    options.SwaggerEndpoint("/swagger/v1/swagger.json", "IT Center v1");
+            //    options.RoutePrefix = string.Empty;
+            //});
+
+            if (env.IsDevelopment())
             {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "IT Center v1");
-                options.RoutePrefix = string.Empty;
-            });
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI( /*c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+                }*/
+                );
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
 

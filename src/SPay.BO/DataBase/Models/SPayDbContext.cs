@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 namespace SPay.BO.DataBase.Models
 {
@@ -40,7 +39,8 @@ namespace SPay.BO.DataBase.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(GetConnectionString());
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=swd-sp2024.database.windows.net;Database=spay-db;uid=spay;pwd=Swd@123!;TrustServerCertificate=True");
             }
         }
 
@@ -49,7 +49,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<Admin>(entity =>
             {
                 entity.HasKey(e => e.AdminKey)
-                    .HasName("PK__ADMIN__9DDF0C2040D5A9CF");
+                    .HasName("PK__ADMIN__9DDF0C200B7DD065");
 
                 entity.ToTable("ADMIN");
 
@@ -77,13 +77,13 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.Admins)
                     .HasForeignKey(d => d.UserKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ADMIN__USER_KEY__4A8310C6");
+                    .HasConstraintName("FK__ADMIN__USER_KEY__7E37BEF6");
             });
 
             modelBuilder.Entity<Card>(entity =>
             {
                 entity.HasKey(e => e.CardKey)
-                    .HasName("PK__CARD__5C3B5FF37A3790BD");
+                    .HasName("PK__CARD__5C3B5FF37275F31E");
 
                 entity.ToTable("CARD");
 
@@ -122,19 +122,19 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.Cards)
                     .HasForeignKey(d => d.CardTypeKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CARD__CARD_TYPE___4C6B5938");
+                    .HasConstraintName("FK__CARD__CARD_TYPE___00200768");
 
                 entity.HasOne(d => d.CustomerKeyNavigation)
                     .WithMany(p => p.Cards)
                     .HasForeignKey(d => d.CustomerKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CARD__CUSTOMER_K__4B7734FF");
+                    .HasConstraintName("FK__CARD__CUSTOMER_K__7F2BE32F");
             });
 
             modelBuilder.Entity<CardStoreCategory>(entity =>
             {
                 entity.HasKey(e => e.CardStoreCategoryKey)
-                    .HasName("PK__CARD_STO__66368F5D4408DC3B");
+                    .HasName("PK__CARD_STO__66368F5DCF3D4521");
 
                 entity.ToTable("CARD_STORE_CATEGORY");
 
@@ -157,19 +157,19 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.CardStoreCategories)
                     .HasForeignKey(d => d.CardTypeKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CARD_STOR__CARD___4D5F7D71");
+                    .HasConstraintName("FK__CARD_STOR__CARD___01142BA1");
 
                 entity.HasOne(d => d.StoreCategoryKeyNavigation)
                     .WithMany(p => p.CardStoreCategories)
                     .HasForeignKey(d => d.StoreCategoryKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CARD_STOR__STORE__4E53A1AA");
+                    .HasConstraintName("FK__CARD_STOR__STORE__02084FDA");
             });
 
             modelBuilder.Entity<CardType>(entity =>
             {
                 entity.HasKey(e => e.CardTypeKey)
-                    .HasName("PK__CARD_TYP__2F24A9800CF06653");
+                    .HasName("PK__CARD_TYP__2F24A9803D9C8A1F");
 
                 entity.ToTable("CARD_TYPE");
 
@@ -190,7 +190,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.HasKey(e => e.CustomerKey)
-                    .HasName("PK__CUSTOMER__B1AE8B824A687282");
+                    .HasName("PK__CUSTOMER__B1AE8B826D8F3B1F");
 
                 entity.ToTable("CUSTOMER");
 
@@ -231,13 +231,13 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.Customers)
                     .HasForeignKey(d => d.UserKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CUSTOMER__USER_K__55009F39");
+                    .HasConstraintName("FK__CUSTOMER__USER_K__08B54D69");
             });
 
             modelBuilder.Entity<Deposit>(entity =>
             {
                 entity.HasKey(e => e.DepositKey)
-                    .HasName("PK__DEPOSIT__40905B6DB6DD930F");
+                    .HasName("PK__DEPOSIT__40905B6D07055518");
 
                 entity.ToTable("DEPOSIT");
 
@@ -266,19 +266,19 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.Deposits)
                     .HasForeignKey(d => d.CardKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__DEPOSIT__CARD_KE__55F4C372");
+                    .HasConstraintName("FK__DEPOSIT__CARD_KE__09A971A2");
 
                 entity.HasOne(d => d.DepositPackageKeyNavigation)
                     .WithMany(p => p.Deposits)
                     .HasForeignKey(d => d.DepositPackageKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__DEPOSIT__DEPOSIT__56E8E7AB");
+                    .HasConstraintName("FK__DEPOSIT__DEPOSIT__0A9D95DB");
             });
 
             modelBuilder.Entity<DepositPackage>(entity =>
             {
                 entity.HasKey(e => e.DepositPackageKey)
-                    .HasName("PK__DEPOSIT___0C2E9BDF9934F157");
+                    .HasName("PK__DEPOSIT___0C2E9BDFC1A6AA5D");
 
                 entity.ToTable("DEPOSIT_PACKAGE");
 
@@ -301,7 +301,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<DepositPackageCardType>(entity =>
             {
                 entity.HasKey(e => e.DepositPackageCardTypeKey)
-                    .HasName("PK__DEPOSIT___1C3D25DCB135C119");
+                    .HasName("PK__DEPOSIT___1C3D25DC5D54714C");
 
                 entity.ToTable("DEPOSIT_PACKAGE_CARD_TYPE");
 
@@ -324,19 +324,19 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.DepositPackageCardTypes)
                     .HasForeignKey(d => d.CardTypeKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__DEPOSIT_P__CARD___58D1301D");
+                    .HasConstraintName("FK__DEPOSIT_P__CARD___0C85DE4D");
 
                 entity.HasOne(d => d.DepositPackageKeyNavigation)
                     .WithMany(p => p.DepositPackageCardTypes)
                     .HasForeignKey(d => d.DepositPackageKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__DEPOSIT_P__DEPOS__57DD0BE4");
+                    .HasConstraintName("FK__DEPOSIT_P__DEPOS__0B91BA14");
             });
 
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.HasKey(e => e.OrderKey)
-                    .HasName("PK__ORDER__60FED205DD8FC180");
+                    .HasName("PK__ORDER__60FED205CFD4D598");
 
                 entity.ToTable("ORDER");
 
@@ -367,19 +367,19 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.CardKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ORDER__CARD_KEY__531856C7");
+                    .HasConstraintName("FK__ORDER__CARD_KEY__06CD04F7");
 
                 entity.HasOne(d => d.StoreKeyNavigation)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.StoreKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ORDER__STORE_KEY__5224328E");
+                    .HasConstraintName("FK__ORDER__STORE_KEY__05D8E0BE");
             });
 
             modelBuilder.Entity<Store>(entity =>
             {
                 entity.HasKey(e => e.StoreKey)
-                    .HasName("PK__STORE__E5FD03F5F0C26C66");
+                    .HasName("PK__STORE__E5FD03F523598793");
 
                 entity.ToTable("STORE");
 
@@ -405,13 +405,13 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.Stores)
                     .HasForeignKey(d => d.CategoryKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__STORE__CATEGORY___4F47C5E3");
+                    .HasConstraintName("FK__STORE__CATEGORY___02FC7413");
             });
 
             modelBuilder.Entity<StoreCategory>(entity =>
             {
                 entity.HasKey(e => e.StoreCategoryKey)
-                    .HasName("PK__STORE_CA__74ED856573A48E67");
+                    .HasName("PK__STORE_CA__74ED856549F51E86");
 
                 entity.ToTable("STORE_CATEGORY");
 
@@ -434,7 +434,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<StoreOwner>(entity =>
             {
                 entity.HasKey(e => e.StoreOwnerKey)
-                    .HasName("PK__STORE_OW__499922784D43AA62");
+                    .HasName("PK__STORE_OW__49992278B146A27C");
 
                 entity.ToTable("STORE_OWNER");
 
@@ -466,19 +466,19 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.StoreOwners)
                     .HasForeignKey(d => d.StoreKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__STORE_OWN__STORE__51300E55");
+                    .HasConstraintName("FK__STORE_OWN__STORE__04E4BC85");
 
                 entity.HasOne(d => d.UserKeyNavigation)
                     .WithMany(p => p.StoreOwners)
                     .HasForeignKey(d => d.UserKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__STORE_OWN__USER___503BEA1C");
+                    .HasConstraintName("FK__STORE_OWN__USER___03F0984C");
             });
 
             modelBuilder.Entity<StoreWithdrawal>(entity =>
             {
                 entity.HasKey(e => e.StoreWithdrawalKey)
-                    .HasName("PK__STORE_WI__EEF95E014EDB4CE7");
+                    .HasName("PK__STORE_WI__EEF95E0161D49EC0");
 
                 entity.ToTable("STORE_WITHDRAWAL");
 
@@ -504,13 +504,13 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.StoreWithdrawals)
                     .HasForeignKey(d => d.StoreKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__STORE_WIT__STORE__540C7B00");
+                    .HasConstraintName("FK__STORE_WIT__STORE__07C12930");
             });
 
             modelBuilder.Entity<TopupMember>(entity =>
             {
                 entity.HasKey(e => e.TopupMemberKey)
-                    .HasName("PK__TOPUP_ME__B365D5B29EB94D74");
+                    .HasName("PK__TOPUP_ME__B365D5B2BC67FE4C");
 
                 entity.ToTable("TOPUP_MEMBER");
 
@@ -539,7 +539,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<Transaction>(entity =>
             {
                 entity.HasKey(e => e.TransactionKey)
-                    .HasName("PK__TRANSACT__B32A2DF4B90513E5");
+                    .HasName("PK__TRANSACT__B32A2DF4C94E1035");
 
                 entity.ToTable("TRANSACTION");
 
@@ -580,30 +580,30 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.DepositKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__TRANSACTI__DEPOS__5AB9788F");
+                    .HasConstraintName("FK__TRANSACTI__DEPOS__0E6E26BF");
 
                 entity.HasOne(d => d.OrderKeyNavigation)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.OrderKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__TRANSACTI__ORDER__5BAD9CC8");
+                    .HasConstraintName("FK__TRANSACTI__ORDER__0F624AF8");
 
                 entity.HasOne(d => d.StoreWithDrawalkeyNavigation)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.StoreWithDrawalkey)
-                    .HasConstraintName("FK__TRANSACTI__STORE__5CA1C101");
+                    .HasConstraintName("FK__TRANSACTI__STORE__10566F31");
 
                 entity.HasOne(d => d.WalletKeyNavigation)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.WalletKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__TRANSACTI__WALLE__59C55456");
+                    .HasConstraintName("FK__TRANSACTI__WALLE__0D7A0286");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.UserKey)
-                    .HasName("PK__USER__5F13FD3C82BC91FD");
+                    .HasName("PK__USER__5F13FD3CAB9963A2");
 
                 entity.ToTable("USER");
 
@@ -630,7 +630,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<Wallet>(entity =>
             {
                 entity.HasKey(e => e.WalletKey)
-                    .HasName("PK__WALLET__241A5FED528ACB07");
+                    .HasName("PK__WALLET__241A5FED6EC543DC");
 
                 entity.ToTable("WALLET");
 
@@ -664,24 +664,24 @@ namespace SPay.BO.DataBase.Models
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.CardKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__WALLET__CARD_KEY__5E8A0973");
+                    .HasConstraintName("FK__WALLET__CARD_KEY__123EB7A3");
 
                 entity.HasOne(d => d.StoreKeyNavigation)
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.StoreKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__WALLET__STORE_KE__5F7E2DAC");
+                    .HasConstraintName("FK__WALLET__STORE_KE__1332DBDC");
 
                 entity.HasOne(d => d.WalletTypeKeyNavigation)
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.WalletTypeKey)
-                    .HasConstraintName("FK__WALLET__WALLET_T__5D95E53A");
+                    .HasConstraintName("FK__WALLET__WALLET_T__114A936A");
             });
 
             modelBuilder.Entity<WalletType>(entity =>
             {
                 entity.HasKey(e => e.WalletTypeKey)
-                    .HasName("PK__WALLET_T__4FE7BFEFA0570584");
+                    .HasName("PK__WALLET_T__4FE7BFEF2012005D");
 
                 entity.ToTable("WALLET_TYPE");
 
@@ -705,15 +705,5 @@ namespace SPay.BO.DataBase.Models
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-        private string GetConnectionString()
-        {
-            IConfiguration config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true)
-                .Build();
-            var strConn = config["ConnectionStrings:DefaultConnectionString"];
-            return strConn;
-        }
     }
 }

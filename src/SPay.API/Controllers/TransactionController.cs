@@ -7,41 +7,41 @@ namespace SPay.API.Controllers
 {
     [Route("api/admin/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class TransactionController : ControllerBase
     {
-        private readonly ICustomerService _service;
-        public CustomerController(ICustomerService _service)
+        private readonly ITransactionService _service;
+        public TransactionController(ITransactionService _service)
         {
             this._service = _service;
         }
-        // GET: api/<CustomerController>
+        // GET: api/<TransactionController>
         [HttpGet("get-all")]
-        public async Task<IActionResult> GetAllCategories()
+        public async Task<IActionResult> GetAllTransaction()
         {
-            var response = await _service.GetAllCustomerAsync();
+            var response = await _service.GetAllTransInfoAsync();
             return Ok(response);
         }
 
-        // GET api/<CustomerController>/5
-        [HttpGet("{name}")]
+        // GET api/<TransactionController>/5
+        [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "Test";
+            return "value";
         }
 
-        // POST api/<CustomerController>
+        // POST api/<TransactionController>
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT api/<CustomerController>/5
+        // PUT api/<TransactionController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<CustomerController>/5
+        // DELETE api/<TransactionController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
