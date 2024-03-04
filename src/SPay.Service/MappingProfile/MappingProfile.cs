@@ -7,7 +7,6 @@ using AutoMapper;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Admin.Card.Response;
 using SPay.BO.DTOs.Admin.Store.Response;
-using SPay.BO.DTOs.Customer.RespondModel;
 
 namespace SPay.Service.MappingProfile
 {

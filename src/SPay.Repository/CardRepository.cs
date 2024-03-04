@@ -11,6 +11,8 @@ namespace SPay.Repository
     public interface ICardRepository
     {
         Task<IList<Card>> GetAllAsync();
+        Task<IList<Card>> SearchCardByNameAsync(string keyWord);
+
     }
     public class CardRepository : ICardRepository
     {
@@ -21,7 +23,18 @@ namespace SPay.Repository
         }
         public async Task<IList<Card>> GetAllAsync()
         {
-            var cards = await _context.Cards.Include(c => c.CardTypeKeyNavigation).ToListAsync();
+            var cards = await _context.Cards
+                .Include(c => c.CardTypeKeyNavigation)
+                .Include(c => c.Deposits)
+                .ToListAsync();
+            return cards;
+        }
+
+        public async Task<IList<Card>> SearchCardByNameAsync(string keyWord)
+        {
+            var cards = await _context.Cards
+                .Where(c => c.CardTypeKeyNavigation.Name.ToLower().Contains(keyWord.ToLower()))
+                .Include(c => c.CardTypeKeyNavigation).ToListAsync();
             return cards;
         }
     }

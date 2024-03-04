@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SPay.BO.DTOs.Admin.Store.Response
 {
-    public class GetAllStoreResponse
+    public class StoreResponse
     {
         public int No { get; set; }
         public string StoreKey { get; set; }
@@ -14,7 +14,8 @@ namespace SPay.BO.DTOs.Admin.Store.Response
         public string StoreCategory { get; set; }
         public string OwnerName { get; set; }
         public string PhoneNumber { get; set; }
+        public decimal? Balance { get; set; }
         public string InsDate { get; set; }
-        public string Status { get; set; }
+        public bool? Status { get; set; }
     }
 }

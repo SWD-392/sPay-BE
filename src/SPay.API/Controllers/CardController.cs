@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SPay.BO.DTOs.Admin;
 using SPay.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -23,10 +24,11 @@ namespace SPay.API.Controllers
         }
 
         // GET api/<ValuesController>/5
-        [HttpGet("{name}")]
-        public string Get(int id)
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchCardByName([FromQuery] AdminSearchRequest request)
         {
-            return "value";
+            var response = await _service.SearchCardAsync(request);
+            return Ok(response);
         }
 
         // POST api/<ValuesController>

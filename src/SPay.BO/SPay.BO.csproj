@@ -25,10 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOs\Admin\Card\Request\" />
     <Folder Include="DTOs\Admin\Store\Request\" />
     <Folder Include="DTOs\Admin\Transaction\Request\" />
-    <Folder Include="DTOs\Admin\Card\Request\" />
-    <Folder Include="DTOs\Customer\RequestModel\" />
+    <Folder Include="DTOs\Admin\Customer\RequestModel\" />
   </ItemGroup>
 
 </Project>

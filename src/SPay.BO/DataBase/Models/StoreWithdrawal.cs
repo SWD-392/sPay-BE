@@ -12,7 +12,7 @@ namespace SPay.BO.DataBase.Models
 
         public string StoreWithdrawalKey { get; set; } = null!;
         public string StoreKey { get; set; } = null!;
-        public int? Amount { get; set; }
+        public decimal? Amount { get; set; }
         public DateTime? Date { get; set; }
         public bool? Status { get; set; }
 

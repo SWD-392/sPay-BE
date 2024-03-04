@@ -42,6 +42,10 @@ namespace SPay.API
             services.AddScoped<ICardRepository, CardRepository>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IWalletRepository, WalletRepository>();
+            services.AddScoped<IDepositRepository, DepositRepository>();
+
+
         }
     }
 }

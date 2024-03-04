@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SPay.BO.DTOs.Admin.Transaction.Response
 {
-    public class GetAllTransactionResponse
+    public class TransactionResponse
     {
         public string TransactionId { get; set;}
         public string Description { get; set;}

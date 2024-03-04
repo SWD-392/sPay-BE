@@ -207,20 +207,14 @@ namespace SPay.BO.DataBase.Models
                     .HasMaxLength(100)
                     .HasColumnName("CREATE_BY");
 
+                entity.Property(e => e.CustomerName)
+                    .HasMaxLength(255)
+                    .HasColumnName("CUSTOMER_NAME");
+
                 entity.Property(e => e.Email)
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("EMAIL");
-
-                entity.Property(e => e.FirstName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("FIRST_NAME");
-
-                entity.Property(e => e.LastName)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("LAST_NAME");
 
                 entity.Property(e => e.UserKey)
                     .HasMaxLength(10)
@@ -246,21 +240,23 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("DEPOSIT_KEY");
 
-                entity.Property(e => e.Amount).HasColumnName("AMOUNT");
+                entity.Property(e => e.Amount)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("AMOUNT");
 
                 entity.Property(e => e.CardKey)
                     .HasMaxLength(10)
                     .IsUnicode(false)
                     .HasColumnName("CARD_KEY");
 
-                entity.Property(e => e.Date)
-                    .HasColumnType("date")
-                    .HasColumnName("DATE");
-
                 entity.Property(e => e.DepositPackageKey)
                     .HasMaxLength(10)
                     .IsUnicode(false)
                     .HasColumnName("DEPOSIT_PACKAGE_KEY");
+
+                entity.Property(e => e.InsDate)
+                    .HasColumnType("date")
+                    .HasColumnName("INS_DATE");
 
                 entity.HasOne(d => d.CardKeyNavigation)
                     .WithMany(p => p.Deposits)
@@ -295,7 +291,9 @@ namespace SPay.BO.DataBase.Models
                     .HasMaxLength(100)
                     .HasColumnName("NAME");
 
-                entity.Property(e => e.Price).HasColumnName("PRICE");
+                entity.Property(e => e.Price)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("PRICE");
             });
 
             modelBuilder.Entity<DepositPackageCardType>(entity =>
@@ -345,7 +343,9 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("ORDER_KEY");
 
-                entity.Property(e => e.Amount).HasColumnName("AMOUNT");
+                entity.Property(e => e.Amount)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("AMOUNT");
 
                 entity.Property(e => e.CardKey)
                     .HasMaxLength(10)
@@ -397,7 +397,10 @@ namespace SPay.BO.DataBase.Models
 
                 entity.Property(e => e.Name).HasColumnName("NAME");
 
-                entity.Property(e => e.Phone).HasColumnName("PHONE");
+                entity.Property(e => e.Phone)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("PHONE");
 
                 entity.Property(e => e.Status).HasColumnName("STATUS");
 
@@ -449,7 +452,6 @@ namespace SPay.BO.DataBase.Models
 
                 entity.Property(e => e.OwnerName)
                     .HasMaxLength(50)
-                    .IsUnicode(false)
                     .HasColumnName("OWNER_NAME");
 
                 entity.Property(e => e.StoreKey)
@@ -487,7 +489,9 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("STORE_WITHDRAWAL_KEY");
 
-                entity.Property(e => e.Amount).HasColumnName("AMOUNT");
+                entity.Property(e => e.Amount)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("AMOUNT");
 
                 entity.Property(e => e.Date)
                     .HasColumnType("date")
@@ -548,7 +552,9 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("TRANSACTION_KEY");
 
-                entity.Property(e => e.Amount).HasColumnName("AMOUNT");
+                entity.Property(e => e.Amount)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("AMOUNT");
 
                 entity.Property(e => e.DepositKey)
                     .HasMaxLength(10)
@@ -639,7 +645,9 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("WALLET_KEY");
 
-                entity.Property(e => e.Balance).HasColumnName("BALANCE");
+                entity.Property(e => e.Balance)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("BALANCE");
 
                 entity.Property(e => e.CardKey)
                     .HasMaxLength(10)
@@ -649,6 +657,11 @@ namespace SPay.BO.DataBase.Models
                 entity.Property(e => e.CreateAt)
                     .HasMaxLength(100)
                     .HasColumnName("CREATE_AT");
+
+                entity.Property(e => e.CustomerKey)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("CUSTOMER_KEY");
 
                 entity.Property(e => e.StoreKey)
                     .HasMaxLength(10)
@@ -663,13 +676,16 @@ namespace SPay.BO.DataBase.Models
                 entity.HasOne(d => d.CardKeyNavigation)
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.CardKey)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__WALLET__CARD_KEY__123EB7A3");
+
+                entity.HasOne(d => d.CustomerKeyNavigation)
+                    .WithMany(p => p.Wallets)
+                    .HasForeignKey(d => d.CustomerKey)
+                    .HasConstraintName("FK__WALLET__CUSTOMER__2739D489");
 
                 entity.HasOne(d => d.StoreKeyNavigation)
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.StoreKey)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__WALLET__STORE_KE__1332DBDC");
 
                 entity.HasOne(d => d.WalletTypeKeyNavigation)

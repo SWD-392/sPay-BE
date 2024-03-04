@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SPay.BO.DataBase.Models;
-using SPay.BO.DTOs.Customer.RespondModel;
 
 namespace SPay.Repository
 {

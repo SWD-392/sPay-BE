@@ -10,7 +10,7 @@ namespace SPay.BO.DataBase.Models
         public string DepositKey { get; set; } = null!;
         public string OrderKey { get; set; } = null!;
         public string? StoreWithDrawalkey { get; set; }
-        public int? Amount { get; set; }
+        public decimal? Amount { get; set; }
         public bool? Status { get; set; }
         public string? Description { get; set; }
 

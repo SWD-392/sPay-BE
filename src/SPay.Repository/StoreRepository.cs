@@ -11,6 +11,8 @@ namespace SPay.Repository
     public interface IStoreRepository
     {
         Task<IList<StoreOwner>> GetAllStoreInfo();
+        Task<IList<StoreOwner>> SearchByNameAsync(string name);
+
     }
     public class StoreRepository : IStoreRepository
     {
@@ -24,6 +26,17 @@ namespace SPay.Repository
             return await _context.StoreOwners
                 .Include(so => so.StoreKeyNavigation)
                 .Include(so => so.StoreKeyNavigation.CategoryKeyNavigation)
+                .Include(so => so.StoreKeyNavigation.Wallets)
+                .ToListAsync();
+        }
+
+        public async Task<IList<StoreOwner>> SearchByNameAsync(string name)
+        {
+            return await _context.StoreOwners
+                .Where(so => so.StoreKeyNavigation.Name.ToLower().Contains(name.ToLower()))
+                .Include(so => so.StoreKeyNavigation)
+                .Include(so => so.StoreKeyNavigation.CategoryKeyNavigation)
+                .Include(so => so.StoreKeyNavigation.Wallets)
                 .ToListAsync();
         }
     }

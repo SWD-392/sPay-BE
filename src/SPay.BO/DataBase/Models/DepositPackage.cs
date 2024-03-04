@@ -14,7 +14,7 @@ namespace SPay.BO.DataBase.Models
         public string DepositPackageKey { get; set; } = null!;
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public int? Price { get; set; }
+        public decimal? Price { get; set; }
 
         public virtual ICollection<DepositPackageCardType> DepositPackageCardTypes { get; set; }
         public virtual ICollection<Deposit> Deposits { get; set; }

@@ -13,8 +13,8 @@ namespace SPay.BO.DataBase.Models
         public string DepositKey { get; set; } = null!;
         public string CardKey { get; set; } = null!;
         public string DepositPackageKey { get; set; } = null!;
-        public DateTime Date { get; set; }
-        public int? Amount { get; set; }
+        public DateTime InsDate { get; set; }
+        public decimal? Amount { get; set; }
 
         public virtual Card CardKeyNavigation { get; set; } = null!;
         public virtual DepositPackage DepositPackageKeyNavigation { get; set; } = null!;

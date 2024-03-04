@@ -12,13 +12,15 @@ namespace SPay.BO.DataBase.Models
 
         public string WalletKey { get; set; } = null!;
         public string? WalletTypeKey { get; set; }
-        public string CardKey { get; set; } = null!;
-        public string StoreKey { get; set; } = null!;
-        public int? Balance { get; set; }
+        public string? CardKey { get; set; }
+        public string? StoreKey { get; set; }
+        public decimal? Balance { get; set; }
         public string? CreateAt { get; set; }
+        public string? CustomerKey { get; set; }
 
-        public virtual Card CardKeyNavigation { get; set; } = null!;
-        public virtual Store StoreKeyNavigation { get; set; } = null!;
+        public virtual Card? CardKeyNavigation { get; set; }
+        public virtual Customer? CustomerKeyNavigation { get; set; }
+        public virtual Store? StoreKeyNavigation { get; set; }
         public virtual WalletType? WalletTypeKeyNavigation { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
     }

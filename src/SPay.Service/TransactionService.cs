@@ -13,7 +13,7 @@ namespace SPay.Service
 {
     public interface ITransactionService
     {
-        Task<SPayResponse<IList<GetAllTransactionResponse>>> GetAllTransInfoAsync();
+        Task<SPayResponse<IList<TransactionResponse>>> GetAllTransInfoAsync();
     }
     public class TransactionService : ITransactionService
     {
@@ -24,13 +24,13 @@ namespace SPay.Service
             this._transactionRepo = _transactionRepo;
             this._mapper = _mapper;
         }
-        public async Task<SPayResponse<IList<GetAllTransactionResponse>>> GetAllTransInfoAsync()
+        public async Task<SPayResponse<IList<TransactionResponse>>> GetAllTransInfoAsync()
         {
-            var result = new SPayResponse<IList<GetAllTransactionResponse>>();
+            var result = new SPayResponse<IList<TransactionResponse>>();
             try
             {
                 var transList = await _transactionRepo.GetAllTransactionInfoAsync();
-                var transRes = _mapper.Map<IList<GetAllTransactionResponse>>(transList);
+                var transRes = _mapper.Map<IList<TransactionResponse>>(transList);
                 result.Success = true;
                 result.Data = transRes;
                 result.Message = "Transaction retrieved successfully";

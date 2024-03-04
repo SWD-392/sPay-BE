@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using SPay.BO.DataBase.Models;
-using SPay.BO.DTOs.Customer.RespondModel;
+using SPay.BO.DTOs.Admin.Customer.ResponseModel;
 using SPay.DAO.ReferenceSRC;
 using SPay.Repository;
 
@@ -13,7 +13,7 @@ namespace SPay.Service
 {
     public interface ICustomerService
     {
-        Task<SPayResponse<IList<GetAllCustomerResponse>>> GetAllCustomerAsync();
+        Task<SPayResponse<IList<CustomerResponse>>> GetAllCustomerAsync();
     }
     public class CustomerService : ICustomerService
     {
@@ -24,13 +24,13 @@ namespace SPay.Service
             this._repo = _repo;
             this._mapper = _mapper;
         }
-        public async Task<SPayResponse<IList<GetAllCustomerResponse>>> GetAllCustomerAsync()
+        public async Task<SPayResponse<IList<CustomerResponse>>> GetAllCustomerAsync()
         {
-            var result = new SPayResponse<IList<GetAllCustomerResponse>>();
+            var result = new SPayResponse<IList<CustomerResponse>>();
             try
             {
                 var customerList = await _repo.GetAllCustomer();
-                var customerResponse = _mapper.Map<List<GetAllCustomerResponse>>(customerList);
+                var customerResponse = _mapper.Map<List<CustomerResponse>>(customerList);
 
                 result.Data = customerResponse;
                 result.Success = true;
