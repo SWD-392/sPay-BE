@@ -12,6 +12,7 @@ namespace SPay.BO.DTOs.Admin.Store.Response
         public string StoreKey { get; set; }
         public string StoreName { get; set; }
         public string StoreCategory { get; set; }
+        public string StoreCategoryKey { get; set; }
         public string OwnerName { get; set; }
         public string PhoneNumber { get; set; }
         public decimal? Balance { get; set; }

@@ -88,7 +88,7 @@ namespace SPay.Service
                 }
                 result.Data = cardsRes;
                 result.Success = true;
-                result.Message = "Seach card by cart type successfully";
+                result.Message = "Search card by cart type successfully";
             }
             catch (Exception ex)
             {

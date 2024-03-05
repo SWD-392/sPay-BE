@@ -99,10 +99,6 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("CARD_TYPE_KEY");
 
-                entity.Property(e => e.CreateDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CREATE_DATE");
-
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
                     .HasColumnName("CREATED_AT");
@@ -112,9 +108,7 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("CUSTOMER_KEY");
 
-                entity.Property(e => e.ExpiryDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("EXPIRY_DATE");
+                entity.Property(e => e.NumberDate).HasColumnName("NUMBER_DATE");
 
                 entity.Property(e => e.Status).HasColumnName("STATUS");
 
@@ -127,7 +121,6 @@ namespace SPay.BO.DataBase.Models
                 entity.HasOne(d => d.CustomerKeyNavigation)
                     .WithMany(p => p.Cards)
                     .HasForeignKey(d => d.CustomerKey)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__CARD__CUSTOMER_K__7F2BE32F");
             });
 
@@ -215,6 +208,8 @@ namespace SPay.BO.DataBase.Models
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("EMAIL");
+
+                entity.Property(e => e.Status).HasColumnName("STATUS");
 
                 entity.Property(e => e.UserKey)
                     .HasMaxLength(10)

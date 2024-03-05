@@ -17,6 +17,7 @@ namespace SPay.BO.DataBase.Models
         public string? Address { get; set; }
         public string? CreateBy { get; set; }
         public string? CustomerName { get; set; }
+        public bool? Status { get; set; }
 
         public virtual User UserKeyNavigation { get; set; } = null!;
         public virtual ICollection<Card> Cards { get; set; }
