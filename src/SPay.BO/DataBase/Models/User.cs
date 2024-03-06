@@ -16,7 +16,7 @@ namespace SPay.BO.DataBase.Models
         public string? Username { get; set; }
         public string? Password { get; set; }
         public int? Role { get; set; }
-        public bool? Status { get; set; }
+        public byte Status { get; set; }
 
         public virtual ICollection<Admin> Admins { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }

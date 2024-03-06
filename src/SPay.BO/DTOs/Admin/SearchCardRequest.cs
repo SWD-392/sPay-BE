@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SPay.BO.DTOs.Admin
 {
-    public class AdminSearchRequest
+    public class AdminSearchRequest : PagingRequest
     {
-        public string keyword { get; set; }
+        public string Keyword { get; set; }
     }
 }

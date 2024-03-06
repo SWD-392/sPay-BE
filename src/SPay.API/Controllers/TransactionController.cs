@@ -5,7 +5,7 @@ using SPay.Service;
 
 namespace SPay.API.Controllers
 {
-    [Route("api/admin/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
@@ -14,35 +14,53 @@ namespace SPay.API.Controllers
         {
             this._service = _service;
         }
-        // GET: api/<TransactionController>
-        [HttpGet("get-all")]
+
+        /// <summary>
+        /// Get all transactions
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("transactions")]
         public async Task<IActionResult> GetAllTransaction()
         {
             var response = await _service.GetAllTransInfoAsync();
             return Ok(response);
         }
 
-        // GET api/<TransactionController>/5
-        [HttpGet("{id}")]
+        /// <summary>
+        /// Search transactions by name
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("transactions/search")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST api/<TransactionController>
-        [HttpPost]
+		/// <summary>
+		/// Create a transaction
+		/// </summary>
+		/// <param name="value"></param>
+		[HttpPost("transaction")]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT api/<TransactionController>/5
-        [HttpPut("{id}")]
+		/// <summary>
+		/// Update a transaction
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="value"></param>
+		[HttpPut("transaction/{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<TransactionController>/5
-        [HttpDelete("{id}")]
+        /// <summary>
+        /// Delete a transaction
+        /// </summary>
+        /// <param name="id"></param>
+        [HttpDelete("transaction/{id}")]
         public void Delete(int id)
         {
         }

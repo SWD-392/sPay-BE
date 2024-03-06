@@ -24,10 +24,4 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\Admin\Card\Request\" />
-    <Folder Include="DTOs\Admin\Transaction\Request\" />
-    <Folder Include="DTOs\Admin\Customer\RequestModel\" />
-  </ItemGroup>
-
 </Project>

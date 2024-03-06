@@ -8,22 +8,22 @@ namespace SPay.BO.Extention.Paginate
 {
     public interface IPaginate<TResult>
     {
-        int Size { get; }
-        int Page { get; }
-        int Total { get; }
-        int TotalPages { get; }
+        int PageSize { get; }
+		public int PageIndex { get; set; }
+		public int TotalCount { get; set; }
+		int TotalPages { get; }
         IList<TResult> Items { get; }
     }
 
-    public class Paginate<TResult> : IPaginate<TResult>
+    public class PaginatedList<TResult> : IPaginate<TResult>
     {
-        public int Size { get; set; }
-        public int Page { get; set; }
-        public int Total { get; set; }
+        public int PageSize { get; set; }
+        public int PageIndex { get; set; }
+        public int TotalCount { get; set; }
         public int TotalPages { get; set; }
         public IList<TResult> Items { get; set; }
 
-        public Paginate(IEnumerable<TResult> source, int page, int size, int firstPage)
+		public PaginatedList(IEnumerable<TResult> source, int page, int size, int firstPage)
         {
             var enumerable = source as TResult[] ?? source.ToArray();
 
@@ -34,23 +34,23 @@ namespace SPay.BO.Extention.Paginate
 
             if (source is IQueryable<TResult> queryable)
             {
-                Page = page;
-                Size = size;
-                Total = queryable.Count();
+				PageIndex = page;
+				PageSize = size;
+				TotalCount = queryable.Count();
                 Items = queryable.Skip((page - firstPage) * size).Take(size).ToList();
-                TotalPages = (int)Math.Ceiling(Total / (double)Size);
+                TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
             }
             else
             {
-                Page = page;
-                Size = size;
-                Total = enumerable.Length;
+				PageIndex = page;
+				PageSize = size;
+				TotalCount = enumerable.Length;
                 Items = enumerable.Skip((page - firstPage) * size).Take(size).ToList();
-                TotalPages = (int)Math.Ceiling(Total / (double)Size);
+                TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
             }
         }
 
-        public Paginate()
+        public PaginatedList()
         {
             Items = Array.Empty<TResult>();
         }

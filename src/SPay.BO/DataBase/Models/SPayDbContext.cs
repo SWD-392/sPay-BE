@@ -29,7 +29,6 @@ namespace SPay.BO.DataBase.Models
         public virtual DbSet<StoreCategory> StoreCategories { get; set; } = null!;
         public virtual DbSet<StoreOwner> StoreOwners { get; set; } = null!;
         public virtual DbSet<StoreWithdrawal> StoreWithdrawals { get; set; } = null!;
-        public virtual DbSet<TopupMember> TopupMembers { get; set; } = null!;
         public virtual DbSet<Transaction> Transactions { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<Wallet> Wallets { get; set; } = null!;
@@ -506,35 +505,6 @@ namespace SPay.BO.DataBase.Models
                     .HasConstraintName("FK__STORE_WIT__STORE__07C12930");
             });
 
-            modelBuilder.Entity<TopupMember>(entity =>
-            {
-                entity.HasKey(e => e.TopupMemberKey)
-                    .HasName("PK__TOPUP_ME__B365D5B2BC67FE4C");
-
-                entity.ToTable("TOPUP_MEMBER");
-
-                entity.HasIndex(e => e.UserKey, "UQ_USER_KEY")
-                    .IsUnique();
-
-                entity.Property(e => e.TopupMemberKey)
-                    .HasMaxLength(10)
-                    .IsUnicode(false)
-                    .HasColumnName("TOPUP_MEMBER_KEY");
-
-                entity.Property(e => e.Amount).HasColumnName("AMOUNT");
-
-                entity.Property(e => e.Date)
-                    .HasColumnType("date")
-                    .HasColumnName("DATE");
-
-                entity.Property(e => e.Status).HasColumnName("STATUS");
-
-                entity.Property(e => e.UserKey)
-                    .HasMaxLength(10)
-                    .IsUnicode(false)
-                    .HasColumnName("USER_KEY");
-            });
-
             modelBuilder.Entity<Transaction>(entity =>
             {
                 entity.HasKey(e => e.TransactionKey)
@@ -657,6 +627,8 @@ namespace SPay.BO.DataBase.Models
                     .HasMaxLength(10)
                     .IsUnicode(false)
                     .HasColumnName("CUSTOMER_KEY");
+
+                entity.Property(e => e.Status).HasColumnName("STATUS");
 
                 entity.Property(e => e.StoreKey)
                     .HasMaxLength(10)

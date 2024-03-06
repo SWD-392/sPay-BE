@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SPay.BO.DataBase.Models;
+using SPay.Repository.Enum;
 
 namespace SPay.Repository
 {
@@ -24,6 +25,7 @@ namespace SPay.Repository
         public async Task<IList<Card>> GetAllAsync()
         {
             var cards = await _context.Cards
+                .Where(c => c.Status != (byte)CardStatusEnum.Deleted)
                 .Include(c => c.CardTypeKeyNavigation)
                 .Include(c => c.Deposits)
                 .ToListAsync();

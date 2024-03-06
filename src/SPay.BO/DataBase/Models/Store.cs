@@ -18,7 +18,7 @@ namespace SPay.BO.DataBase.Models
         public string CategoryKey { get; set; } = null!;
         public string? Location { get; set; }
         public string? Phone { get; set; }
-        public bool? Status { get; set; }
+        public byte Status { get; set; }
 
         public virtual StoreCategory CategoryKeyNavigation { get; set; } = null!;
         public virtual ICollection<Order> Orders { get; set; }

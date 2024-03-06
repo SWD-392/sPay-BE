@@ -1,27 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+//using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
+using SPay.BO.DTOs;
 using SPay.BO.DTOs.Admin;
+using SPay.BO.DTOs.Admin.Card.Request;
 using SPay.BO.DTOs.Admin.Card.Response;
+using SPay.BO.Extention.Paginate;
 using SPay.Repository;
 
 namespace SPay.Service
 {
     public interface ICardService
     {
-        Task<SPayResponse<IList<CardResponse>>> GetAllCardsAsync();
-        Task<SPayResponse<IList<CardResponse>>> SearchCardAsync(AdminSearchRequest request);
-
-    }
-    public class CardService : ICardService
+        Task<PaginatedList<CardResponse>> GetAllCardsAsync(GetAllCardRequest request);
+        Task<PaginatedList<CardResponse>> SearchCardAsync(AdminSearchRequest request);
+		public Task<bool> ChangeCardStatus(int id);
+	}
+	public class CardService : ICardService
     {
         private readonly ICardRepository _cardRepo;
         private readonly IDepositRepository _depRepo;
-
         private readonly IMapper _mapper;
         public CardService(ICardRepository _cardRepo, IMapper mapper, IDepositRepository depRepo)
         {
@@ -29,11 +33,14 @@ namespace SPay.Service
             this._mapper = mapper;
             this._depRepo = depRepo;
         }
-        public async Task<SPayResponse<IList<CardResponse>>> GetAllCardsAsync()
+
+		public Task<bool> ChangeCardStatus(int id)
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<PaginatedList<CardResponse>> GetAllCardsAsync(GetAllCardRequest request)
         {
-            var result = new SPayResponse<IList<CardResponse>>();
-            try
-            {
                 var cards = await _cardRepo.GetAllAsync();
                 var cardsRes = _mapper.Map<IList<CardResponse>>(cards);
                 var count = 0;
@@ -43,34 +50,21 @@ namespace SPay.Service
                     string? name = deposit.DepositPackageKeyNavigation.Name;
                     string? packageDes = deposit.DepositPackageKeyNavigation.Description;
                     item.No = ++count;
-                    item.Amount = deposit.Amount;
-                    item.PackageName = name.IsNullOrEmpty() ? "" : name;
-                    item.PackageDescription = packageDes.IsNullOrEmpty() ? "" : packageDes;
+                    item.Value = deposit.Amount;
+                    item.PackageName = string.IsNullOrEmpty(name) ? "" : name;
+                    item.PackageDescription = string.IsNullOrEmpty(packageDes) ? "" : packageDes;
                     item.Price = deposit.DepositPackageKeyNavigation.Price;
-                }
-                result.Data = cardsRes;
-                result.Success = true;
-                result.Message = "Card retrieved successfully";
-            }
-            catch (Exception ex)
-            {
-                result.Success = false;
-                result.Message = "Error in : CardService funciton GetAllCardsAsync()";
-                result.ErrorMessages = new List<string> { ex.Message };
-            }
+			    }
+			PaginatedList<CardResponse> result = await cardsRes.ToPaginateAsync(request);
             return result;
-        }
+		}
 
-        public async Task<SPayResponse<IList<CardResponse>>> SearchCardAsync(AdminSearchRequest request)
+        public async Task<PaginatedList<CardResponse>> SearchCardAsync(AdminSearchRequest request)
         {
-            var result = new SPayResponse<IList<CardResponse>>();
-            try
-            {
-                var keyWord = request.keyword.Trim();
+                var keyWord = request.Keyword.Trim();
                 if (string.IsNullOrEmpty(keyWord))
                 {
-                    result.Success = false;
-                    result.Message = "Keyword null or empty!";
+                    throw new ArgumentNullException(nameof(keyWord));
                 }
                 var cards = await _cardRepo.SearchCardByNameAsync(keyWord);
                 var cardsRes = _mapper.Map<IList<CardResponse>>(cards);
@@ -81,22 +75,13 @@ namespace SPay.Service
                     string? name = deposit.DepositPackageKeyNavigation.Name;
                     string? packageDes = deposit.DepositPackageKeyNavigation.Description;
                     item.No = ++count;
-                    item.Amount = deposit.Amount;
-                    item.PackageName = name.IsNullOrEmpty() ? "" : name;
-                    item.PackageDescription = packageDes.IsNullOrEmpty() ? "" : packageDes;
+                    item.Value = deposit.Amount;
+                    item.PackageName = string.IsNullOrEmpty(name) ? "" : name;
+                    item.PackageDescription = string.IsNullOrEmpty(packageDes) ? "" : packageDes;
                     item.Price = deposit.DepositPackageKeyNavigation.Price;
                 }
-                result.Data = cardsRes;
-                result.Success = true;
-                result.Message = "Search card by cart type successfully";
-            }
-            catch (Exception ex)
-            {
-                result.Success = false;
-                result.Message = "Error in : CardService funciton GetAllCardsAsync()";
-                result.ErrorMessages = new List<string> { ex.Message };
-            }
-            return result;
-        }
+			PaginatedList<CardResponse> result = await cardsRes.ToPaginateAsync(request);
+			return result;
+		}
     }
 }

@@ -11,7 +11,7 @@ namespace SPay.BO.DataBase.Models
         public string OrderKey { get; set; } = null!;
         public string? StoreWithDrawalkey { get; set; }
         public decimal? Amount { get; set; }
-        public bool? Status { get; set; }
+        public byte Status { get; set; }
         public string? Description { get; set; }
 
         public virtual Deposit DepositKeyNavigation { get; set; } = null!;

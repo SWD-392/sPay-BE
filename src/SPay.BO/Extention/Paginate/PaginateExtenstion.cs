@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SPay.BO.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +10,25 @@ namespace SPay.BO.Extention.Paginate
 {
     public static class PaginateExtenstion
     {
-        public static async Task<IPaginate<T>> ToPaginateAsync<T>(this IQueryable<T> queryable, int page, int size, int firstPage = 1)
-        {
-            if (firstPage > page)
-                throw new ArgumentException($"page ({page}) must greater or equal than firstPage ({firstPage})");
-            var total = await queryable.CountAsync();
-            var items = await queryable.Skip((page - firstPage) * size).Take(size).ToListAsync();
-            var totalPages = (int)Math.Ceiling(total / (double)size);
-            return new Paginate<T>
-            {
-                Page = page,
-                Size = size,
-                Total = total,
-                Items = items,
-                TotalPages = totalPages
-            };
-        }
-    }
+		private static readonly int FIRST_PAGE = 1;
+		public static async Task<PaginatedList<T>> ToPaginateAsync<T>(this IEnumerable<T> enumerable, PagingRequest request)
+		{
+			if (request.PageIndex < FIRST_PAGE)
+				throw new ArgumentException($"page ({request.PageIndex}) must be greater or equal to {FIRST_PAGE}");
+
+			var total = await Task.Run(() => enumerable.Count());
+			var items = enumerable.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToList();
+			var totalPages = (int)Math.Ceiling(total / (double)request.PageSize);
+
+			return new PaginatedList<T>
+			{
+				PageIndex = request.PageIndex,
+				PageSize = request.PageSize,
+				TotalCount = total,
+				Items = items,
+				TotalPages = totalPages
+			};
+		}
+
+	}
 }

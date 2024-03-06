@@ -5,7 +5,7 @@ using SPay.Service;
 
 namespace SPay.API.Controllers
 {
-    [Route("api/admin/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -14,35 +14,52 @@ namespace SPay.API.Controllers
         {
             this._service = _service;
         }
-        // GET: api/<CustomerController>
-        [HttpGet("get-all")]
+        /// <summary>
+        /// Get all customers
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("customers")]
         public async Task<IActionResult> GetAllCategories()
         {
             var response = await _service.GetAllCustomerAsync();
             return Ok(response);
         }
 
-        // GET api/<CustomerController>/5
-        [HttpGet("{name}")]
+        /// <summary>
+        /// Search customers by name
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("customers/search")]
         public string Get(int id)
         {
             return "Test";
         }
 
-        // POST api/<CustomerController>
-        [HttpPost]
+        /// <summary>
+        /// Create a customer
+        /// </summary>
+        /// <param name="value"></param>
+        [HttpPost ("customer")]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT api/<CustomerController>/5
-        [HttpPut("{id}")]
+        /// <summary>
+        /// Update a customer
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        [HttpPut("customer/{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<CustomerController>/5
-        [HttpDelete("{id}")]
+        /// <summary>
+        /// Delete a customer
+        /// </summary>
+        /// <param name="id"></param>
+        [HttpDelete("customer/{id}")]
         public void Delete(int id)
         {
         }

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Admin.Customer.ResponseModel;
-using SPay.DAO.ReferenceSRC;
 using SPay.Repository;
 
 namespace SPay.Service

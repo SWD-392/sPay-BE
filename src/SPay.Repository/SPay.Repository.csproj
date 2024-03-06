@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SPay.DAO\SPay.DAO.csproj" />
+    <ProjectReference Include="..\SPay.BO\SPay.BO.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,10 +8,12 @@ namespace SPay.BO.DTOs.Admin.Customer.ResponseModel
 {
     public class CustomerResponse
     {
-        public string CustomerKey { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Address { get; set; }
-    }
+		public string CustomerKey { get; set; } = null!;
+		public string UserKey { get; set; } = null!;
+		public string? Email { get; set; }
+		public string? Address { get; set; }
+		public string? CreateBy { get; set; }
+		public string? CustomerName { get; set; }
+		public byte Status { get; set; }
+	}
 }
