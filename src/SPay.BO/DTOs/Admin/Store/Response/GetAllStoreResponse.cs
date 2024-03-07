@@ -17,6 +17,6 @@ namespace SPay.BO.DTOs.Admin.Store.Response
         public string PhoneNumber { get; set; }
         public decimal? Balance { get; set; }
         public string InsDate { get; set; }
-        public bool? Status { get; set; }
+        public byte Status { get; set; }
     }
 }

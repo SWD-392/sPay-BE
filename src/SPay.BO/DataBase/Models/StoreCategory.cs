@@ -13,7 +13,6 @@ namespace SPay.BO.DataBase.Models
 
         public string StoreCategoryKey { get; set; } = null!;
         public string? Name { get; set; }
-        public string? Description { get; set; }
         public byte Status { get; set; }
 
         public virtual ICollection<CardStoreCategory> CardStoreCategories { get; set; }

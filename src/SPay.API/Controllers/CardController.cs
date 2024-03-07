@@ -29,12 +29,23 @@ namespace SPay.API.Controllers
             return Ok(response);
         }
 
-        /// <summary>
-        /// Search cards by name
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [HttpGet("cards/search")]
+		/// <summary>
+		/// Get card by id
+		/// </summary>
+		/// <returns></returns>
+		[HttpGet("card/{id}")]
+		public async Task<IActionResult> GetCardById(string id)
+		{
+			var response = await _service.GetCardById(id);
+			return Ok(response);
+		}
+
+		/// <summary>
+		/// Search cards by name
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		[HttpGet("cards/search")]
         public async Task<IActionResult> SearchCardByName([FromQuery] AdminSearchRequest request)
         {
             var response = await _service.SearchCardAsync(request);
@@ -53,10 +64,10 @@ namespace SPay.API.Controllers
         /// <summary>
         /// Update a card
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="key"></param>
         /// <param name="value"></param>
-        [HttpPut("card/{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("card/{key}")]
+        public void Put(string key, [FromBody] string value)
         {
 
         }
@@ -64,11 +75,18 @@ namespace SPay.API.Controllers
         /// <summary>
         /// Delete a card
         /// </summary>
-        /// <param name="id"></param>
-        [HttpDelete("card/{id}")]
-        public void Delete(int id)
+        /// <param name="key"></param>
+        [HttpDelete("card/{key}")]
+		public async Task<IActionResult> Delete(string key)
         {
+            var response = await _service.DeleteCardAsync(key);
 
-        }
+			if (!response.Success)
+			{
+				return BadRequest(response);
+			}
+
+			return Ok(response);
+		}
     }
 }

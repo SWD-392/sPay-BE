@@ -8,10 +8,10 @@ namespace SPay.BO.Extention.Paginate
 {
     public interface IPaginate<TResult>
     {
-        int PageSize { get; }
 		public int PageIndex { get; set; }
-		public int TotalCount { get; set; }
+		public int PageSize { get; }
 		int TotalPages { get; }
+		public int TotalCount { get; set; }
         IList<TResult> Items { get; }
     }
 

@@ -102,11 +102,6 @@ namespace SPay.BO.DataBase.Models
                     .HasColumnType("datetime")
                     .HasColumnName("CREATED_AT");
 
-                entity.Property(e => e.CustomerKey)
-                    .HasMaxLength(10)
-                    .IsUnicode(false)
-                    .HasColumnName("CUSTOMER_KEY");
-
                 entity.Property(e => e.NumberDate).HasColumnName("NUMBER_DATE");
 
                 entity.Property(e => e.Status).HasColumnName("STATUS");
@@ -116,11 +111,6 @@ namespace SPay.BO.DataBase.Models
                     .HasForeignKey(d => d.CardTypeKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__CARD__CARD_TYPE___00200768");
-
-                entity.HasOne(d => d.CustomerKeyNavigation)
-                    .WithMany(p => p.Cards)
-                    .HasForeignKey(d => d.CustomerKey)
-                    .HasConstraintName("FK__CARD__CUSTOMER_K__7F2BE32F");
             });
 
             modelBuilder.Entity<CardStoreCategory>(entity =>
@@ -387,7 +377,9 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("CATEGORY_KEY");
 
-                entity.Property(e => e.Location).HasColumnName("LOCATION");
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .HasColumnName("DESCRIPTION");
 
                 entity.Property(e => e.Name).HasColumnName("NAME");
 
@@ -416,10 +408,6 @@ namespace SPay.BO.DataBase.Models
                     .HasMaxLength(10)
                     .IsUnicode(false)
                     .HasColumnName("STORE_CATEGORY_KEY");
-
-                entity.Property(e => e.Description)
-                    .HasMaxLength(255)
-                    .HasColumnName("DESCRIPTION");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(255)
