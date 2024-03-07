@@ -11,8 +11,9 @@ namespace SPay.Repository
     public interface IWalletRepository
     {
         Task<decimal?> GetBalanceForStore(string storeKey);
+        Task<bool> CreateWalletAsync(Wallet wallet);
     }
-    public class WalletRepository : IWalletRepository
+	public class WalletRepository : IWalletRepository
     {
         private readonly SPayDbContext _context;
         public WalletRepository(SPayDbContext _context)
@@ -24,5 +25,11 @@ namespace SPay.Repository
             var result = await _context.Wallets.Where(w => w.StoreKey.Equals(storeKey)).Select(w => w.Balance).FirstOrDefaultAsync();
             return result;
         }
-    }
+
+		public async Task<bool> CreateWalletAsync(Wallet wallet)
+		{
+			await _context.Wallets.AddAsync(wallet);
+            return await _context.SaveChangesAsync() > 0;
+		}
+	}
 }

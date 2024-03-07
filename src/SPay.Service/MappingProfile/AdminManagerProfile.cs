@@ -21,10 +21,10 @@ namespace SPay.Service.MappingProfile
                 .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.StoreCategory, opt => opt.MapFrom(src => src.CategoryKeyNavigation.Name))
                 .ForMember(dest => dest.StoreCategoryKey, opt => opt.MapFrom(src => src.CategoryKey))
-                .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.OwnerKeyNavigation.OwnerName))
+                .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.UserKeyNavigation.Fullname))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault(x => x.WalletKey == src.StoreKey).Balance ?? 0))
-                .ForMember(dest => dest.InsDate, opt => opt.MapFrom(src => src.OwnerKeyNavigation.CreateAt))
+                .ForMember(dest => dest.InsDate, opt => opt.MapFrom(src => src.UserKeyNavigation.InsDate))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ReverseMap();
 

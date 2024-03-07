@@ -43,6 +43,7 @@ namespace SPay.API.Controllers
         [HttpPost ("customer")]
         public void Post([FromBody] string value)
         {
+
         }
 
         /// <summary>
@@ -53,6 +54,8 @@ namespace SPay.API.Controllers
         [HttpPut("customer/{id}")]
         public void Put(int id, [FromBody] string value)
         {
+
+
         }
 
         /// <summary>

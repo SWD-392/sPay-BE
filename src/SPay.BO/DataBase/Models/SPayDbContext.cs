@@ -27,7 +27,6 @@ namespace SPay.BO.DataBase.Models
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<Store> Stores { get; set; } = null!;
         public virtual DbSet<StoreCategory> StoreCategories { get; set; } = null!;
-        public virtual DbSet<StoreOwner> StoreOwners { get; set; } = null!;
         public virtual DbSet<StoreWithdrawal> StoreWithdrawals { get; set; } = null!;
         public virtual DbSet<Transaction> Transactions { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
@@ -188,10 +187,6 @@ namespace SPay.BO.DataBase.Models
                 entity.Property(e => e.CreateBy)
                     .HasMaxLength(100)
                     .HasColumnName("CREATE_BY");
-
-                entity.Property(e => e.CustomerName)
-                    .HasMaxLength(255)
-                    .HasColumnName("CUSTOMER_NAME");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(100)
@@ -383,11 +378,6 @@ namespace SPay.BO.DataBase.Models
 
                 entity.Property(e => e.Name).HasColumnName("NAME");
 
-                entity.Property(e => e.OwnerKey)
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasColumnName("OWNER_KEY");
-
                 entity.Property(e => e.Phone)
                     .HasMaxLength(10)
                     .IsUnicode(false)
@@ -395,16 +385,22 @@ namespace SPay.BO.DataBase.Models
 
                 entity.Property(e => e.Status).HasColumnName("STATUS");
 
+                entity.Property(e => e.UserKey)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("USER_KEY");
+
                 entity.HasOne(d => d.CategoryKeyNavigation)
                     .WithMany(p => p.Stores)
                     .HasForeignKey(d => d.CategoryKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__STORE__CATEGORY___05D8E0BE");
 
-                entity.HasOne(d => d.OwnerKeyNavigation)
+                entity.HasOne(d => d.UserKeyNavigation)
                     .WithMany(p => p.Stores)
-                    .HasForeignKey(d => d.OwnerKey)
-                    .HasConstraintName("FK__STORE__OWNER_KEY__18EBB532");
+                    .HasForeignKey(d => d.UserKey)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__STORE__USER_KEY__19DFD96B");
             });
 
             modelBuilder.Entity<StoreCategory>(entity =>
@@ -424,49 +420,6 @@ namespace SPay.BO.DataBase.Models
                     .HasColumnName("NAME");
 
                 entity.Property(e => e.Status).HasColumnName("STATUS");
-            });
-
-            modelBuilder.Entity<StoreOwner>(entity =>
-            {
-                entity.HasKey(e => e.StoreOwnerKey)
-                    .HasName("PK__STORE_OW__499922786F7239A3");
-
-                entity.ToTable("STORE_OWNER");
-
-                entity.Property(e => e.StoreOwnerKey)
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasColumnName("STORE_OWNER_KEY");
-
-                entity.Property(e => e.CreateAt)
-                    .HasMaxLength(100)
-                    .HasColumnName("CREATE_AT");
-
-                entity.Property(e => e.OwnerName)
-                    .HasMaxLength(50)
-                    .HasColumnName("OWNER_NAME");
-
-                entity.Property(e => e.StoreKey)
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasColumnName("STORE_KEY");
-
-                entity.Property(e => e.UserKey)
-                    .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasColumnName("USER_KEY");
-
-                entity.HasOne(d => d.StoreKeyNavigation)
-                    .WithMany(p => p.StoreOwners)
-                    .HasForeignKey(d => d.StoreKey)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__STORE_OWN__STORE__06CD04F7");
-
-                entity.HasOne(d => d.UserKeyNavigation)
-                    .WithMany(p => p.StoreOwners)
-                    .HasForeignKey(d => d.UserKey)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__STORE_OWN__USER___07C12930");
             });
 
             modelBuilder.Entity<StoreWithdrawal>(entity =>
@@ -579,6 +532,14 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("USER_KEY");
 
+                entity.Property(e => e.Fullname)
+                    .HasMaxLength(50)
+                    .HasColumnName("FULLNAME");
+
+                entity.Property(e => e.InsDate)
+                    .HasColumnType("date")
+                    .HasColumnName("INS_DATE");
+
                 entity.Property(e => e.Password)
                     .HasMaxLength(50)
                     .IsUnicode(false)
@@ -616,7 +577,7 @@ namespace SPay.BO.DataBase.Models
                     .HasColumnName("CARD_KEY");
 
                 entity.Property(e => e.CreateAt)
-                    .HasMaxLength(100)
+                    .HasColumnType("date")
                     .HasColumnName("CREATE_AT");
 
                 entity.Property(e => e.CustomerKey)

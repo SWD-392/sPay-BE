@@ -11,7 +11,7 @@ namespace SPay.Repository.Enum
 	{
 		public static readonly string STORE = "ST_";
 		public static readonly string CUSTOMER = "CU_";
-		public static readonly string STORE_OWNER = "SO_";
+		public static readonly string USER = "US_";
 		public static readonly string CARD = "CA_";
 		public static readonly string CARD_TYPE = "CT_";
 		public static readonly string TRANSACTION = "TR_";

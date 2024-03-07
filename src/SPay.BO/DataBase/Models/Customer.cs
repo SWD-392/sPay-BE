@@ -15,7 +15,6 @@ namespace SPay.BO.DataBase.Models
         public string? Email { get; set; }
         public string? Address { get; set; }
         public string? CreateBy { get; set; }
-        public string? CustomerName { get; set; }
         public byte Status { get; set; }
 
         public virtual User UserKeyNavigation { get; set; } = null!;

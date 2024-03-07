@@ -7,6 +7,7 @@ using AutoMapper;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Admin.Customer.ResponseModel;
 using SPay.Repository;
+using SPay.Service.Response;
 
 namespace SPay.Service
 {

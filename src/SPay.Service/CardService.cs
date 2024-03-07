@@ -14,10 +14,11 @@ using SPay.BO.DTOs.Admin.Card.Request;
 using SPay.BO.DTOs.Admin.Card.Response;
 using SPay.BO.Extention.Paginate;
 using SPay.Repository;
+using SPay.Service.Response;
 
 namespace SPay.Service
 {
-	public interface ICardService
+    public interface ICardService
 	{
 		Task<SPayResponse<PaginatedList<CardResponse>>> GetAllCardsAsync(GetAllCardRequest request);
 		Task<SPayResponse<CardResponse>> GetCardById(string id);

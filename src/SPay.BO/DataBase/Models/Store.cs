@@ -8,7 +8,6 @@ namespace SPay.BO.DataBase.Models
         public Store()
         {
             Orders = new HashSet<Order>();
-            StoreOwners = new HashSet<StoreOwner>();
             StoreWithdrawals = new HashSet<StoreWithdrawal>();
             Wallets = new HashSet<Wallet>();
         }
@@ -19,12 +18,11 @@ namespace SPay.BO.DataBase.Models
         public string? Phone { get; set; }
         public byte Status { get; set; }
         public string? Description { get; set; }
-        public string OwnerKey { get; set; }
+        public string UserKey { get; set; } = null!;
 
         public virtual StoreCategory CategoryKeyNavigation { get; set; } = null!;
-        public virtual StoreOwner OwnerKeyNavigation { get; set; }
+        public virtual User UserKeyNavigation { get; set; } = null!;
         public virtual ICollection<Order> Orders { get; set; }
-        public virtual ICollection<StoreOwner> StoreOwners { get; set; }
         public virtual ICollection<StoreWithdrawal> StoreWithdrawals { get; set; }
         public virtual ICollection<Wallet> Wallets { get; set; }
     }

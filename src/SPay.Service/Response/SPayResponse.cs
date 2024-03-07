@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SPay.Service
+namespace SPay.Service.Response
 {
     /// <summary>
     /// Generic wrapper for web api response.       
