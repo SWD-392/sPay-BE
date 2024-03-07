@@ -11,52 +11,52 @@ namespace SPay.Repository
 {
     public interface IStoreRepository
     {
-        Task<IList<StoreOwner>> GetAllStoreInfo();
-        Task<IList<StoreOwner>> SearchByNameAsync(string name);
-		Task<StoreOwner> GetStoreByIdAsync(string key);
-		Task<bool> DeleteStoreAsync(StoreOwner store);
+        Task<IList<Store>> GetAllStoreInfo();
+        Task<IList<Store>> SearchByNameAsync(string name);
+		Task<Store> GetStoreByIdAsync(string key);
+		Task<bool> DeleteStoreAsync(Store store);
 
 	}
     public class StoreRepository : IStoreRepository
     {
-		private readonly byte DELETED = (byte)CardStatusEnum.Deleted;
 		private readonly SPayDbContext _context;
         public StoreRepository(SPayDbContext _context)
         {
             this._context = _context;
         }
-        public async Task<IList<StoreOwner>> GetAllStoreInfo()
+        public async Task<IList<Store>> GetAllStoreInfo()
         {
-            return await _context.StoreOwners
-                .Include(so => so.StoreKeyNavigation)
-                .Include(so => so.StoreKeyNavigation.CategoryKeyNavigation)
-                .Include(so => so.StoreKeyNavigation.Wallets)
+            return await _context.Stores
+                .Include(so => so.CategoryKeyNavigation)
+                .Include(so => so.Wallets)
                 .ToListAsync();
         }
 
-        public async Task<IList<StoreOwner>> SearchByNameAsync(string name)
+        public async Task<IList<Store>> SearchByNameAsync(string name)
         {
-            return await _context.StoreOwners
-                .Where(so => so.StoreKeyNavigation.Name.ToLower().Contains(name.ToLower()) && so.StoreKeyNavigation.Status != DELETED)
-                .Include(so => so.StoreKeyNavigation)
-                .Include(so => so.StoreKeyNavigation.CategoryKeyNavigation)
-                .Include(so => so.StoreKeyNavigation.Wallets)
+            return await _context.Stores
+                .Where(s => s.Name.ToLower().Contains(name.ToLower()) && !isDeleted(s.Status))
+                .Include(s => s.CategoryKeyNavigation)
+                .Include(s => s.Wallets)
                 .ToListAsync();
         }
-		public async Task<StoreOwner> GetStoreByIdAsync(string key)
+		public async Task<Store> GetStoreByIdAsync(string key)
         {
-            Test();
-			return await _context.StoreOwners
-				.Include(so => so.StoreKeyNavigation)
-				.Include(so => so.StoreKeyNavigation.CategoryKeyNavigation)
-				.Include(so => so.StoreKeyNavigation.Wallets)
-				.FirstOrDefaultAsync(c => c.StoreKey == key && c.StoreKeyNavigation.Status != DELETED); ;
+			return await _context.Stores
+				.Include(s => s.CategoryKeyNavigation)
+				.Include(s => s.Wallets)
+				.FirstOrDefaultAsync(s => s.StoreKey == key && !isDeleted(s.Status)); ;
 		}
-		public async Task<bool> DeleteStoreAsync(StoreOwner store)
+		public async Task<bool> DeleteStoreAsync(Store store)
         {
-            store.StoreKeyNavigation.Status = DELETED;
+            store.Status = (byte)CardStatusEnum.Deleted;
             await _context.SaveChangesAsync();
             return false;
+        }
+
+        private bool isDeleted(byte status)
+        {
+            return status == (byte)CardStatusEnum.Deleted;
         }
 
         private void Test()

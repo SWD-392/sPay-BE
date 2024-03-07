@@ -15,8 +15,10 @@ namespace SPay.Repository
 		Task<Card> GetCardByIdAsync(string key);
 		Task<IList<Card>> SearchCardByNameAsync(string keyWord);
         Task<bool> DeleteCardAsync(Card existedCard);
+        Task<bool> IsDeleted(string key);
 
-    }
+
+	}
 	public class CardRepository : ICardRepository
     {
         private readonly SPayDbContext _context;
@@ -32,6 +34,18 @@ namespace SPay.Repository
             return true;
 		}
 
+        public async Task<bool> IsDeleted(string key)
+        {
+            var status = await _context.Cards
+	                            .Where(c => c.CardKey.Equals(key))
+	                            .Select(c => c.Status)
+	                            .FirstOrDefaultAsync();
+            if(status == (byte)CardStatusEnum.Deleted)
+            {
+                return true;
+            }
+            return false;
+        }
 		public async Task<IList<Card>> GetAllAsync()
         {
             var cards = await _context.Cards

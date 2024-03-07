@@ -19,8 +19,10 @@ namespace SPay.BO.DataBase.Models
         public string? Phone { get; set; }
         public byte Status { get; set; }
         public string? Description { get; set; }
+        public string OwnerKey { get; set; }
 
         public virtual StoreCategory CategoryKeyNavigation { get; set; } = null!;
+        public virtual StoreOwner OwnerKeyNavigation { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<StoreOwner> StoreOwners { get; set; }
         public virtual ICollection<StoreWithdrawal> StoreWithdrawals { get; set; }

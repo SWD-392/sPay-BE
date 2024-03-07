@@ -85,13 +85,16 @@ namespace SPay.Service
 				foreach (var item in cardsRes)
 				{
 					var deposit = await _depRepo.GetDepositByCardIdAsync(item.CardKey);
-					string? name = deposit.DepositPackageKeyNavigation.Name;
-					string? packageDes = deposit.DepositPackageKeyNavigation.Description;
-					item.No = ++count;
-					item.Value = deposit.Amount;
-					item.PackageName = string.IsNullOrEmpty(name) ? "" : name;
-					item.PackageDescription = string.IsNullOrEmpty(packageDes) ? "" : packageDes;
-					item.Price = deposit.DepositPackageKeyNavigation.Price;
+					if (deposit != null)
+					{
+						string? name = deposit.DepositPackageKeyNavigation.Name;
+						item.Value = deposit.Value;
+						item.PackageName = string.IsNullOrEmpty(name) ? "" : name;
+						string? packageDes = deposit.DepositPackageKeyNavigation.Description;
+						item.PackageDescription = string.IsNullOrEmpty(packageDes) ? "" : packageDes;
+						item.Price = deposit.DepositPackageKeyNavigation.Price;
+					}	
+					item.No = ++count;							
 				}
 				response.Data = await cardsRes.ToPaginateAsync(request);
 				response.Success = true;
@@ -115,7 +118,7 @@ namespace SPay.Service
 				if (card == null)
 				{
 					response.Success = false;
-					response.Message = "The result of get all card from repository is null";
+					response.Message = "Card not found";
 					return response;
 				}
 				var cardRes = _mapper.Map<CardResponse>(card);
@@ -156,14 +159,17 @@ namespace SPay.Service
 				var count = 0;
 				foreach (var item in cardsRes)
 				{
-					var deposit = await _depRepo.GetDepositByCardIdAsync(item.CardKey);
-					string? name = deposit.DepositPackageKeyNavigation.Name;
-					string? packageDes = deposit.DepositPackageKeyNavigation.Description;
-					item.No = ++count;
-					item.Value = deposit.Amount;
-					item.PackageName = string.IsNullOrEmpty(name) ? "" : name;
-					item.PackageDescription = string.IsNullOrEmpty(packageDes) ? "" : packageDes;
-					item.Price = deposit.DepositPackageKeyNavigation.Price;
+						var deposit = await _depRepo.GetDepositByCardIdAsync(item.CardKey);
+						if (deposit != null)
+						{
+							string? name = deposit.DepositPackageKeyNavigation.Name;
+							item.Value = deposit.Value;
+							item.PackageName = string.IsNullOrEmpty(name) ? "" : name;
+							string? packageDes = deposit.DepositPackageKeyNavigation.Description;
+							item.PackageDescription = string.IsNullOrEmpty(packageDes) ? "" : packageDes;
+							item.Price = deposit.DepositPackageKeyNavigation.Price;
+						}
+						item.No = ++count;
 				}
 				response.Data = await cardsRes.ToPaginateAsync(request);
 				response.Success = true;

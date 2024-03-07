@@ -14,7 +14,7 @@ namespace SPay.BO.DataBase.Models
         public string CardKey { get; set; } = null!;
         public string DepositPackageKey { get; set; } = null!;
         public DateTime InsDate { get; set; }
-        public decimal? Amount { get; set; }
+        public decimal? Value { get; set; }
 
         public virtual Card CardKeyNavigation { get; set; } = null!;
         public virtual DepositPackage DepositPackageKeyNavigation { get; set; } = null!;

@@ -15,17 +15,17 @@ namespace SPay.Service.MappingProfile
     {
         public AdminManagerProfile() {
             CreateMap<CustomerResponse, Customer>().ReverseMap();
-            CreateMap<StoreOwner, StoreResponse>()
+            CreateMap<Store, StoreResponse>()
                 .ForMember(dest => dest.No, opt => opt.Ignore())
-                .ForMember(dest => dest.StoreKey, opt => opt.MapFrom(src => src.StoreKeyNavigation.StoreKey))
-                .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.StoreKeyNavigation.Name))
-                .ForMember(dest => dest.StoreCategory, opt => opt.MapFrom(src => src.StoreKeyNavigation.CategoryKeyNavigation.Name))
-                .ForMember(dest => dest.StoreCategoryKey, opt => opt.MapFrom(src => src.StoreKeyNavigation.CategoryKey))
-                .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.OwnerName))
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.StoreKeyNavigation.Phone))
-                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.StoreKeyNavigation.Wallets.FirstOrDefault(x => x.WalletKey == src.StoreKey).Balance ?? 0))
-                .ForMember(dest => dest.InsDate, opt => opt.MapFrom(src => src.CreateAt))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.StoreKeyNavigation.Status))
+                .ForMember(dest => dest.StoreKey, opt => opt.MapFrom(src => src.StoreKey))
+                .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.StoreCategory, opt => opt.MapFrom(src => src.CategoryKeyNavigation.Name))
+                .ForMember(dest => dest.StoreCategoryKey, opt => opt.MapFrom(src => src.CategoryKey))
+                .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.OwnerKeyNavigation.OwnerName))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault(x => x.WalletKey == src.StoreKey).Balance ?? 0))
+                .ForMember(dest => dest.InsDate, opt => opt.MapFrom(src => src.OwnerKeyNavigation.CreateAt))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ReverseMap();
 
             CreateMap<Card, CardResponse>()
@@ -34,7 +34,7 @@ namespace SPay.Service.MappingProfile
                 .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.CardNumber))
                 .ForMember(dest => dest.CardName, opt => opt.MapFrom(src => src.CardTypeKeyNavigation.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.CardTypeKeyNavigation.Description))
-                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Deposits.Where(d => d.CardKey == src.CardKey).FirstOrDefault().Amount))
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Deposits.Where(d => d.CardKey == src.CardKey).FirstOrDefault().Value))
                 .ForMember(dest => dest.InsDate, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.DateNumber, opt => opt.MapFrom(src => src.NumberDate))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
