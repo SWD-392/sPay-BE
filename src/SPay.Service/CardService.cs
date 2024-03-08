@@ -27,16 +27,25 @@ namespace SPay.Service
 		Task<SPayResponse<PaginatedList<CardResponse>>> SearchCardAsync(AdminSearchRequest request);
 		Task<SPayResponse<bool>> DeleteCardAsync(string key);
 		Task<SPayResponse<bool>> CreateCardAsync(CreateCardRequest request);
+		Task<int> CountCardByUserKey(string key);
 
 	}
 	public class CardService : ICardService
 	{
 		private readonly ICardRepository _cardRepo;
 		private readonly IMapper _mapper;
-		public CardService(ICardRepository _cardRepo, IMapper mapper)
+		private readonly IWalletService _walletService;
+		public CardService(ICardRepository _cardRepo, IMapper mapper, IWalletService _walletService)
 		{
 			this._cardRepo = _cardRepo;
 			this._mapper = mapper;
+			this._walletService = _walletService;
+		}
+
+		public async Task<int> CountCardByUserKey(string userKey)
+		{
+			var listCardKey = await _walletService.GetListCardByUserKeyAsync(userKey);
+			return listCardKey.Count;
 		}
 
 		public async Task<SPayResponse<bool>> CreateCardAsync(CreateCardRequest request)

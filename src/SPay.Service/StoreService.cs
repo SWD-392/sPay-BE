@@ -61,7 +61,7 @@ namespace SPay.Service
 				foreach (var store in storesResponse)
 				{
 					store.No = ++count;
-					store.Balance = await _walletRepo.GetBalanceForStore(store.StoreKey);
+					store.Balance = await _walletService.GetBalanceOfUserAsync(new GetBalanceModel { StoreKey = store.StoreKey });
 				}
 
 				response.Data = await storesResponse.ToPaginateAsync(request);
@@ -98,7 +98,7 @@ namespace SPay.Service
 				foreach (var store in storesRes)
 				{
 					store.No = ++count;
-					store.Balance = await _walletRepo.GetBalanceForStore(store.StoreKey);
+					store.Balance = await _walletService.GetBalanceOfUserAsync(new GetBalanceModel { StoreKey =store.StoreKey });
 				}
 				response.Data = await storesRes.ToPaginateAsync(request);
 				response.Success = true;

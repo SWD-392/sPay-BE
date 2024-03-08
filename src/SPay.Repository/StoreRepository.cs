@@ -28,9 +28,10 @@ namespace SPay.Repository
         public async Task<IList<Store>> GetAllStoreInfo()
         {
             return await _context.Stores
-                .Include(so => so.CategoryKeyNavigation)
+                .Include(s => s.CategoryKeyNavigation)
 				.Include(s => s.UserKeyNavigation)
-				.Include(so => so.Wallets)
+				.Include(s => s.Wallets)
+                .OrderByDescending(s => s.UserKeyNavigation.InsDate)
                 .ToListAsync();
         }
 
@@ -41,7 +42,8 @@ namespace SPay.Repository
                 .Include(s => s.CategoryKeyNavigation)
                 .Include(s => s.UserKeyNavigation)
                 .Include(s => s.Wallets)
-                .ToListAsync();
+				.OrderBy(s => s.Name)
+				.ToListAsync();
         }
 		public async Task<Store> GetStoreByIdAsync(string key)
 		{

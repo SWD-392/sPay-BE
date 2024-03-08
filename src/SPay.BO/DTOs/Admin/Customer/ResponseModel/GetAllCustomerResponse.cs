@@ -14,7 +14,7 @@ namespace SPay.BO.DTOs.Admin.Customer.ResponseModel
 		public string? Email { get; set; }
 		public string? Address { get; set; }
 		public string? CustomerName { get; set; }
-		public int? NumberOfCard {  get; set; }
+		public int? NumOfCards {  get; set; }
 		public decimal? Balance { get; set; }
 		public byte Status { get; set; }
 	}

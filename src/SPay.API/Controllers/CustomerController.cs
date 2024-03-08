@@ -74,17 +74,15 @@ namespace SPay.API.Controllers
 			return Ok(response);
 		}
 
-        /// <summary>
-        /// Update a customer
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="value"></param>
-        [HttpPut("{key}")]
-        public void Put(int id, [FromBody] string value)
-        {
-
-
-        }
+        ///// <summary>
+        ///// Update a customer
+        ///// </summary>
+        ///// <param name="id"></param>
+        ///// <param name="value"></param>
+        //[HttpPut("{key}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
         /// <summary>
         /// Delete a customer

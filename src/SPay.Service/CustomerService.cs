@@ -34,15 +34,17 @@ namespace SPay.Service
 		private readonly ICustomerRepository _repo;
 		private readonly IMapper _mapper;
 		private readonly IWalletService _walletService;
+		private readonly ICardService _cardService;
+
 		private readonly IUserService _userService;
 
-		public CustomerService(ICustomerRepository _repo, IMapper _mapper, IWalletService _walletService, IUserService _userService)
+		public CustomerService(ICustomerRepository _repo, IMapper _mapper, IWalletService _walletService, IUserService _userService, ICardService _cardService)
 		{
 			this._repo = _repo;
 			this._mapper = _mapper;
 			this._walletService = _walletService;
 			this._userService = _userService;
-
+			this._cardService = _cardService;
 		}
 
 		public async Task<SPayResponse<bool>> CreateCustomerAsync(CreateCustomerRequest request)
@@ -57,7 +59,7 @@ namespace SPay.Service
 					UserKey = userKey,
 					NumberPhone = request.PhoneNumber,
 					Password = request.Password,
-					Role = (int)RoleEnum.Store,
+					Role = (int)RoleEnum.Customer,
 					FullName = request.FullName,
 				};
 
@@ -149,7 +151,8 @@ namespace SPay.Service
 				foreach (var customer in customerResponse)
 				{
 					customer.No = ++count;
-					customer.Balance = await _walletService.GetBalanceOfUser(new GetBalanceModel { CustomerKey = customer.CustomerKey});
+					customer.Balance = await _walletService.GetBalanceOfUserAsync(new GetBalanceModel { CustomerKey = customer.CustomerKey});
+					customer.NumOfCards = await _cardService.CountCardByUserKey(customer.CustomerKey);
 				}
 				response.Data = await customerResponse.ToPaginateAsync(request);
 				response.Success = true;
@@ -206,10 +209,12 @@ namespace SPay.Service
 					return response;
 				}
 				var customerResponse = _mapper.Map<List<CustomerResponse>>(customerList);
-
-				foreach (var customer in customerList)
+				var count = 0;
+				foreach (var customer in customerResponse)
 				{
-
+					customer.No = ++count;
+					customer.Balance = await _walletService.GetBalanceOfUserAsync(new GetBalanceModel { CustomerKey = customer.CustomerKey });
+					customer.NumOfCards = await _cardService.CountCardByUserKey(customer.CustomerKey); 
 				}
 				response.Data = await customerResponse.ToPaginateAsync(request);
 				response.Success = true;

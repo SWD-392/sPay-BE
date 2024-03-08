@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SPay.BO.DataBase.Models;
 using SPay.Repository.Enum;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace SPay.Repository
 {
@@ -27,6 +28,7 @@ namespace SPay.Repository
 
 		public async Task<bool> CreateCustomerAsync(Customer customer)
 		{
+			_context.Customers.Add(customer);
 			return await _context.SaveChangesAsync() > 0;
 		}
 

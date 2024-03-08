@@ -14,7 +14,8 @@ namespace SPay.Service
 	public interface IWalletService
 	{
 		Task<bool> CreateWalletAsync(CreateWalletModel model);
-		Task<decimal?> GetBalanceOfUser(GetBalanceModel model);
+		Task<decimal?> GetBalanceOfUserAsync(GetBalanceModel model);
+		Task<IList<string>> GetListCardByUserKeyAsync(string userKey);
 
 	}
 	public class WalletService : IWalletService
@@ -40,10 +41,25 @@ namespace SPay.Service
 			return await _repo.CreateWalletAsync(wallet);
 		}
 
-		public async Task<decimal?> GetBalanceOfUser(GetBalanceModel model)
+		public async Task<decimal?> GetBalanceOfUserAsync(GetBalanceModel model)
 		{
-			var wallet = await _repo.GetBalanceForUser(model);
+			var wallet = await _repo.GetBalanceOfUserAsync(model);
+			if(wallet == null)
+			{
+				return 0;
+			}
 			return wallet.Balance;
+		}
+
+		public async Task<IList<string>> GetListCardByUserKeyAsync(string userKey)
+		{
+			var wallets = await _repo.GetWalletCardByUserKeyAsync(userKey);
+			var result = new List<string>();
+			foreach(var wallet in wallets)
+			{
+				result.Add(wallet.CardKey);
+			}
+			return result;
 		}
 	}
 }

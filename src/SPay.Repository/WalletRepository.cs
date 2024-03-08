@@ -11,9 +11,10 @@ namespace SPay.Repository
 {
     public interface IWalletRepository
     {
-        Task<Wallet> GetBalanceForUser(GetBalanceModel models);
+        Task<Wallet> GetBalanceOfUserAsync(GetBalanceModel models);
         Task<bool> CreateWalletAsync(Wallet wallet);
-    }
+		Task<IList<Wallet>> GetWalletCardByUserKeyAsync(string userKey);
+	}
 	public class WalletRepository : IWalletRepository
     {
         private readonly SPayDbContext _context;
@@ -21,12 +22,12 @@ namespace SPay.Repository
         {
             this._context = _context;
         }
-        public async Task<Wallet> GetBalanceForUser(GetBalanceModel models)
+        public async Task<Wallet> GetBalanceOfUserAsync(GetBalanceModel models)
         {
             var result = await _context.Wallets
-                .Where(w => w.StoreKey.Equals(models.StoreKey) 
-                && w.CustomerKey == models.CustomerKey 
-                && w.CardKey == models.CardKey).FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(w => w.StoreKey.Equals(models.StoreKey) 
+                && w.CustomerKey.Equals(models.CustomerKey) 
+                && w.CardKey.Equals(models.CardKey));
             return result;
         }
 
@@ -34,6 +35,14 @@ namespace SPay.Repository
 		{
 			await _context.Wallets.AddAsync(wallet);
             return await _context.SaveChangesAsync() > 0;
+		}
+
+		public async Task<IList<Wallet>> GetWalletCardByUserKeyAsync(string userKey)
+		{
+			var result = await _context.Wallets
+				.Where(w => w.CustomerKey.Equals(userKey)
+				&& !string.IsNullOrEmpty(w.CardKey)).ToListAsync();
+			return result;
 		}
 	}
 }
