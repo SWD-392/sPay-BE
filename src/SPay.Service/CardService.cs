@@ -14,27 +14,65 @@ using SPay.BO.DTOs.Admin.Card.Request;
 using SPay.BO.DTOs.Admin.Card.Response;
 using SPay.BO.Extention.Paginate;
 using SPay.Repository;
+using SPay.Repository.Enum;
 using SPay.Service.Response;
+using SPay.Service.Utils;
 
 namespace SPay.Service
 {
-    public interface ICardService
+	public interface ICardService
 	{
 		Task<SPayResponse<PaginatedList<CardResponse>>> GetAllCardsAsync(GetAllCardRequest request);
 		Task<SPayResponse<CardResponse>> GetCardById(string id);
 		Task<SPayResponse<PaginatedList<CardResponse>>> SearchCardAsync(AdminSearchRequest request);
 		Task<SPayResponse<bool>> DeleteCardAsync(string key);
+		Task<SPayResponse<bool>> CreateCardAsync(CreateCardRequest request);
+
 	}
 	public class CardService : ICardService
 	{
 		private readonly ICardRepository _cardRepo;
-		private readonly IDepositRepository _depRepo;
 		private readonly IMapper _mapper;
-		public CardService(ICardRepository _cardRepo, IMapper mapper, IDepositRepository depRepo)
+		public CardService(ICardRepository _cardRepo, IMapper mapper)
 		{
 			this._cardRepo = _cardRepo;
 			this._mapper = mapper;
-			this._depRepo = depRepo;
+		}
+
+		public async Task<SPayResponse<bool>> CreateCardAsync(CreateCardRequest request)
+		{
+			SPayResponse<bool> response = new SPayResponse<bool>();
+			try
+			{
+				if (request == null)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Request model is null!");
+					return response;
+				}
+				var createCardInfo = _mapper.Map<Card>(request);
+				if(createCardInfo == null)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+				}
+				createCardInfo.CardKey = string.Format("{0}{1}", PrefixKeyConstant.CARD, Guid.NewGuid().ToString().ToUpper());
+				createCardInfo.CreatedAt = DateTimeHelper.GetDateTimeNow();
+				createCardInfo.Status = (byte)CardStatusEnum.Available;
+				var discountAmount = createCardInfo.MoneyValue.Value * (createCardInfo.DiscountPercentage.Value / 100.0m);
+				createCardInfo.Price = createCardInfo.MoneyValue.Value - discountAmount;
+				if (!await _cardRepo.CreateCardAsync(createCardInfo))
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+					return response;
+				}
+				response.Data = true;
+				response.Success = true;
+				response.Message = "Card delete successfully";
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
 		}
 
 		public async Task<SPayResponse<bool>> DeleteCardAsync(string key)
@@ -85,17 +123,7 @@ namespace SPay.Service
 				var count = 0;
 				foreach (var item in cardsRes)
 				{
-					var deposit = await _depRepo.GetDepositByCardIdAsync(item.CardKey);
-					if (deposit != null)
-					{
-						string? name = deposit.DepositPackageKeyNavigation.Name;
-						item.Value = deposit.Value;
-						item.PackageName = string.IsNullOrEmpty(name) ? "" : name;
-						string? packageDes = deposit.DepositPackageKeyNavigation.Description;
-						item.PackageDescription = string.IsNullOrEmpty(packageDes) ? "" : packageDes;
-						item.Price = deposit.DepositPackageKeyNavigation.Price;
-					}	
-					item.No = ++count;							
+					item.No = ++count;
 				}
 				response.Data = await cardsRes.ToPaginateAsync(request);
 				response.Success = true;
@@ -160,17 +188,7 @@ namespace SPay.Service
 				var count = 0;
 				foreach (var item in cardsRes)
 				{
-						var deposit = await _depRepo.GetDepositByCardIdAsync(item.CardKey);
-						if (deposit != null)
-						{
-							string? name = deposit.DepositPackageKeyNavigation.Name;
-							item.Value = deposit.Value;
-							item.PackageName = string.IsNullOrEmpty(name) ? "" : name;
-							string? packageDes = deposit.DepositPackageKeyNavigation.Description;
-							item.PackageDescription = string.IsNullOrEmpty(packageDes) ? "" : packageDes;
-							item.Price = deposit.DepositPackageKeyNavigation.Price;
-						}
-						item.No = ++count;
+					item.No = ++count;
 				}
 				response.Data = await cardsRes.ToPaginateAsync(request);
 				response.Success = true;

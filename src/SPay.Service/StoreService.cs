@@ -26,9 +26,7 @@ namespace SPay.Service
 		Task<SPayResponse<PaginatedList<StoreResponse>>> SearchStoreAsync(AdminSearchRequest request);
 		Task<SPayResponse<bool>> DeleteStoreAsync(string key);
 		Task<SPayResponse<bool>> CreateStoreAsync(CreateStoreRequest request);
-
 		Task<SPayResponse<StoreResponse>> GetStoreByKeyAsync(string key);
-
 	}
 	public class StoreService : IStoreService
 	{

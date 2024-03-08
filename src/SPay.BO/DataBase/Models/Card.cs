@@ -7,7 +7,6 @@ namespace SPay.BO.DataBase.Models
     {
         public Card()
         {
-            Deposits = new HashSet<Deposit>();
             Orders = new HashSet<Order>();
             Wallets = new HashSet<Wallet>();
         }
@@ -18,9 +17,13 @@ namespace SPay.BO.DataBase.Models
         public DateTime? CreatedAt { get; set; }
         public byte Status { get; set; }
         public int NumberDate { get; set; }
+        public string? CardName { get; set; }
+        public byte? DiscountPercentage { get; set; }
+        public decimal? MoneyValue { get; set; }
+        public decimal? Price { get; set; }
+        public string? Description { get; set; }
 
         public virtual CardType CardTypeKeyNavigation { get; set; } = null!;
-        public virtual ICollection<Deposit> Deposits { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Wallet> Wallets { get; set; }
     }

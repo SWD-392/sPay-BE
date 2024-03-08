@@ -57,9 +57,15 @@ namespace SPay.API.Controllers
         /// </summary>
         /// <param name="value"></param>
         [HttpPost("card")]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> CreateCard([FromBody] CreateCardRequest request)
         {
-        }
+			var response = await _service.CreateCardAsync(request);
+			if (!response.Success)
+			{
+				return BadRequest(response);
+			}
+			return Ok(response);
+		}
 
         /// <summary>
         /// Update a card

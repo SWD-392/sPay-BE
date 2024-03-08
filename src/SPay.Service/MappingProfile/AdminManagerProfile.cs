@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using SPay.BO.DataBase.Models;
+using SPay.BO.DTOs.Admin.Card.Request;
 using SPay.BO.DTOs.Admin.Card.Response;
 using SPay.BO.DTOs.Admin.Customer.ResponseModel;
 using SPay.BO.DTOs.Admin.Store.Response;
@@ -26,19 +27,34 @@ namespace SPay.Service.MappingProfile
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.Wallets.FirstOrDefault(x => x.WalletKey == src.StoreKey).Balance ?? 0))
                 .ForMember(dest => dest.InsDate, opt => opt.MapFrom(src => src.UserKeyNavigation.InsDate))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ReverseMap();
+				.ForAllOtherMembers(src => src.Ignore());
 
-            CreateMap<Card, CardResponse>()
+			CreateMap<Card, CardResponse>()
                 .ForMember(dest => dest.No, opt => opt.Ignore())
                 .ForMember(dest => dest.CardKey, opt => opt.MapFrom(src => src.CardKey))
-                .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.CardNumber))
-                .ForMember(dest => dest.CardName, opt => opt.MapFrom(src => src.CardTypeKeyNavigation.Name))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.CardTypeKeyNavigation.Description))
-                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Deposits.Where(d => d.CardKey == src.CardKey).FirstOrDefault().Value))
+				.ForMember(dest => dest.CardTypeKey, opt => opt.MapFrom(src => src.CardTypeKey))
+                .ForMember(dest => dest.CardTypeName, opt => opt.MapFrom(src => src.CardTypeKeyNavigation.CardTypeName))
+				.ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.CardNumber))
+                .ForMember(dest => dest.CardName, opt => opt.MapFrom(src => src.CardName))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.InsDate, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.DateNumber, opt => opt.MapFrom(src => src.NumberDate))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ReverseMap();
-        }
+				.ForMember(dest => dest.MoneyValue, opt => opt.MapFrom(src => src.MoneyValue))
+				.ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.DiscountPercentage))
+				.ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+				.ForAllOtherMembers(src => src.Ignore());
+
+            CreateMap<CreateCardRequest, Card>()
+				.ForMember(dest => dest.CardTypeKey, opt => opt.MapFrom(src => src.CardTypeKey))
+				.ForMember(dest => dest.CardNumber, opt => opt.MapFrom(src => src.CardNumber))
+				.ForMember(dest => dest.CardName, opt => opt.MapFrom(src => src.Name))
+				.ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+				.ForMember(dest => dest.NumberDate, opt => opt.MapFrom(src => src.NumberDate))
+				.ForMember(dest => dest.MoneyValue, opt => opt.MapFrom(src => src.MoneyValue))
+				.ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.DiscountPercentage))
+				.ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+				.ForAllOtherMembers(src => src.Ignore());
+		}
     }
 }
