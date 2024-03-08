@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SPay.BO.DTOs;
-using SPay.BO.DTOs.Admin;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using SPay.BO.DTOs.Admin.Card.Response;
 using SPay.BO.DTOs.Admin.Store.Request;
+using SPay.BO.DTOs.Admin;
+using SPay.BO.Extention.Paginate;
+using SPay.Service.Response;
 using SPay.Service;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SPay.API.Controllers
 {
-	[Route("api/")]
+	[Route("api/[controller]")]
 	[ApiController]
 	public class StoreController : ControllerBase
 	{
@@ -23,7 +24,8 @@ namespace SPay.API.Controllers
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
-		[HttpGet("stores")]
+		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CardResponse>>), StatusCodes.Status200OK)]
+		[HttpGet]
 		public async Task<IActionResult> GetAllStore([FromQuery] GetAllStoreRequest request)
 		{
 			var response = await _service.GetAllStoreInfoAsync(request);
@@ -35,7 +37,8 @@ namespace SPay.API.Controllers
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
-		[HttpGet("stores/search")]
+		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CardResponse>>), StatusCodes.Status200OK)]
+		[HttpGet("search")]
 		public async Task<IActionResult> SeachStoreByName([FromQuery] AdminSearchRequest request)
 		{
 			var response = await _service.SearchStoreAsync(request);
@@ -47,7 +50,8 @@ namespace SPay.API.Controllers
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		[HttpGet("stores/{key}")]
+		[HttpGet("{key}")]
+		[ProducesResponseType(typeof(SPayResponse<CardResponse>), StatusCodes.Status200OK)]
 		public async Task<IActionResult> SeachStoreByName(string key)
 		{
 			var response = await _service.GetStoreByKeyAsync(key);
@@ -57,9 +61,9 @@ namespace SPay.API.Controllers
 		/// <summary>
 		/// Create a store
 		/// </summary>
-		/// <param name="value"></param>
-		[HttpPost("store")]
-		public async Task<IActionResult> Post([FromBody] CreateStoreRequest request)
+		/// <param name="request"></param>
+		[HttpPost]
+		public async Task<IActionResult> CreateStoreAsync([FromBody] CreateStoreRequest request)
 		{
 			var response = await _service.CreateStoreAsync(request);
 			if (!response.Success)
@@ -69,22 +73,12 @@ namespace SPay.API.Controllers
 			return Ok(response);
 		}
 
-		///// <summary>
-		///// Update a store
-		///// </summary>
-		///// <param name="id"></param>
-		///// <param name="value"></param>
-		//[HttpPut("store/{key}")]
-		//public async Task<IActionResult> Put(string key, [FromBody] string value)
-		//{
-		//}
-
 		/// <summary>
 		/// Delete a store
 		/// </summary>
-		/// <param name="id"></param>
-		[HttpDelete("store/{key}")]
-		public async Task<IActionResult> Delete(string key)
+		/// <param name="key"></param>
+		[HttpDelete("{key}")]
+		public async Task<IActionResult> DeleteStoreAsync(string key)
 		{
 			var response = await _service.DeleteStoreAsync(key);
 

@@ -3,40 +3,36 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPay.BO.DTOs;
 using SPay.BO.DTOs.Admin;
 using SPay.BO.DTOs.Admin.Card.Request;
+using SPay.BO.DTOs.Admin.Card.Response;
+using SPay.BO.DTOs.Auth.Response;
+using SPay.BO.Extention.Paginate;
 using SPay.Service;
+using SPay.Service.Response;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SPay.API.Controllers
 {
-    [Route("api/")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CardController : ControllerBase
     {
-        private readonly ICardService _service;
-        public CardController(ICardService _service)
-        {
-            this._service = _service;
-        }
-        /// <summary>
-        /// Get all cards
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("cards")]
-        public async Task<IActionResult> GetAllCards([FromQuery] GetAllCardRequest request)
-        {
-            var response = await _service.GetAllCardsAsync(request);
-            return Ok(response);
-        }
+		private readonly ICardService _service;
+		public CardController(ICardService _service)
+		{
+			this._service = _service;
+		}
 
 		/// <summary>
-		/// Get card by id
+		/// Get all card
 		/// </summary>
+		/// <param name="request"></param>
 		/// <returns></returns>
-		[HttpGet("card/{id}")]
-		public async Task<IActionResult> GetCardById(string id)
+		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CardResponse>>), StatusCodes.Status200OK)]
+		[HttpGet]
+		public async Task<IActionResult> GetAllcard([FromQuery] GetAllCardRequest request)
 		{
-			var response = await _service.GetCardById(id);
+			var response = await _service.GetAllCardsAsync(request);
 			return Ok(response);
 		}
 
@@ -45,20 +41,34 @@ namespace SPay.API.Controllers
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
-		[HttpGet("cards/search")]
-        public async Task<IActionResult> SearchCardByName([FromQuery] AdminSearchRequest request)
-        {
-            var response = await _service.SearchCardAsync(request);
-            return Ok(response);
-        }
+		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CardResponse>>), StatusCodes.Status200OK)]
+		[HttpGet("search")]
+		public async Task<IActionResult> SearchCardAsync([FromQuery] AdminSearchRequest request)
+		{
+			var response = await _service.SearchCardAsync(request);
+			return Ok(response);
+		}
 
-        /// <summary>
-        /// Create a card
-        /// </summary>
-        /// <param name="value"></param>
-        [HttpPost("card")]
-        public async Task<IActionResult> CreateCard([FromBody] CreateCardRequest request)
-        {
+		/// <summary>
+		/// Get card by key
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		[HttpGet("{key}")]
+		[ProducesResponseType(typeof(SPayResponse<CardResponse>), StatusCodes.Status200OK)]
+		public async Task<IActionResult> GetCardByKeyAsync(string key)
+		{
+			var response = await _service.GetCardByKeyAsync(key);
+			return Ok(response);
+		}
+
+		/// <summary>
+		/// Create a card
+		/// </summary>
+		/// <param name="request"></param>
+		[HttpPost]
+		public async Task<IActionResult> CreateCardAsync([FromBody] CreateCardRequest request)
+		{
 			var response = await _service.CreateCardAsync(request);
 			if (!response.Success)
 			{
@@ -67,25 +77,14 @@ namespace SPay.API.Controllers
 			return Ok(response);
 		}
 
-        /// <summary>
-        /// Update a card
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        [HttpPut("card/{key}")]
-        public void Put(string key, [FromBody] string value)
-        {
-
-        }
-
-        /// <summary>
-        /// Delete a card
-        /// </summary>
-        /// <param name="key"></param>
-        [HttpDelete("card/{key}")]
-		public async Task<IActionResult> Delete(string key)
-        {
-            var response = await _service.DeleteCardAsync(key);
+		/// <summary>
+		/// Delete a card
+		/// </summary>
+		/// <param name="key"></param>
+		[HttpDelete("{key}")]
+		public async Task<IActionResult> DeleteCardAsync(string key)
+		{
+			var response = await _service.DeleteCardAsync(key);
 
 			if (!response.Success)
 			{
@@ -94,5 +93,5 @@ namespace SPay.API.Controllers
 
 			return Ok(response);
 		}
-    }
+	}
 }

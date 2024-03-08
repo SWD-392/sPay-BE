@@ -15,7 +15,7 @@ namespace SPay.BO.DataBase.Models
         public string UserKey { get; set; } = null!;
         public string? Username { get; set; }
         public string? Password { get; set; }
-        public int? Role { get; set; }
+        public byte Role { get; set; }
         public byte Status { get; set; }
         public string? Fullname { get; set; }
         public DateTime? InsDate { get; set; }

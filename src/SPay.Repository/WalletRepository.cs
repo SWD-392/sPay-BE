@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SPay.BO.DataBase.Models;
+using SPay.BO.DTOs.Admin.Wallet;
 
 namespace SPay.Repository
 {
     public interface IWalletRepository
     {
-        Task<decimal?> GetBalanceForStore(string storeKey);
+        Task<Wallet> GetBalanceForUser(GetBalanceModel models);
         Task<bool> CreateWalletAsync(Wallet wallet);
     }
 	public class WalletRepository : IWalletRepository
@@ -20,9 +21,12 @@ namespace SPay.Repository
         {
             this._context = _context;
         }
-        public async Task<decimal?> GetBalanceForStore(string storeKey)
+        public async Task<Wallet> GetBalanceForUser(GetBalanceModel models)
         {
-            var result = await _context.Wallets.Where(w => w.StoreKey.Equals(storeKey)).Select(w => w.Balance).FirstOrDefaultAsync();
+            var result = await _context.Wallets
+                .Where(w => w.StoreKey.Equals(models.StoreKey) 
+                && w.CustomerKey == models.CustomerKey 
+                && w.CardKey == models.CardKey).FirstOrDefaultAsync();
             return result;
         }
 

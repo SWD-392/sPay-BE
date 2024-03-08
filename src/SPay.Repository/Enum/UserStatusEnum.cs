@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SPay.Repository.Enum
 {
-	public enum AccountStatusEnum
+	public enum UserStatusEnum
 	{
 		[Description("Đang hoạt động")]
 		Active = 1,

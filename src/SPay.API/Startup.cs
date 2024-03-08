@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SPay.BO.DataBase.Models;
-using SPay.BO.ReferenceSRC.Models;
 using SPay.Repository;
 using SPay.Service;
 using SPay.Service.MappingProfile;

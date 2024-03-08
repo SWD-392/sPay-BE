@@ -13,13 +13,10 @@ namespace SPay.Repository
     public interface ICardRepository
     {
         Task<IList<Card>> GetAllAsync();
-		Task<Card> GetCardByIdAsync(string key);
+		Task<Card> GetCardByKeyAsync(string key);
 		Task<IList<Card>> SearchCardByNameAsync(string keyWord);
         Task<bool> DeleteCardAsync(Card existedCard);
-        Task<bool> IsDeleted(string key);
 		Task<bool> CreateCardAsync(Card card);
-
-
 	}
 	public class CardRepository : ICardRepository
     {
@@ -32,22 +29,9 @@ namespace SPay.Repository
 		public async Task<bool> DeleteCardAsync(Card existedCard)
 		{
             existedCard.Status = (byte)CardStatusEnum.Deleted;
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
 		}
 
-        public async Task<bool> IsDeleted(string key)
-        {
-            var status = await _context.Cards
-	                            .Where(c => c.CardKey.Equals(key))
-	                            .Select(c => c.Status)
-	                            .FirstOrDefaultAsync();
-            if(status == (byte)CardStatusEnum.Deleted)
-            {
-                return true;
-            }
-            return false;
-        }
 		public async Task<IList<Card>> GetAllAsync()
         {
             var cards = await _context.Cards
@@ -57,7 +41,7 @@ namespace SPay.Repository
             return cards;
         }
 
-		public async Task<Card> GetCardByIdAsync(string key)
+		public async Task<Card> GetCardByKeyAsync(string key)
 		{
 			var card = await _context.Cards
 	                    .Include(c => c.CardTypeKeyNavigation)

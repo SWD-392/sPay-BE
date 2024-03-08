@@ -7,6 +7,7 @@ namespace SPay.BO.DataBase.Models
     {
         public Wallet()
         {
+            Stores = new HashSet<Store>();
             Transactions = new HashSet<Transaction>();
         }
 
@@ -23,6 +24,7 @@ namespace SPay.BO.DataBase.Models
         public virtual Customer? CustomerKeyNavigation { get; set; }
         public virtual Store? StoreKeyNavigation { get; set; }
         public virtual WalletType? WalletTypeKeyNavigation { get; set; }
+        public virtual ICollection<Store> Stores { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

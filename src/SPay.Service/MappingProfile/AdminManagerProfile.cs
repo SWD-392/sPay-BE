@@ -15,8 +15,17 @@ namespace SPay.Service.MappingProfile
     public class AdminManagerProfile : Profile
     {
         public AdminManagerProfile() {
-            CreateMap<CustomerResponse, Customer>().ReverseMap();
-            CreateMap<Store, StoreResponse>()
+            CreateMap<Customer, CustomerResponse > ()
+                .ForMember(dest => dest.No, opt => opt.Ignore())
+				.ForMember(dest => dest.CustomerKey, opt => opt.MapFrom(src => src.CustomerKey))
+				.ForMember(dest => dest.UserKey, opt => opt.MapFrom(src => src.UserKey))
+				.ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+				.ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+				.ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.UserKeyNavigation.Fullname))
+				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.UserKeyNavigation.Status))
+				.ForAllOtherMembers(src => src.Ignore());
+
+			CreateMap<Store, StoreResponse>()
                 .ForMember(dest => dest.No, opt => opt.Ignore())
                 .ForMember(dest => dest.StoreKey, opt => opt.MapFrom(src => src.StoreKey))
                 .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Name))
@@ -43,6 +52,7 @@ namespace SPay.Service.MappingProfile
 				.ForMember(dest => dest.MoneyValue, opt => opt.MapFrom(src => src.MoneyValue))
 				.ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.DiscountPercentage))
 				.ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
 				.ForAllOtherMembers(src => src.Ignore());
 
             CreateMap<CreateCardRequest, Card>()

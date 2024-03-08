@@ -210,8 +210,6 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("EMAIL");
 
-                entity.Property(e => e.Status).HasColumnName("STATUS");
-
                 entity.Property(e => e.UserKey)
                     .HasMaxLength(255)
                     .IsUnicode(false)
@@ -304,6 +302,11 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("USER_KEY");
 
+                entity.Property(e => e.WalletKey)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("WALLET_KEY");
+
                 entity.HasOne(d => d.CategoryKeyNavigation)
                     .WithMany(p => p.Stores)
                     .HasForeignKey(d => d.CategoryKey)
@@ -315,6 +318,11 @@ namespace SPay.BO.DataBase.Models
                     .HasForeignKey(d => d.UserKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__STORE__USER_KEY__19DFD96B");
+
+                entity.HasOne(d => d.WalletKeyNavigation)
+                    .WithMany(p => p.Stores)
+                    .HasForeignKey(d => d.WalletKey)
+                    .HasConstraintName("FK__STORE__WALLET_KE__25518C17");
             });
 
             modelBuilder.Entity<StoreCategory>(entity =>

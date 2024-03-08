@@ -1,11 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using SPay.BO.DTOs.Admin;
+using SPay.BO.DTOs.Admin.Card.Response;
+using SPay.BO.DTOs.Admin.Customer.RequestModel;
+using SPay.BO.DTOs.Admin.Customer.ResponseModel;
+using SPay.BO.Extention.Paginate;
 using SPay.Service;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using SPay.Service.Response;
 
 namespace SPay.API.Controllers
 {
-    [Route("api/")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -14,44 +20,66 @@ namespace SPay.API.Controllers
         {
             this._service = _service;
         }
+
         /// <summary>
         /// Get all customers
         /// </summary>
         /// <returns></returns>
-        [HttpGet("customers")]
-        public async Task<IActionResult> GetAllCategories()
+        [HttpGet]
+		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CustomerResponse>>), StatusCodes.Status200OK)]
+		public async Task<IActionResult> GetAllCustomers([FromQuery]GetAllCustomerRequest request)
         {
-            var response = await _service.GetAllCustomerAsync();
+            var response = await _service.GetAllCustomerAsync(request);
             return Ok(response);
         }
 
         /// <summary>
         /// Search customers by name
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        [HttpGet("customers/search")]
-        public string Get(int id)
+        [HttpGet("search")]
+		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CustomerResponse>>), StatusCodes.Status200OK)]
+		public async Task<IActionResult> GetCustomersByNameContains([FromQuery]AdminSearchRequest request)
         {
-            return "Test";
-        }
+			var response = await _service.SearchCustomerAsync(request);
+			return Ok(response);
+		}
 
-        /// <summary>
-        /// Create a customer
-        /// </summary>
-        /// <param name="value"></param>
-        [HttpPost ("customer")]
-        public void Post([FromBody] string value)
+		/// <summary>
+		/// Get customer
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		[ProducesResponseType(typeof(SPayResponse<CardResponse>), StatusCodes.Status200OK)]
+		[HttpGet("{key}")]
+		public async Task<IActionResult> GetCardById(string key)
+		{
+			var response = await _service.GetCustomerByKey(key);
+			return Ok(response);
+		}
+
+		/// <summary>
+		/// Create a customer
+		/// </summary>
+		/// <param name="request"></param>
+		[HttpPost]
+        public async Task<IActionResult> CreateCustomerAsync([FromBody] CreateCustomerRequest request)
         {
-
-        }
+			var response = await _service.CreateCustomerAsync(request);
+			if (!response.Success)
+			{
+				return BadRequest(response);
+			}
+			return Ok(response);
+		}
 
         /// <summary>
         /// Update a customer
         /// </summary>
         /// <param name="id"></param>
         /// <param name="value"></param>
-        [HttpPut("customer/{id}")]
+        [HttpPut("{key}")]
         public void Put(int id, [FromBody] string value)
         {
 
@@ -61,10 +89,18 @@ namespace SPay.API.Controllers
         /// <summary>
         /// Delete a customer
         /// </summary>
-        /// <param name="id"></param>
-        [HttpDelete("customer/{id}")]
-        public void Delete(int id)
-        {
-        }
-    }
+        /// <param name="key"></param>
+        [HttpDelete("{key}")]
+		public async Task<IActionResult> DeleteCustomerAsync(string key)
+		{
+			var response = await _service.DeleteCustomerAsync(key);
+
+			if (!response.Success)
+			{
+				return BadRequest(response);
+			}
+
+			return Ok(response);
+		}
+	}
 }

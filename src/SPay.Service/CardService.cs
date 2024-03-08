@@ -23,7 +23,7 @@ namespace SPay.Service
 	public interface ICardService
 	{
 		Task<SPayResponse<PaginatedList<CardResponse>>> GetAllCardsAsync(GetAllCardRequest request);
-		Task<SPayResponse<CardResponse>> GetCardById(string id);
+		Task<SPayResponse<CardResponse>> GetCardByKeyAsync(string id);
 		Task<SPayResponse<PaginatedList<CardResponse>>> SearchCardAsync(AdminSearchRequest request);
 		Task<SPayResponse<bool>> DeleteCardAsync(string key);
 		Task<SPayResponse<bool>> CreateCardAsync(CreateCardRequest request);
@@ -53,6 +53,7 @@ namespace SPay.Service
 				if(createCardInfo == null)
 				{
 					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+					return response;
 				}
 				createCardInfo.CardKey = string.Format("{0}{1}", PrefixKeyConstant.CARD, Guid.NewGuid().ToString().ToUpper());
 				createCardInfo.CreatedAt = DateTimeHelper.GetDateTimeNow();
@@ -66,7 +67,7 @@ namespace SPay.Service
 				}
 				response.Data = true;
 				response.Success = true;
-				response.Message = "Card delete successfully";
+				response.Message = "Create a card successfully";
 			}
 			catch (Exception ex)
 			{
@@ -80,18 +81,17 @@ namespace SPay.Service
 			SPayResponse<bool> response = new SPayResponse<bool>();
 			try
 			{
-				var existedCard = await _cardRepo.GetCardByIdAsync(key);
+				var existedCard = await _cardRepo.GetCardByKeyAsync(key);
 				if (existedCard == null)
 				{
-					response.Success = false;
-					response.Message = "Card not found.";
+					SPayResponseHelper.SetErrorResponse(response, "Cannot find card to delete!");
 					return response;
 				}
 				var success = await _cardRepo.DeleteCardAsync(existedCard);
 				if (success == false)
 				{
-					response.Success = false;
-					response.Message = "Something wrong!";
+					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+					return response;
 				}
 				response.Data = success;
 				response.Success = true;
@@ -99,9 +99,7 @@ namespace SPay.Service
 			}
 			catch (Exception ex)
 			{
-				response.Success = false;
-				response.Message = "Error";
-				response.ErrorMessages = new List<string> { ex.Message };
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
 			}
 			return response;
 		}
@@ -115,8 +113,7 @@ namespace SPay.Service
 				var cards = await _cardRepo.GetAllAsync();
 				if (cards == null)
 				{
-					response.Success = false;
-					response.Message = "The result of get all card from repository is null";
+					SPayResponseHelper.SetErrorResponse(response, "No record in database");
 					return response;
 				}
 				var cardsRes = _mapper.Map<IList<CardResponse>>(cards);
@@ -131,36 +128,31 @@ namespace SPay.Service
 			}
 			catch (Exception ex)
 			{
-				response.Success = false;
-				response.Message = "Error";
-				response.ErrorMessages = new List<string> { ex.Message };
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
 			}
 			return response;
 		}
 
-		public async Task<SPayResponse<CardResponse>> GetCardById(string key)
+		public async Task<SPayResponse<CardResponse>> GetCardByKeyAsync(string key)
 		{
 			SPayResponse<CardResponse> response = new SPayResponse<CardResponse>();
-			var card = await _cardRepo.GetCardByIdAsync(key);
+			var card = await _cardRepo.GetCardByKeyAsync(key);
 			try
 			{
 				if (card == null)
 				{
-					response.Success = false;
-					response.Message = "Card not found";
+					SPayResponseHelper.SetErrorResponse(response, "Card not found!");
 					return response;
 				}
 				var cardRes = _mapper.Map<CardResponse>(card);
 
 				response.Data = cardRes;
 				response.Success = true;
-				response.Message = $"Get Card key = {cardRes.CardKey} successfully";
+				response.Message = $"Get Card key = {cardRes.CardKey} successfully!";
 			}
 			catch (Exception ex)
 			{
-				response.Success = false;
-				response.Message = "Error";
-				response.ErrorMessages = new List<string> { ex.Message };
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
 			}
 			return response;
 		}
@@ -173,15 +165,13 @@ namespace SPay.Service
 				var keyWord = request.Keyword.Trim();
 				if (string.IsNullOrEmpty(keyWord))
 				{
-					response.Success = false;
-					response.Message = "The keyword is null or empty";
+					SPayResponseHelper.SetErrorResponse(response, "Key word name must not empty or null!");
 					return response;
 				}
 				var cards = await _cardRepo.SearchCardByNameAsync(keyWord);
 				if (cards.Count <= 0)
 				{
-					response.Success = false;
-					response.Message = $"Not found the card with keyword {keyWord}";
+					SPayResponseHelper.SetErrorResponse(response, $"Not found the card with keyword {keyWord}");
 					return response;
 				}
 				var cardsRes = _mapper.Map<IList<CardResponse>>(cards);
@@ -196,9 +186,7 @@ namespace SPay.Service
 			}
 			catch (Exception ex)
 			{
-				response.Success = false;
-				response.Message = "Error";
-				response.ErrorMessages = new List<string> { ex.Message };
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
 			}
 			return response;
 		}

@@ -14,6 +14,8 @@ namespace SPay.Service
 	public interface IWalletService
 	{
 		Task<bool> CreateWalletAsync(CreateWalletModel model);
+		Task<decimal?> GetBalanceOfUser(GetBalanceModel model);
+
 	}
 	public class WalletService : IWalletService
 	{
@@ -36,6 +38,12 @@ namespace SPay.Service
 				CreateAt = DateTimeHelper.GetDateTimeNow(),
 			};
 			return await _repo.CreateWalletAsync(wallet);
+		}
+
+		public async Task<decimal?> GetBalanceOfUser(GetBalanceModel model)
+		{
+			var wallet = await _repo.GetBalanceForUser(model);
+			return wallet.Balance;
 		}
 	}
 }
