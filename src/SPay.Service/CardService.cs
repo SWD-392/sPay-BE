@@ -29,7 +29,7 @@ namespace SPay.Service
 		Task<SPayResponse<bool>> DeleteCardAsync(string key);
 		Task<SPayResponse<bool>> CreateCardAsync(CreateCardRequest request);
 		Task<int> CountCardByUserKey(string key);
-
+		Task<SPayResponse<IList<CardResponse>>> GetListCardKeyByCustomerKey(string customerKey);
 	}
 	public class CardService : ICardService
 	{
@@ -184,6 +184,31 @@ namespace SPay.Service
 				response.Data = cardRes;
 				response.Success = true;
 				response.Message = $"Get Card key = {cardRes.CardKey} successfully!";
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
+		}
+
+		public async Task<SPayResponse<IList<CardResponse>>> GetListCardKeyByCustomerKey(string customerKey)
+		{
+			var response = new SPayResponse<IList<CardResponse>>();
+			try
+			{
+				var cards = await _cardRepo.GetListCardByCustomerKey(customerKey);
+				if (cards.Count <= 0)
+				{
+					SPayResponseHelper.SetErrorResponse(response, $"The customer key {customerKey} has no cards.");
+					return response;
+				}
+				var cardRes = _mapper.Map<IList<CardResponse>>(cards);
+				response.Data = cardRes;
+				response.Success = true;
+				response.Message = $"Get card of customer {customerKey} successfully";
+				return response;
+
 			}
 			catch (Exception ex)
 			{

@@ -18,7 +18,7 @@ namespace SPay.Repository
 		Task<bool> DeleteCustomerAsync(Customer existedCus);
 		Task<bool> CreateCustomerAsync(Customer customer);
 	}
-    public class CustomerRepository : ICustomerRepository
+	public class CustomerRepository : ICustomerRepository
     {
         private readonly SPayDbContext _context;
         public CustomerRepository(SPayDbContext _context)
