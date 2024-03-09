@@ -50,7 +50,7 @@ namespace SPay.API.Controllers
 		}
 
 		/// <summary>
-		/// Get card by key
+		/// Get card by card key
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
@@ -59,6 +59,19 @@ namespace SPay.API.Controllers
 		public async Task<IActionResult> GetCardByKeyAsync(string key)
 		{
 			var response = await _service.GetCardByKeyAsync(key);
+			return Ok(response);
+		}
+
+		/// <summary>
+		/// Get card by customer key
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		[HttpGet("/Card/customer/{key}")]
+		[ProducesResponseType(typeof(SPayResponse<CardResponse>), StatusCodes.Status200OK)]
+		public async Task<IActionResult> GetCardByCustomerKeyAsync(string key)
+		{
+			var response = await _service.GetListCardKeyByCustomerKey(key);
 			return Ok(response);
 		}
 

@@ -18,6 +18,7 @@ namespace SPay.Repository
 		Task<IList<Card>> SearchCardByNameAsync(string keyWord);
         Task<bool> DeleteCardAsync(Card existedCard);
 		Task<bool> CreateCardAsync(Card card);
+		Task<IList<Card>> GetListCardByCustomerKey(string customerKey);
 	}
 	public class CardRepository : ICardRepository
     {
@@ -69,6 +70,17 @@ namespace SPay.Repository
 		public async Task<IList<CardType>> GetAllCardTypeAsync()
 		{
 			return await _context.CardTypes.ToListAsync();
+		}
+
+		public async Task<IList<Card>> GetListCardByCustomerKey(string customerKey)
+		{
+			var result = new List<Card>();
+			var keyList = await _context.Wallets.Where(w => w.CustomerKey.Equals(customerKey) && w.CardKey != null).Select(w => w.CardKey).ToListAsync();
+			foreach (var cardKey in keyList)
+			{
+				result.Add(await GetCardByKeyAsync(cardKey));
+			}
+			return result;
 		}
 	}
 }
