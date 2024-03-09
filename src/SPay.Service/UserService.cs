@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SPay.BO.DataBase.Models;
@@ -24,18 +27,18 @@ namespace SPay.Service
 		//public Task<UpdateAccountResponse> UpdateAccountInformation(int id, UpdateAccountRequest updateAccountRequest);
 		//public Task<bool> DeleteAccountStatus(int id);
 		public Task<LoginResponse> Login(LoginRequest loginRequest);
-		//public Task<LoginResponse> SignUp(SignUpRequest signUpRequest);
+		public Task<LoginResponse> SignUp(SignUpRequest signUpRequest);
 		//Task<bool> Login(string phoneNumber, string password);
 		Task<bool> CreateUserAsync(CreateUserModel model);
 	}
 	public class UserService : IUserService
 	{
 		private readonly IUserRepository _repo;
-        public UserService(IUserRepository _repo)
-        {
-            this._repo = _repo;
-        }
-        public async Task<bool> CreateUserAsync(CreateUserModel model)
+		public UserService(IUserRepository _repo)
+		{
+			this._repo = _repo;
+		}
+		public async Task<bool> CreateUserAsync(CreateUserModel model)
 		{
 			var user = new User
 			{
@@ -68,6 +71,16 @@ namespace SPay.Service
 			var token = GenerateJwtToken(userLogin);
 			response.AccessToken = token;
 			return response;
+		}
+
+		public async Task<LoginResponse> SignUp(SignUpRequest request)
+		{
+			var checkUser = _repo.GetUserByPhoneAsync(request.Phone);
+			if(checkUser != null)
+			{
+				return null;
+			}
+			return null;
 		}
 
 		private string GenerateJwtToken(User user)

@@ -21,7 +21,7 @@ namespace SPay.API.Controllers
 		}
 
 		[AllowAnonymous]
-		[HttpPost("/login")]
+		[HttpPost("login")]
 		[ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
 		[ProducesErrorResponseType(typeof(UnauthorizedObjectResult))]
 		public async Task<IActionResult> Login(LoginRequest loginRequest)
@@ -46,26 +46,26 @@ namespace SPay.API.Controllers
 			return Ok(loginResponse);
 		}
 
-		//[AllowAnonymous]
-		//[HttpPost("/sign-up")]
-		//[ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-		//[ProducesErrorResponseType(typeof(UnauthorizedObjectResult))]
-		//public async Task<IActionResult> SignUp(SignUpRequest signUpRequest)
-		//{
-		//	try
-		//	{
-		//		var response = await _accountService.SignUp(signUpRequest);
-		//		return Ok(response);
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		return BadRequest(new ErrorResponse()
-		//		{
-		//			StatusCode = StatusCodes.Status400BadRequest,
-		//			Error = MessageConstant.SignUpMessage.EmailHasAlreadyUsed,
-		//			TimeStamp = DateTime.Now
-		//		});
-		//	}
-		//}
+		[AllowAnonymous]
+		[HttpPost("sign-up")]
+		[ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+		[ProducesErrorResponseType(typeof(UnauthorizedObjectResult))]
+		public async Task<IActionResult> SignUp(SignUpRequest signUpRequest)
+		{
+			try
+			{
+				var response = await _service.SignUp(signUpRequest);
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new 
+				{
+					StatusCode = StatusCodes.Status400BadRequest,
+					Error = MessageConstant.SignUpMessage.EmailHasAlreadyUsed,
+					TimeStamp = DateTime.Now
+				});
+			}
+		}
 	}
 }

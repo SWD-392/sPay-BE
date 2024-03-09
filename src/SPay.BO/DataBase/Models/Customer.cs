@@ -7,6 +7,7 @@ namespace SPay.BO.DataBase.Models
     {
         public Customer()
         {
+            Orders = new HashSet<Order>();
             Wallets = new HashSet<Wallet>();
         }
 
@@ -17,6 +18,7 @@ namespace SPay.BO.DataBase.Models
         public string? CreateBy { get; set; }
 
         public virtual User UserKeyNavigation { get; set; } = null!;
+        public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Wallet> Wallets { get; set; }
     }
 }

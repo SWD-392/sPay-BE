@@ -239,9 +239,19 @@ namespace SPay.BO.DataBase.Models
                     .IsUnicode(false)
                     .HasColumnName("CARD_KEY");
 
+                entity.Property(e => e.CustomerKey)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("CUSTOMER_KEY");
+
                 entity.Property(e => e.Date)
                     .HasColumnType("date")
                     .HasColumnName("DATE");
+
+                entity.Property(e => e.OrderDescription)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("ORDER_DESCRIPTION");
 
                 entity.Property(e => e.Status).HasColumnName("STATUS");
 
@@ -259,6 +269,11 @@ namespace SPay.BO.DataBase.Models
                     .HasForeignKey(d => d.CardKey)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__ORDER__CARD_KEY__03F0984C");
+
+                entity.HasOne(d => d.CustomerKeyNavigation)
+                    .WithMany(p => p.Orders)
+                    .HasForeignKey(d => d.CustomerKey)
+                    .HasConstraintName("FK_Order_Customer");
 
                 entity.HasOne(d => d.StoreKeyNavigation)
                     .WithMany(p => p.Orders)
@@ -322,7 +337,7 @@ namespace SPay.BO.DataBase.Models
                 entity.HasOne(d => d.WalletKeyNavigation)
                     .WithMany(p => p.Stores)
                     .HasForeignKey(d => d.WalletKey)
-                    .HasConstraintName("FK__STORE__WALLET_KE__25518C17");
+                    .HasConstraintName("FK_Store_Wallet");
             });
 
             modelBuilder.Entity<StoreCategory>(entity =>
@@ -512,17 +527,17 @@ namespace SPay.BO.DataBase.Models
                 entity.HasOne(d => d.CardKeyNavigation)
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.CardKey)
-                    .HasConstraintName("FK__WALLET__CARD_KEY__0D7A0286");
+                    .HasConstraintName("FK_Wallet_Card");
 
                 entity.HasOne(d => d.CustomerKeyNavigation)
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.CustomerKey)
-                    .HasConstraintName("FK__WALLET__CUSTOMER__0E6E26BF");
+                    .HasConstraintName("FK_Wallet_Cus");
 
                 entity.HasOne(d => d.StoreKeyNavigation)
                     .WithMany(p => p.Wallets)
                     .HasForeignKey(d => d.StoreKey)
-                    .HasConstraintName("FK__WALLET__STORE_KE__0F624AF8");
+                    .HasConstraintName("FK_Wallet_Store");
 
                 entity.HasOne(d => d.WalletTypeKeyNavigation)
                     .WithMany(p => p.Wallets)

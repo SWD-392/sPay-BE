@@ -8,6 +8,7 @@ using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Admin.Card.Request;
 using SPay.BO.DTOs.Admin.Card.Response;
 using SPay.BO.DTOs.Admin.Customer.ResponseModel;
+using SPay.BO.DTOs.Admin.Order.Response;
 using SPay.BO.DTOs.Admin.Store.Response;
 
 namespace SPay.Service.MappingProfile
@@ -65,6 +66,23 @@ namespace SPay.Service.MappingProfile
 				.ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.DiscountPercentage))
 				.ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
 				.ForAllOtherMembers(src => src.Ignore());
+
+			CreateMap<CardTypeResponse, CardType>().ReverseMap();
+			
+			CreateMap<Order, OrderResponse>()
+				.ForMember(dest => dest.OrderKey, opt => opt.MapFrom(src => src.OrderKey))
+				.ForMember(dest => dest.CustomerKey, opt => opt.MapFrom(src => src.CustomerKey))
+				.ForMember(dest => dest.FromCustomer, opt => opt.MapFrom(src => src.CustomerKeyNavigation.UserKeyNavigation.Fullname))
+				.ForMember(dest => dest.StoreKey, opt => opt.MapFrom(src => src.StoreKey))
+				.ForMember(dest => dest.StoreKey, opt => opt.MapFrom(src => src.StoreKeyNavigation.UserKeyNavigation.Fullname))
+				.ForMember(dest => dest.CardKey, opt => opt.MapFrom(src => src.CardKey))
+				.ForMember(dest => dest.CardName, opt => opt.MapFrom(src => src.CardKeyNavigation.CardName))
+				.ForMember(dest => dest.OrderDescription, opt => opt.MapFrom(src => src.OrderDescription))
+				.ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Value))
+				.ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))
+				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+
+			CreateMap<CreateCardRequest, CardType>().ReverseMap();
 		}
-    }
+	}
 }

@@ -215,7 +215,7 @@ namespace SPay.Service
 
 				var storeWallet = new CreateWalletModel
 				{
-					WalletTypeKey = "WT_STORE",
+					WalletTypeKey = WalletTypeKeyConstant.STORE_WALLET,
 					StoreKey = storeKey
 				};
 

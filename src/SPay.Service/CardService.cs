@@ -23,6 +23,7 @@ namespace SPay.Service
 	public interface ICardService
 	{
 		Task<SPayResponse<PaginatedList<CardResponse>>> GetAllCardsAsync(GetAllCardRequest request);
+		Task<SPayResponse<IList<CardTypeResponse>>> GetAllCardTypeAsync();
 		Task<SPayResponse<CardResponse>> GetCardByKeyAsync(string id);
 		Task<SPayResponse<PaginatedList<CardResponse>>> SearchCardAsync(AdminSearchRequest request);
 		Task<SPayResponse<bool>> DeleteCardAsync(string key);
@@ -134,6 +135,31 @@ namespace SPay.Service
 				response.Data = await cardsRes.ToPaginateAsync(request);
 				response.Success = true;
 				response.Message = "Get all card successfully";
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
+		}
+
+		public async Task<SPayResponse<IList<CardTypeResponse>>> GetAllCardTypeAsync()
+		{
+			var response = new SPayResponse<IList<CardTypeResponse>>();
+			try
+			{
+				var types = await _cardRepo.GetAllCardTypeAsync();
+				if (types == null)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Card type has no row in database.");
+					return response;
+				}
+				var typeRes = _mapper.Map<IList<CardTypeResponse>>(types);
+				response.Data = typeRes;
+				response.Success = true;
+				response.Message = "Get card type successfully";
+				return response;
+
 			}
 			catch (Exception ex)
 			{

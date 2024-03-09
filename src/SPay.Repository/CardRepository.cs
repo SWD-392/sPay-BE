@@ -12,7 +12,8 @@ namespace SPay.Repository
 {
     public interface ICardRepository
     {
-        Task<IList<Card>> GetAllAsync();
+		Task<IList<CardType>> GetAllCardTypeAsync();
+		Task<IList<Card>> GetAllAsync();
 		Task<Card> GetCardByKeyAsync(string key);
 		Task<IList<Card>> SearchCardByNameAsync(string keyWord);
         Task<bool> DeleteCardAsync(Card existedCard);
@@ -63,6 +64,11 @@ namespace SPay.Repository
 		{
 			_context.Cards.Add(card);
 			return await _context.SaveChangesAsync() > 0;
+		}
+
+		public async Task<IList<CardType>> GetAllCardTypeAsync()
+		{
+			return await _context.CardTypes.ToListAsync();
 		}
 	}
 }

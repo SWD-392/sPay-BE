@@ -20,7 +20,8 @@ namespace SPay.Repository
 	{
 		Task<bool> CreateUserAsync(User user);
 		Task<User> LoginAsync(LoginRequest request);
-
+		Task<User> SignUpAsync(SignUpRequest request);
+		Task<User> GetUserByPhoneAsync(string phoneNumber);
 	}
 	public class UserRepository : IUserRepository
 	{
@@ -41,6 +42,23 @@ namespace SPay.Repository
 				u => u.Username.Equals(request.PhoneNumber)
 				&& u.Password.Equals(request.Password)
 				&& u.Status == ((byte)UserStatusEnum.Active));
+		}
+
+		public async Task<User> GetUserByPhoneAsync(string phoneNumber)
+		{
+			return await _context.Users.FirstOrDefaultAsync(c => c.Username.Equals(phoneNumber) && c.Status == (byte)UserStatusEnum.Active);
+		}
+
+		public async Task<User> SignUpAsync(LoginRequest request)
+		{
+			var user = await _context.Users.FirstOrDefaultAsync(c => c.Username.Equals(request.PhoneNumber));
+
+			throw new NotImplementedException();
+		}
+
+		public Task<User> SignUpAsync(SignUpRequest request)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
