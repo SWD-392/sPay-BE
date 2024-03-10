@@ -66,5 +66,11 @@ namespace SPay.Repository
 				.Include(c => c.UserKeyNavigation)
 				.ToListAsync();
 		}
+
+		public async Task<bool> UpdateCustomerAfterFirstCreateAsync(string customerKey, string walletKey)
+		{
+			var customer = await _context.Customers.SingleOrDefaultAsync(s => s.CustomerKey.Equals(customerKey));
+			return await _context.SaveChangesAsync() > 0;
+		}
 	}
 }

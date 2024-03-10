@@ -213,8 +213,10 @@ namespace SPay.Service
 					return response;
 				}
 
+				var walletKey = string.Format("{0}{1}", PrefixKeyConstant.WALLET, Guid.NewGuid().ToString().ToUpper());
 				var storeWallet = new CreateWalletModel
 				{
+					WalletKey = walletKey,
 					WalletTypeKey = WalletTypeKeyConstant.STORE_WALLET,
 					StoreKey = storeKey
 				};
@@ -222,6 +224,12 @@ namespace SPay.Service
 				if (!await _walletService.CreateWalletAsync(storeWallet))
 				{
 					SPayResponseHelper.SetErrorResponse(response, "Store create successfully but fail to create wallet");
+					return response;
+				}
+
+				if(! await _storeRepository.UpdateStoreAfterFirstCreateAsync(storeKey, walletKey))
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Store and wallet create successfully but fail assign Wallet_Key for store created!");
 					return response;
 				}
 

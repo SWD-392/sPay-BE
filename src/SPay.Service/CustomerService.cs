@@ -17,6 +17,7 @@ using SPay.BO.DTOs.Admin.User;
 using SPay.BO.DTOs.Admin.Wallet;
 using SPay.Repository.Enum;
 using SPay.BO.DTOs.Admin.Store.Response;
+using System.Globalization;
 
 namespace SPay.Service
 {
@@ -84,9 +85,11 @@ namespace SPay.Service
 					return response;
 				}
 
+				var walletKey = string.Format("{0}{1}", PrefixKeyConstant.WALLET, Guid.NewGuid().ToString().ToUpper());
 				var storeWallet = new CreateWalletModel
 				{
-					WalletTypeKey = "WT_CUSTOMER",
+					WalletKey = walletKey,
+					WalletTypeKey = WalletTypeKeyConstant.CUSTOMER_WALLET,
 					CustomerKey = customerKey
 				};
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace SPay.Repository
 		Task<Store> GetStoreByIdAsync(string key);
 		Task<bool> DeleteStoreAsync(Store store);
         Task<bool> CreateStoreAsync(Store store);
+        Task<bool> UpdateStoreAfterFirstCreateAsync(string storeKey, string walletKey);
 
 	}
     public class StoreRepository : IStoreRepository
@@ -67,10 +69,17 @@ namespace SPay.Repository
             Console.WriteLine(StoreKey);
 		}
 
-		public async Task<bool> CreateStoreAsync(Store store)
-		{
+        public async Task<bool> CreateStoreAsync(Store store)
+        {
             _context.Stores.Add(store);
             return await _context.SaveChangesAsync() > 0;
+        }
+
+		public async Task<bool> UpdateStoreAfterFirstCreateAsync(string storeKey, string walletKey)
+		{
+            var store = await _context.Stores.SingleOrDefaultAsync(s => s.StoreKey.Equals(storeKey));
+            store.WalletKey = walletKey;
+			return await _context.SaveChangesAsync() > 0;
 		}
 	}
 }
