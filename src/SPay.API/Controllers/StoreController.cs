@@ -6,6 +6,7 @@ using SPay.BO.DTOs.Admin;
 using SPay.BO.Extention.Paginate;
 using SPay.Service.Response;
 using SPay.Service;
+using SPay.BO.DTOs.Admin.Store.Response;
 
 namespace SPay.API.Controllers
 {
@@ -24,7 +25,7 @@ namespace SPay.API.Controllers
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
-		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CardResponse>>), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(SPayResponse<PaginatedList<StoreResponse>>), StatusCodes.Status200OK)]
 		[HttpGet]
 		public async Task<IActionResult> GetAllStore([FromQuery] GetAllStoreRequest request)
 		{

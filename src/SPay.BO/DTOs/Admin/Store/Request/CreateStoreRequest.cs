@@ -10,7 +10,6 @@ namespace SPay.BO.DTOs.Admin.Store.Request
     {
 		public string StoreName { get; set; }
 		public string Description { get; set; }
-		public string StoreCategory { get; set; }
 		public string StoreCategoryKey { get; set; }
 		public string OwnerName { get; set; }
 		public string PhoneNumber { get; set; }
