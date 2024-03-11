@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPay.BO.DataBase.Models;
@@ -175,73 +176,80 @@ namespace SPay.Service
 
 		public async Task<SPayResponse<bool>> CreateStoreAsync(CreateStoreRequest request)
 		{
-			var response = new SPayResponse<bool>();
-
-			try
+			using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
 			{
-				var userKey = string.Format("{0}{1}", PrefixKeyConstant.USER, Guid.NewGuid().ToString().ToUpper());
-				var user = new CreateUserModel
-				{
-					UserKey = userKey,
-					NumberPhone = request.PhoneNumber,
-					Password = request.Password,
-					Role = (int)RoleEnum.Store,
-					FullName = request.OwnerName
-				};
+				var response = new SPayResponse<bool>();
 
-				if (!await _userService.CreateUserAsync(user))
+				try
 				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot create User, so cannot create Store");
-					return response;
+					var userKey = string.Format("{0}{1}", PrefixKeyConstant.USER, Guid.NewGuid().ToString().ToUpper());
+					var user = new CreateUserModel
+					{
+						UserKey = userKey,
+						NumberPhone = request.PhoneNumber,
+						Password = request.Password,
+						Role = (int)RoleEnum.Store,
+						FullName = request.OwnerName
+					};
+
+					if (!await _userService.CreateUserAsync(user))
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Cannot create User, so cannot create Store");
+						return response;
+					}
+
+					var storeKey = string.Format("{0}{1}", PrefixKeyConstant.STORE, Guid.NewGuid().ToString().ToUpper());
+					var store = new Store
+					{
+						StoreKey = storeKey,
+						Name = request.StoreName,
+						CategoryKey = request.StoreCategoryKey,
+						Phone = request.PhoneNumber,
+						Status = (byte)StoreStatusEnum.Active,
+						Description = request.Description,
+						UserKey = userKey,
+					};
+
+					if (!await _storeRepository.CreateStoreAsync(store))
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Cannot create User, so cannot create Store");
+						return response;
+					}
+
+					var walletKey = string.Format("{0}{1}", PrefixKeyConstant.WALLET, Guid.NewGuid().ToString().ToUpper());
+					var storeWallet = new CreateWalletModel
+					{
+						WalletKey = walletKey,
+						WalletTypeKey = WalletTypeKeyConstant.STORE_WALLET,
+						StoreKey = storeKey
+					};
+
+					if (!await _walletService.CreateWalletAsync(storeWallet))
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Store create successfully but fail to create wallet");
+						return response;
+					}
+
+					if (!await _storeRepository.UpdateStoreAfterFirstCreateAsync(storeKey, walletKey))
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Store and wallet create successfully but fail assign Wallet_Key for store created!");
+						return response;
+					}
+
+					// Gọi Complete() để commit giao dịch nếu mọi thứ thành công
+					transactionScope.Complete();
+
+					response.Data = true;
+					response.Success = true;
+					response.Message = "Store create successfully";
 				}
-
-				var storeKey = string.Format("{0}{1}", PrefixKeyConstant.STORE, Guid.NewGuid().ToString().ToUpper());
-				var store = new Store
+				catch (Exception ex)
 				{
-					StoreKey = storeKey,
-					Name = request.StoreName,
-					CategoryKey = request.StoreCategoryKey,
-					Phone = request.PhoneNumber,
-					Status = (byte)StoreStatusEnum.Active,
-					Description = request.Description,
-					UserKey = userKey,
-				};
-
-				if (!await _storeRepository.CreateStoreAsync(store))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot create User, so cannot create Store");
-					return response;
+					SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+					// Không gọi Complete(), giao dịch sẽ tự động rollback khi thoát khỏi khối using
 				}
-
-				var walletKey = string.Format("{0}{1}", PrefixKeyConstant.WALLET, Guid.NewGuid().ToString().ToUpper());
-				var storeWallet = new CreateWalletModel
-				{
-					WalletKey = walletKey,
-					WalletTypeKey = WalletTypeKeyConstant.STORE_WALLET,
-					StoreKey = storeKey
-				};
-
-				if (!await _walletService.CreateWalletAsync(storeWallet))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Store create successfully but fail to create wallet");
-					return response;
-				}
-
-				if(! await _storeRepository.UpdateStoreAfterFirstCreateAsync(storeKey, walletKey))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Store and wallet create successfully but fail assign Wallet_Key for store created!");
-					return response;
-				}
-
-				response.Data = true;
-				response.Success = true;
-				response.Message = "Store create successfully";
+				return response; 
 			}
-			catch (Exception ex)
-			{
-				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
-			}
-			return response;
 		}
 	}
 }
