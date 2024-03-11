@@ -83,6 +83,12 @@ namespace SPay.Service.MappingProfile
 				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
 
 			CreateMap<CreateCardRequest, CardType>().ReverseMap();
+
+			CreateMap<StoreCategory, StoreCateResponse>()
+				.ForMember(dest => dest.StoreCategoryKey, opt => opt.MapFrom(src => src.StoreCategoryKey))
+				.ForMember(dest => dest.StoreCategoryName, opt => opt.MapFrom(src => src.Name))
+				.ReverseMap();
+
 		}
 	}
 }

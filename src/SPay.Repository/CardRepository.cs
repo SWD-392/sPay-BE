@@ -13,6 +13,7 @@ namespace SPay.Repository
     public interface ICardRepository
     {
 		Task<IList<CardType>> GetAllCardTypeAsync();
+		Task<IList<CardType>> GetCardTypeByStoreCateKeyAsync(string storeCateKey);
 		Task<IList<Card>> GetAllAsync();
 		Task<Card> GetCardByKeyAsync(string key);
 		Task<IList<Card>> SearchCardByNameAsync(string keyWord);
@@ -81,6 +82,15 @@ namespace SPay.Repository
 				result.Add(await GetCardByKeyAsync(cardKey));
 			}
 			return result;
+		}
+
+		public async Task<IList<CardType>> GetCardTypeByStoreCateKeyAsync(string storeCateKey)
+		{
+			var cardTypes = await _context.CardTypes.Join(_context.CardStoreCategories.Where(x => x.StoreCategoryKey.Equals(storeCateKey)), 
+													ct => ct.CardTypeKey, 
+													cs => cs.CardTypeKey,
+													(ct, cs) => ct).ToListAsync();
+			return cardTypes;
 		}
 	}
 }

@@ -23,13 +23,17 @@ namespace SPay.Service
 	public interface ICardService
 	{
 		Task<SPayResponse<PaginatedList<CardResponse>>> GetAllCardsAsync(GetAllCardRequest request);
-		Task<SPayResponse<IList<CardTypeResponse>>> GetAllCardTypeAsync();
 		Task<SPayResponse<CardResponse>> GetCardByKeyAsync(string id);
 		Task<SPayResponse<PaginatedList<CardResponse>>> SearchCardAsync(AdminSearchRequest request);
 		Task<SPayResponse<bool>> DeleteCardAsync(string key);
 		Task<SPayResponse<bool>> CreateCardAsync(CreateCardRequest request);
 		Task<int> CountCardByUserKey(string key);
 		Task<SPayResponse<IList<CardResponse>>> GetListCardKeyByCustomerKey(string customerKey);
+
+		#region CardType
+		Task<SPayResponse<IList<CardTypeResponse>>> GetAllCardTypeAsync();
+		Task<SPayResponse<IList<CardTypeResponse>>> GetCardTypeByStoreCateKeyAsync(string storeCateKey); 
+		#endregion
 	}
 	public class CardService : ICardService
 	{
@@ -158,6 +162,30 @@ namespace SPay.Service
 				response.Data = typeRes;
 				response.Success = true;
 				response.Message = "Get card type successfully";
+				return response;
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
+		}
+
+		public async Task<SPayResponse<IList<CardTypeResponse>>> GetCardTypeByStoreCateKeyAsync(string storeCateKey)
+		{
+			var response = new SPayResponse<IList<CardTypeResponse>>();
+			try
+			{
+				var types = await _cardRepo.GetCardTypeByStoreCateKeyAsync(storeCateKey);
+				if (types == null)
+				{
+					SPayResponseHelper.SetErrorResponse(response, $"Card type suitable for storeCateKey:{storeCateKey} has no row in database.");
+					return response;
+				}
+				var typeRes = _mapper.Map<IList<CardTypeResponse>>(types);
+				response.Data = typeRes;
+				response.Success = true;
+				response.Message = $"Get card type suitable for storeCateKey:{storeCateKey} successfully";
 				return response;
 
 			}

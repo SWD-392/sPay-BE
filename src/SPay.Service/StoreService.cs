@@ -28,6 +28,9 @@ namespace SPay.Service
 		Task<SPayResponse<bool>> DeleteStoreAsync(string key);
 		Task<SPayResponse<bool>> CreateStoreAsync(CreateStoreRequest request);
 		Task<SPayResponse<StoreResponse>> GetStoreByKeyAsync(string key);
+		Task<SPayResponse<IList<StoreCateResponse>>> GetAllStoreCateAsync();
+		Task<SPayResponse<StoreCateResponse>> GetStoreCateByKeyAsync(string storeCateKey);
+
 	}
 	public class StoreService : IStoreService
 	{
@@ -250,6 +253,55 @@ namespace SPay.Service
 				}
 				return response; 
 			}
+		}
+		public async Task<SPayResponse<IList<StoreCateResponse>>> GetAllStoreCateAsync()
+		{
+			var response = new SPayResponse<IList<StoreCateResponse>>();
+			try
+			{
+				var cates = await _storeRepository.GetAllStoreCateAsync();
+				if (cates == null)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Card type has no row in database.");
+					return response;
+				}
+				var cateRes = _mapper.Map<IList<StoreCateResponse>>(cates);
+				response.Data = cateRes;
+				response.Success = true;
+				response.Message = "Get card type successfully";
+				return response;
+
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
+		}
+
+		public async Task<SPayResponse<StoreCateResponse>> GetStoreCateByKeyAsync(string storeCateKey)
+		{
+			var response = new SPayResponse<StoreCateResponse>();
+			try
+			{
+				var cates = await _storeRepository.GetAllStoreCateAsync();
+				if (cates == null)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Card type has no row in database.");
+					return response;
+				}
+				var cateRes = _mapper.Map<StoreCateResponse>(cates);
+				response.Data = cateRes;
+				response.Success = true;
+				response.Message = "Get card type successfully";
+				return response;
+
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
 		}
 	}
 }
