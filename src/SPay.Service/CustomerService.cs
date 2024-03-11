@@ -17,6 +17,8 @@ using SPay.BO.DTOs.Admin.User;
 using SPay.BO.DTOs.Admin.Wallet;
 using SPay.Repository.Enum;
 using SPay.BO.DTOs.Admin.Store.Response;
+using System.Globalization;
+using System.Transactions;
 
 namespace SPay.Service
 {
@@ -49,62 +51,72 @@ namespace SPay.Service
 
 		public async Task<SPayResponse<bool>> CreateCustomerAsync(CreateCustomerRequest request)
 		{
-			var response = new SPayResponse<bool>();
-
-			try
+			using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
 			{
-				var userKey = string.Format("{0}{1}", PrefixKeyConstant.USER, Guid.NewGuid().ToString().ToUpper());
-				var user = new CreateUserModel
-				{
-					UserKey = userKey,
-					NumberPhone = request.PhoneNumber,
-					Password = request.Password,
-					Role = (int)RoleEnum.Customer,
-					FullName = request.FullName,
-				};
+				var response = new SPayResponse<bool>();
 
-				if (!await _userService.CreateUserAsync(user))
+				try
 				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot create User, so cannot create customer");
-					return response;
+					var userKey = string.Format("{0}{1}", PrefixKeyConstant.USER, Guid.NewGuid().ToString().ToUpper());
+					var user = new CreateUserModel
+					{
+						UserKey = userKey,
+						NumberPhone = request.PhoneNumber,
+						Password = request.Password,
+						Role = (int)RoleEnum.Customer,
+						FullName = request.FullName,
+					};
+
+					if (!await _userService.CreateUserAsync(user))
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Cannot create User, so cannot create customer");
+						return response;
+					}
+
+					var customerKey = string.Format("{0}{1}", PrefixKeyConstant.CUSTOMER, Guid.NewGuid().ToString().ToUpper());
+					var customer = new Customer
+					{
+						CustomerKey = customerKey,
+						Email = request.Email,
+						Address = request.Address,
+						UserKey = userKey,
+					};
+
+					if (!await _repo.CreateCustomerAsync(customer))
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Cannot create Customer, so cannot create wallet!");
+						return response;
+					}
+
+					var walletKey = string.Format("{0}{1}", PrefixKeyConstant.WALLET, Guid.NewGuid().ToString().ToUpper());
+					var storeWallet = new CreateWalletModel
+					{
+						WalletKey = walletKey,
+						WalletTypeKey = WalletTypeKeyConstant.CUSTOMER_WALLET,
+						CustomerKey = customerKey
+					};
+
+					if (!await _walletService.CreateWalletAsync(storeWallet))
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Store create successfully but fail to create wallet");
+						return response;
+					}
+
+					// Gọi Complete() để commit giao dịch nếu mọi thứ thành công
+					transactionScope.Complete();
+
+					response.Data = true;
+					response.Success = true;
+					response.Message = "Store create successfully";
+
 				}
-
-				var customerKey = string.Format("{0}{1}", PrefixKeyConstant.CUSTOMER, Guid.NewGuid().ToString().ToUpper());
-				var customer = new Customer
+				catch (Exception ex)
 				{
-					CustomerKey = customerKey,
-					Email = request.Email,
-					Address = request.Address,
-					UserKey = userKey,
-				};
-
-				if (!await _repo.CreateCustomerAsync(customer))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot create Customer, so cannot create wallet!");
-					return response;
+					SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+					// Không gọi Complete(), giao dịch sẽ tự động rollback khi thoát khỏi khối using
 				}
-
-				var storeWallet = new CreateWalletModel
-				{
-					WalletTypeKey = "WT_CUSTOMER",
-					CustomerKey = customerKey
-				};
-
-				if (!await _walletService.CreateWalletAsync(storeWallet))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Store create successfully but fail to create wallet");
-					return response;
-				}
-
-				response.Data = true;
-				response.Success = true;
-				response.Message = "Store create successfully";
+				return response; 
 			}
-			catch (Exception ex)
-			{
-				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
-			}
-			return response;
 		}
 
 		public async Task<SPayResponse<bool>> DeleteCustomerAsync(string key)

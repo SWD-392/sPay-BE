@@ -29,7 +29,7 @@ namespace SPay.Service
 		{
 			var wallet = new Wallet
 			{
-				WalletKey = string.Format("{0}{1}", PrefixKeyConstant.WALLET, Guid.NewGuid().ToString().ToUpper()),
+				WalletKey = model.WalletKey,
 				WalletTypeKey = model.WalletTypeKey,
 				CardKey = model.CardKey,
 				StoreKey = model.StoreKey,

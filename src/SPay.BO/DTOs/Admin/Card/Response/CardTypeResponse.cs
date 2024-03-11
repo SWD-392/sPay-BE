@@ -11,5 +11,6 @@ namespace SPay.BO.DTOs.Admin.Card.Response
 		public string CardTypeKey { get; set; } = null!;
 		public string? CardTypeName { get; set; }
 		public string? TypeDescription { get; set; }
+		public bool? WithdrawalAllowed { get; set; }
 	}
 }

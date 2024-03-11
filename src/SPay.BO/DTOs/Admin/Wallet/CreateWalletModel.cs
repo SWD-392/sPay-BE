@@ -8,6 +8,7 @@ namespace SPay.BO.DTOs.Admin.Wallet
 {
 	public class CreateWalletModel
 	{
+		public string WalletKey {  get; set; }
 		public string WalletTypeKey { get; set; }
 		public string? CardKey { get; set; } = null;
 		public string? StoreKey { get; set; } = null;
