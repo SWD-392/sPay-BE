@@ -35,7 +35,10 @@ namespace SPay.Repository
 		public async Task<bool> DeleteCustomerAsync(Customer existedCus)
 		{
 			var cusUser = await _context.Users.FirstOrDefaultAsync(u => u.UserKey.Equals(existedCus.UserKey));
-			cusUser.Status = (byte)UserStatusEnum.Deleted;
+			if(cusUser != null)
+			{
+				cusUser.Status = (byte)UserStatusEnum.Deleted;
+			}
 			return await _context.SaveChangesAsync() > 0;
 		}
 
@@ -50,19 +53,25 @@ namespace SPay.Repository
 
 		public async Task<Customer> GetCustomerByKeyAsync(string key)
 		{
-			return await _context.Customers
+			var customer = await _context.Customers
 			   .Include(c => c.UserKeyNavigation)
-			   .FirstOrDefaultAsync(c => c.CustomerKey.Equals(key) 
-			   && c.UserKeyNavigation.Status == (byte)UserStatusEnum.Active
-			   && c.UserKeyNavigation.Role == (byte)RoleEnum.Customer);
+			   .FirstOrDefaultAsync(c => c.CustomerKey.Equals(key)
+				   && c.UserKeyNavigation != null
+				   && c.UserKeyNavigation.Status == (byte)UserStatusEnum.Active
+				   && c.UserKeyNavigation.Role == (byte)RoleEnum.Customer);
+
+			return customer ?? new Customer();
 		}
+
 
 		public async Task<IList<Customer>> SearchCustomerByNameAsync(string keyWord)
 		{
 			return await _context.Customers
-				.Where(c => c.UserKeyNavigation.Fullname.ToLower().Contains(keyWord.ToLower())
-									&& c.UserKeyNavigation.Status == (byte)UserStatusEnum.Active
-									&& c.UserKeyNavigation.Role == (byte)RoleEnum.Customer)
+				.Where(c => c.UserKeyNavigation != null &&
+					 c.UserKeyNavigation.Fullname != null &&
+					 c.UserKeyNavigation.Fullname.ToLower().Contains(keyWord.ToLower()) &&
+					 c.UserKeyNavigation.Status == (byte)UserStatusEnum.Active &&
+					 c.UserKeyNavigation.Role == (byte)RoleEnum.Customer)
 				.Include(c => c.UserKeyNavigation)
 				.ToListAsync();
 		}

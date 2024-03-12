@@ -57,7 +57,10 @@ namespace SPay.Service
 			var result = new List<string>();
 			foreach(var wallet in wallets)
 			{
-				result.Add(wallet.CardKey);
+				if (wallet.CardKey!=null)
+				{
+					result.Add(wallet.CardKey);
+				}
 			}
 			return result;
 		}

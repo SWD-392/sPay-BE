@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -30,26 +32,23 @@ namespace SPay.Service
 		public Task<LoginResponse> SignUp(SignUpRequest signUpRequest);
 		//Task<bool> Login(string phoneNumber, string password);
 		Task<bool> CreateUserAsync(CreateUserModel model);
+		Task<User> GetUserByPhoneAsync(string phoneNumber);
 	}
 	public class UserService : IUserService
 	{
 		private readonly IUserRepository _repo;
-		public UserService(IUserRepository _repo)
+		private readonly IMapper _mapper;
+		public UserService(IUserRepository _repo, IMapper _mapper)
 		{
 			this._repo = _repo;
+			this._mapper = _mapper;
 		}
 		public async Task<bool> CreateUserAsync(CreateUserModel model)
 		{
-			var user = new User
-			{
-				UserKey = model.UserKey,
-				Username = model.NumberPhone,
-				Password = model.Password,
-				Fullname = model.FullName,
-				Role = model.Role,
-				Status = (byte)UserStatusEnum.Active,
-				InsDate = DateTimeHelper.GetDateTimeNow(),
-			};
+			var user = _mapper.Map<User>(model);
+			user.Role = model.Role;
+			user.Status = (byte)UserStatusEnum.Active;
+			user.InsDate = DateTimeHelper.GetDateTimeNow();
 			return await _repo.CreateUserAsync(user);
 		}
 
@@ -58,16 +57,15 @@ namespace SPay.Service
 			throw new NotImplementedException();
 		}
 
+		public Task<User> GetUserByPhoneAsync(string phoneNumber)
+		{
+			return _repo.GetUserByPhoneAsync(phoneNumber);
+		}
+
 		public async Task<LoginResponse> Login(LoginRequest loginRequest)
 		{
 			var userLogin = await _repo.LoginAsync(loginRequest);
-			LoginResponse response = new LoginResponse
-			{
-				UserKey = userLogin.UserKey,
-				PhoneNumber = userLogin.Username,
-				Role = userLogin.Role,
-				Status = userLogin.Status
-			};
+			var response = _mapper.Map<LoginResponse>(userLogin); ;
 			var token = GenerateJwtToken(userLogin);
 			response.AccessToken = token;
 			return response;
@@ -75,12 +73,12 @@ namespace SPay.Service
 
 		public async Task<LoginResponse> SignUp(SignUpRequest request)
 		{
-			var checkUser = _repo.GetUserByPhoneAsync(request.Phone);
+			var checkUser = await _repo.GetUserByPhoneAsync(request.Phone);
 			if(checkUser != null)
 			{
-				return null;
+				return new LoginResponse();
 			}
-			return null;
+			return new LoginResponse();
 		}
 
 		private string GenerateJwtToken(User user)
@@ -90,7 +88,7 @@ namespace SPay.Service
 				.AddJsonFile("appsettings.json", true, true)
 				.Build();
 
-			var key = config["Jwt:Key"];
+			var key = config["Jwt:SecretKey"];
 			var issuer = config["Jwt:Issuer"];
 			var audience = config["Jwt:Audience"];
 

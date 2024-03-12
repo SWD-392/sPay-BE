@@ -13,12 +13,12 @@ namespace SPay.BO.DataBase.Models
         }
 
         public string UserKey { get; set; } = null!;
-        public string? Username { get; set; }
-        public string? Password { get; set; }
+        public string Username { get; set; } = null!;
+        public string Password { get; set; } = null!;
         public byte Role { get; set; }
         public byte Status { get; set; }
-        public string? Fullname { get; set; }
-        public DateTime? InsDate { get; set; }
+        public string Fullname { get; set; } = null!;
+        public DateTime InsDate { get; set; }
 
         public virtual ICollection<Admin> Admins { get; set; }
         public virtual ICollection<Customer> Customers { get; set; }

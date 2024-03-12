@@ -36,13 +36,16 @@ namespace SPay.API
 					{
 						ValidateIssuer = true,
 						ValidateAudience = true,
+
 						ValidateLifetime = true,
 						ValidIssuer = Configuration["Jwt:Issuer"],
+
 						ValidAudience = Configuration["Jwt:Audience"],
-						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecretKey"])),
+
+                        ClockSkew = TimeSpan.Zero
 					};
 				});
-			services.AddSwaggerGen();
 			services.AddSwaggerGen(c =>
             {
                 var jwtSecurityScheme = new OpenApiSecurityScheme
@@ -93,23 +96,8 @@ namespace SPay.API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //using (var scope = app.ApplicationServices.CreateScope())
-            //{
-            //    var dbContext = scope.ServiceProvider
-            //        .GetService<ITCenterContext>();
-
-            //    dbContext.Database.Migrate();
-            //}
 
             app.UseCors("AllowAnyOrigin");
-
-            //app.UseDeveloperExceptionPage();
-            //app.UseSwagger();
-            //app.UseSwaggerUI(options => 
-            //{
-            //    options.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-            //    options.RoutePrefix = string.Empty;
-            //});
 
             if (env.IsDevelopment())
             {

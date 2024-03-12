@@ -57,6 +57,15 @@ namespace SPay.Service
 
 				try
 				{
+
+					var userChecked = await _userService.GetUserByPhoneAsync(request.PhoneNumber);
+
+					if (userChecked != null && userChecked.Status == (int)UserStatusEnum.Banned)
+					{
+						SPayResponseHelper.SetErrorResponse(response, "The customer was areadly exist and banned. Please contact with admin to take action.");
+						return response;
+					}
+
 					var userKey = string.Format("{0}{1}", PrefixKeyConstant.USER, Guid.NewGuid().ToString().ToUpper());
 					var user = new CreateUserModel
 					{

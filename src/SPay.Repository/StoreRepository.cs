@@ -49,7 +49,9 @@ namespace SPay.Repository
 		public async Task<IList<Store>> SearchByNameAsync(string name)
         {
             return await _context.Stores
-                .Where(s => s.Name.ToLower().Contains(name.ToLower()) && s.Status != (byte)CardStatusEnum.Deleted)
+                .Where(s => s.Name != null 
+				&& s.Name.ToLower().Contains(name.ToLower()) 
+				&& s.Status != (byte)CardStatusEnum.Deleted)
                 .Include(s => s.CategoryKeyNavigation)
                 .Include(s => s.UserKeyNavigation)
                 .Include(s => s.Wallets)
@@ -58,11 +60,13 @@ namespace SPay.Repository
         }
 		public async Task<Store> GetStoreByIdAsync(string key)
 		{
-			return await _context.Stores
+			var store = await _context.Stores
 				.Include(s => s.CategoryKeyNavigation)
 				.Include(s => s.UserKeyNavigation)
 				.Include(s => s.Wallets)
 				.SingleOrDefaultAsync(s => s.StoreKey == key && s.Status != (byte)CardStatusEnum.Deleted);
+
+			return store ?? new Store();
 		}
 
 		public async Task<bool> DeleteStoreAsync(Store store)
@@ -87,13 +91,18 @@ namespace SPay.Repository
 		public async Task<bool> UpdateStoreAfterFirstCreateAsync(string storeKey, string walletKey)
 		{
             var store = await _context.Stores.SingleOrDefaultAsync(s => s.StoreKey.Equals(storeKey));
-            store.WalletKey = walletKey;
-			return await _context.SaveChangesAsync() > 0;
+			if(store != null)
+			{
+				store.WalletKey = walletKey;
+				return await _context.SaveChangesAsync() > 0;
+			}
+			return false;
 		}
 
 		public async Task<StoreCategory> GetStoreCateAsync(string storeCateKey)
 		{
-			return await _context.StoreCategories.SingleOrDefaultAsync(s => s.StoreCategoryKey.Equals(storeCateKey));
+			var storeCate = await _context.StoreCategories.SingleOrDefaultAsync(s => s.StoreCategoryKey.Equals(storeCateKey));
+            return storeCate ?? new StoreCategory();
 		}
 	}
 }

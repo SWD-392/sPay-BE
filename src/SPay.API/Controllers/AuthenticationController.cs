@@ -57,7 +57,7 @@ namespace SPay.API.Controllers
 				var response = await _service.SignUp(signUpRequest);
 				return Ok(response);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				return BadRequest(new 
 				{

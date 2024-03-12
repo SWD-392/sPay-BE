@@ -38,15 +38,18 @@ namespace SPay.Repository
 
 		public async Task<User> LoginAsync(LoginRequest request)
 		{
-			return await _context.Users.SingleOrDefaultAsync(
-				u => u.Username.Equals(request.PhoneNumber)
-				&& u.Password.Equals(request.Password)
-				&& u.Status == ((byte)UserStatusEnum.Active));
+			var user = await _context.Users.SingleOrDefaultAsync(u =>
+				u.Username.Equals(request.PhoneNumber) &&
+				u.Password.Equals(request.Password) &&
+				u.Status == (byte)UserStatusEnum.Active);
+			return user ?? new User();
 		}
+
 
 		public async Task<User> GetUserByPhoneAsync(string phoneNumber)
 		{
-			return await _context.Users.FirstOrDefaultAsync(c => c.Username.Equals(phoneNumber) && c.Status == (byte)UserStatusEnum.Active);
+			var user = await _context.Users.FirstOrDefaultAsync(c => c.Username.Equals(phoneNumber));
+			return user ?? new User();
 		}
 
 		public async Task<User> SignUpAsync(LoginRequest request)

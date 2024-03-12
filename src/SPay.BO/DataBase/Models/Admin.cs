@@ -8,8 +8,7 @@ namespace SPay.BO.DataBase.Models
         public string AdminKey { get; set; } = null!;
         public string UserKey { get; set; } = null!;
         public string? AdminName { get; set; }
-        public string? CreateAt { get; set; }
-
+        public DateTime CreateAt { get; set; }
         public virtual User UserKeyNavigation { get; set; } = null!;
     }
 }
