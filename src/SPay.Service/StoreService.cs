@@ -193,6 +193,12 @@ namespace SPay.Service
 						return response;
 					}
 
+					if (userChecked != null && userChecked.Status == (int)UserStatusEnum.Active)
+					{
+						SPayResponseHelper.SetErrorResponse(response, "The phone number of store was areadly exist.");
+						return response;
+					}
+
 					var userKey = string.Format("{0}{1}", PrefixKeyConstant.USER, Guid.NewGuid().ToString().ToUpper());
 					var user = new CreateUserModel
 					{

@@ -10,6 +10,7 @@ using SPay.BO.DTOs.Admin.Card.Response;
 using SPay.BO.DTOs.Admin.Customer.ResponseModel;
 using SPay.BO.DTOs.Admin.Order.Response;
 using SPay.BO.DTOs.Admin.Store.Response;
+using SPay.BO.DTOs.Admin.User;
 
 namespace SPay.Service.MappingProfile
 {
@@ -84,7 +85,15 @@ namespace SPay.Service.MappingProfile
 
 			CreateMap<CreateCardRequest, CardType>().ReverseMap();
 
-			CreateMap<StoreCategory, StoreCateResponse>()
+			CreateMap<CreateUserModel, User>()
+				.ForMember(dest => dest.UserKey, opt => opt.MapFrom(src => src.UserKey))
+				.ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.NumberPhone))
+				.ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
+				.ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role))
+				.ForMember(dest => dest.Fullname, opt => opt.MapFrom(src => src.FullName));
+
+
+		CreateMap<StoreCategory, StoreCateResponse>()
 				.ForMember(dest => dest.StoreCategoryKey, opt => opt.MapFrom(src => src.StoreCategoryKey))
 				.ForMember(dest => dest.StoreCategoryName, opt => opt.MapFrom(src => src.Name))
 				.ReverseMap();

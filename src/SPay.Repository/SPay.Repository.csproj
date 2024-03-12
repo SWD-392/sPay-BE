@@ -10,4 +10,12 @@
     <ProjectReference Include="..\SPay.BO\SPay.BO.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validation\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.9.0" />
+  </ItemGroup>
+
 </Project>
