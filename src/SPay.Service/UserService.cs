@@ -32,7 +32,7 @@ namespace SPay.Service
 		public Task<LoginResponse> SignUp(SignUpRequest signUpRequest);
 		//Task<bool> Login(string phoneNumber, string password);
 		Task<bool> CreateUserAsync(CreateUserModel model);
-		Task<User> GetUserByPhoneAsync(string phoneNumber);
+		Task<User> GetUserByPhoneAsync(string phoneNumber, int role);
 	}
 	public class UserService : IUserService
 	{
@@ -57,9 +57,9 @@ namespace SPay.Service
 			throw new NotImplementedException();
 		}
 
-		public Task<User> GetUserByPhoneAsync(string phoneNumber)
+		public Task<User> GetUserByPhoneAsync(string phoneNumber, int role)
 		{
-			return _repo.GetUserByPhoneAsync(phoneNumber);
+			return _repo.GetUserByPhoneAsync(phoneNumber, role);
 		}
 
 		public async Task<LoginResponse> Login(LoginRequest loginRequest)
@@ -73,7 +73,7 @@ namespace SPay.Service
 
 		public async Task<LoginResponse> SignUp(SignUpRequest request)
 		{
-			var checkUser = await _repo.GetUserByPhoneAsync(request.Phone);
+			var checkUser = await _repo.GetUserByPhoneAsync(request.Phone, 0);
 			if(checkUser != null)
 			{
 				return new LoginResponse();

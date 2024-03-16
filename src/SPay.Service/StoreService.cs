@@ -185,7 +185,7 @@ namespace SPay.Service
 
 				try
 				{
-					var userChecked = await _userService.GetUserByPhoneAsync(request.PhoneNumber);
+					var userChecked = await _userService.GetUserByPhoneAsync(request.PhoneNumber, (int)RoleEnum.Store);
 
 					if (userChecked != null && userChecked.Status == (int)UserStatusEnum.Banned)
 					{

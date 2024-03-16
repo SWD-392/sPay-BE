@@ -21,7 +21,7 @@ namespace SPay.Repository
 		Task<bool> CreateUserAsync(User user);
 		Task<User> LoginAsync(LoginRequest request);
 		Task<User> SignUpAsync(SignUpRequest request);
-		Task<User> GetUserByPhoneAsync(string phoneNumber);
+		Task<User> GetUserByPhoneAsync(string phoneNumber, int role);
 	}
 	public class UserRepository : IUserRepository
 	{
@@ -46,7 +46,7 @@ namespace SPay.Repository
 		}
 
 
-		public async Task<User> GetUserByPhoneAsync(string phoneNumber)
+		public async Task<User> GetUserByPhoneAsync(string phoneNumber, int role)
 		{
 			var user = await _context.Users.FirstOrDefaultAsync(c => c.Username.Equals(phoneNumber));
 			return user ?? new User();

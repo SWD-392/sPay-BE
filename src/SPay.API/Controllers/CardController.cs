@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPay.BO.DTOs;
 using SPay.BO.DTOs.Admin;
@@ -28,6 +29,7 @@ namespace SPay.API.Controllers
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
+		//[Authorize]
 		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CardResponse>>), StatusCodes.Status200OK)]
 		[HttpGet]
 		public async Task<IActionResult> GetAllcard([FromQuery] GetAllCardRequest request)
@@ -78,7 +80,7 @@ namespace SPay.API.Controllers
 		/// <summary>
 		/// Create a card
 		/// </summary>
-		/// <param name="request"></param>
+		/// <param name="request"></param>		
 		[HttpPost]
 		public async Task<IActionResult> CreateCardAsync([FromBody] CreateCardRequest request)
 		{

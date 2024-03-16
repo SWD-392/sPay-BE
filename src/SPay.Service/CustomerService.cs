@@ -29,7 +29,6 @@ namespace SPay.Service
 		Task<SPayResponse<PaginatedList<CustomerResponse>>> SearchCustomerAsync(AdminSearchRequest request);
 		Task<SPayResponse<bool>> DeleteCustomerAsync(string key);
 		Task<SPayResponse<bool>> CreateCustomerAsync(CreateCustomerRequest request);
-
 	}
 	public class CustomerService : ICustomerService
 	{
@@ -58,7 +57,7 @@ namespace SPay.Service
 				try
 				{
 
-					var userChecked = await _userService.GetUserByPhoneAsync(request.PhoneNumber);
+					var userChecked = await _userService.GetUserByPhoneAsync(request.PhoneNumber, (int)RoleEnum.Customer);
 
 					if (userChecked != null && userChecked.Status == (int)UserStatusEnum.Banned)
 					{
