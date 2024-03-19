@@ -10,11 +10,11 @@ namespace SPay.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class CardTypeController : ControllerBase
+	public class CardTypesController : ControllerBase
 	{
 		private readonly ICardService _service;
 
-		public CardTypeController(ICardService service)
+		public CardTypesController(ICardService service)
 		{
 			_service = service;
 		}

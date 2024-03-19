@@ -48,274 +48,40 @@ namespace SPay.Service
 			this._walletService = _walletService;
 			this._userService = _userService;
 		}
-		public async Task<SPayResponse<PaginatedList<StoreResponse>>> GetAllStoreInfoAsync(GetAllStoreRequest request)
+
+		public Task<SPayResponse<bool>> CreateStoreAsync(CreateStoreRequest request)
 		{
-			var response = new SPayResponse<PaginatedList<StoreResponse>>();
-			try
-			{
-
-				var stores = await _storeRepository.GetAllStoreInfo();
-				if (stores == null)
-				{
-					SPayResponseHelper.SetErrorResponse(response, "The result of get all store from repository is null");
-					return response;
-				}
-				var storesResponse = _mapper.Map<List<StoreResponse>>(stores);
-				var count = 0;
-				foreach (var store in storesResponse)
-				{
-					store.No = ++count;
-					store.Balance = await _walletService.GetBalanceOfUserAsync(new GetBalanceModel { StoreKey = store.StoreKey });
-				}
-
-				response.Data = await storesResponse.ToPaginateAsync(request);
-				response.Success = true;
-				response.Message = "Get all store successfully";
-				return response;
-			}
-			catch (Exception ex)
-			{
-				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
-			}
-			return response;
+			throw new NotImplementedException();
 		}
 
-		public async Task<SPayResponse<PaginatedList<StoreResponse>>> SearchStoreAsync(AdminSearchRequest request)
+		public Task<SPayResponse<bool>> DeleteStoreAsync(string key)
 		{
-			var response = new SPayResponse<PaginatedList<StoreResponse>>();
-			try
-			{
-				var keyWord = request.Keyword.Trim();
-				if (string.IsNullOrEmpty(keyWord))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "The keyword is null or empty");
-					return response;
-				}
-				var stores = await _storeRepository.SearchByNameAsync(keyWord);
-				if (stores.Count <= 0)
-				{
-					SPayResponseHelper.SetErrorResponse(response, "The result of get all store from repository is null");
-					return response;
-				}
-				var storesRes = _mapper.Map<IList<StoreResponse>>(stores);
-				var count = 0;
-				foreach (var store in storesRes)
-				{
-					store.No = ++count;
-					store.Balance = await _walletService.GetBalanceOfUserAsync(new GetBalanceModel { StoreKey =store.StoreKey });
-				}
-				response.Data = await storesRes.ToPaginateAsync(request);
-				response.Success = true;
-				response.Message = $"Search store successfully, have {count} records";
-				return response;
-			}
-			catch (Exception ex)
-			{
-				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
-			}
-			return response;
-
+			throw new NotImplementedException();
 		}
 
-		public async Task<SPayResponse<StoreResponse>> GetStoreByKeyAsync(string key)
+		public Task<SPayResponse<IList<StoreCateResponse>>> GetAllStoreCateAsync()
 		{
-			var response = new SPayResponse<StoreResponse>();
-
-			try
-			{
-				var store = await _storeRepository.GetStoreByIdAsync(key);
-
-				if (store == null)
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Store not found.");
-					return response;
-				}
-
-				response.Data = _mapper.Map<StoreResponse>(store);
-				response.Success = true;
-				response.Message = $"Get Store key = {store.StoreKey} successfully";
-			}
-			catch (Exception ex)
-			{
-				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
-			}
-
-			return response;
+			throw new NotImplementedException();
 		}
 
-		public async Task<SPayResponse<bool>> DeleteStoreAsync(string key)
+		public Task<SPayResponse<PaginatedList<StoreResponse>>> GetAllStoreInfoAsync(GetAllStoreRequest request)
 		{
-			var response = new SPayResponse<bool>();
-
-			try
-			{
-				var storeDelete = await _storeRepository.GetStoreByIdAsync(key);
-
-				if (storeDelete == null)
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Store not found.");
-					return response;
-				}
-
-				var success = await _storeRepository.DeleteStoreAsync(storeDelete);
-
-				if (!success)
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Something wrong!");
-					return response;
-				}
-
-				response.Data = true;
-				response.Success = true;
-				response.Message = "Store delete successfully";
-			}
-			catch (Exception ex)
-			{
-				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
-			}
-
-			return response;
+			throw new NotImplementedException();
 		}
 
-		public async Task<SPayResponse<bool>> CreateStoreAsync(CreateStoreRequest request)
+		public Task<SPayResponse<StoreResponse>> GetStoreByKeyAsync(string key)
 		{
-			using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-			{
-				var response = new SPayResponse<bool>();
-
-				try
-				{
-					var userChecked = await _userService.GetUserByPhoneAsync(request.PhoneNumber, (int)RoleEnum.Store);
-
-					if (userChecked != null && userChecked.Status == (int)UserStatusEnum.Banned)
-					{
-						SPayResponseHelper.SetErrorResponse(response, "The Store was areadly exist and banned. Please contact with admin to take action.");
-						return response;
-					}
-
-					if (userChecked != null && userChecked.Status == (int)UserStatusEnum.Active)
-					{
-						SPayResponseHelper.SetErrorResponse(response, "The phone number of store was areadly exist.");
-						return response;
-					}
-
-					var userKey = string.Format("{0}{1}", PrefixKeyConstant.USER, Guid.NewGuid().ToString().ToUpper());
-					var user = new CreateUserModel
-					{
-						UserKey = userKey,
-						NumberPhone = request.PhoneNumber,
-						Password = request.Password,
-						Role = (int)RoleEnum.Store,
-						FullName = request.OwnerName
-					};
-
-					if (!await _userService.CreateUserAsync(user))
-					{
-						SPayResponseHelper.SetErrorResponse(response, "Cannot create User, so cannot create Store");
-						return response;
-					}
-
-					var storeKey = string.Format("{0}{1}", PrefixKeyConstant.STORE, Guid.NewGuid().ToString().ToUpper());
-					var store = new Store
-					{
-						StoreKey = storeKey,
-						Name = request.StoreName,
-						CategoryKey = request.StoreCategoryKey,
-						Phone = request.PhoneNumber,
-						Status = (byte)StoreStatusEnum.Active,
-						Description = request.Description,
-						UserKey = userKey,
-					};
-
-					if (!await _storeRepository.CreateStoreAsync(store))
-					{
-						SPayResponseHelper.SetErrorResponse(response, "Cannot create User, so cannot create Store");
-						return response;
-					}
-
-					var walletKey = string.Format("{0}{1}", PrefixKeyConstant.WALLET, Guid.NewGuid().ToString().ToUpper());
-					var storeWallet = new CreateWalletModel
-					{
-						WalletKey = walletKey,
-						WalletTypeKey = WalletTypeKeyConstant.STORE_WALLET,
-						StoreKey = storeKey
-					};
-
-					if (!await _walletService.CreateWalletAsync(storeWallet))
-					{
-						SPayResponseHelper.SetErrorResponse(response, "Store create successfully but fail to create wallet");
-						return response;
-					}
-
-					if (!await _storeRepository.UpdateStoreAfterFirstCreateAsync(storeKey, walletKey))
-					{
-						SPayResponseHelper.SetErrorResponse(response, "Store and wallet create successfully but fail assign Wallet_Key for store created!");
-						return response;
-					}
-
-					// Gọi Complete() để commit giao dịch nếu mọi thứ thành công
-					transactionScope.Complete();
-
-					response.Data = true;
-					response.Success = true;
-					response.Message = "Store create successfully";
-				}
-				catch (Exception ex)
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
-					// Không gọi Complete(), giao dịch sẽ tự động rollback khi thoát khỏi khối using
-				}
-				return response; 
-			}
-		}
-		public async Task<SPayResponse<IList<StoreCateResponse>>> GetAllStoreCateAsync()
-		{
-			var response = new SPayResponse<IList<StoreCateResponse>>();
-			try
-			{
-				var cates = await _storeRepository.GetAllStoreCateAsync();
-				if (cates == null)
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Card type has no row in database.");
-					return response;
-				}
-				var cateRes = _mapper.Map<IList<StoreCateResponse>>(cates);
-				response.Data = cateRes;
-				response.Success = true;
-				response.Message = "Get card type successfully";
-				return response;
-
-			}
-			catch (Exception ex)
-			{
-				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
-			}
-			return response;
+			throw new NotImplementedException();
 		}
 
-		public async Task<SPayResponse<StoreCateResponse>> GetStoreCateByKeyAsync(string storeCateKey)
+		public Task<SPayResponse<StoreCateResponse>> GetStoreCateByKeyAsync(string storeCateKey)
 		{
-			var response = new SPayResponse<StoreCateResponse>();
-			try
-			{
-				var cates = await _storeRepository.GetAllStoreCateAsync();
-				if (cates == null)
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Card type has no row in database.");
-					return response;
-				}
-				var cateRes = _mapper.Map<StoreCateResponse>(cates);
-				response.Data = cateRes;
-				response.Success = true;
-				response.Message = "Get card type successfully";
-				return response;
+			throw new NotImplementedException();
+		}
 
-			}
-			catch (Exception ex)
-			{
-				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
-			}
-			return response;
+		public Task<SPayResponse<PaginatedList<StoreResponse>>> SearchStoreAsync(AdminSearchRequest request)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

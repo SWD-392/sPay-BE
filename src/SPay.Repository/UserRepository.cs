@@ -23,45 +23,45 @@ namespace SPay.Repository
 		Task<User> SignUpAsync(SignUpRequest request);
 		Task<User> GetUserByPhoneAsync(string phoneNumber, int role);
 	}
-	public class UserRepository : IUserRepository
+	public class UserRepository /*IUserRepository*/
 	{
-		private readonly SPayDbContext _context;
-        public UserRepository(SPayDbContext _context)
+		private readonly SpayDBContext _context;
+        public UserRepository(SpayDBContext _context)
         {
             this._context = _context;
         }
-        public async Task<bool> CreateUserAsync(User user)
-		{
-			_context.Users.Add(user);
-			return await _context.SaveChangesAsync() > 0;
-		}
+  //      public async Task<bool> CreateUserAsync(User user)
+		//{
+		//	_context.Users.Add(user);
+		//	return await _context.SaveChangesAsync() > 0;
+		//}
 
-		public async Task<User> LoginAsync(LoginRequest request)
-		{
-			var user = await _context.Users.SingleOrDefaultAsync(u =>
-				u.Username.Equals(request.PhoneNumber) &&
-				u.Password.Equals(request.Password) &&
-				u.Status == (byte)UserStatusEnum.Active);
-			return user ?? new User();
-		}
+		//public async Task<User> LoginAsync(LoginRequest request)
+		//{
+		//	var user = await _context.Users.SingleOrDefaultAsync(u =>
+		//		u.Username.Equals(request.PhoneNumber) &&
+		//		u.Password.Equals(request.Password) &&
+		//		u.Status == (byte)UserStatusEnum.Active);
+		//	return user ?? new User();
+		//}
 
 
-		public async Task<User> GetUserByPhoneAsync(string phoneNumber, int role)
-		{
-			var user = await _context.Users.FirstOrDefaultAsync(c => c.Username.Equals(phoneNumber));
-			return user ?? new User();
-		}
+		//public async Task<User> GetUserByPhoneAsync(string phoneNumber, int role)
+		//{
+		//	var user = await _context.Users.FirstOrDefaultAsync(c => c.Username.Equals(phoneNumber));
+		//	return user ?? new User();
+		//}
 
-		public async Task<User> SignUpAsync(LoginRequest request)
-		{
-			var user = await _context.Users.FirstOrDefaultAsync(c => c.Username.Equals(request.PhoneNumber));
+		//public async Task<User> SignUpAsync(LoginRequest request)
+		//{
+		//	var user = await _context.Users.FirstOrDefaultAsync(c => c.Username.Equals(request.PhoneNumber));
 
-			throw new NotImplementedException();
-		}
+		//	throw new NotImplementedException();
+		//}
 
-		public Task<User> SignUpAsync(SignUpRequest request)
-		{
-			throw new NotImplementedException();
-		}
+		//public Task<User> SignUpAsync(SignUpRequest request)
+		//{
+		//	throw new NotImplementedException();
+		//}
 	}
 }

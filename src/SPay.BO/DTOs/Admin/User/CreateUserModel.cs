@@ -8,10 +8,10 @@ namespace SPay.BO.DTOs.Admin.User
 {
 	public class CreateUserModel
 	{
-		public string UserKey { get; set; }
+		public string UserKey { get; set; } = null!;
 		public string NumberPhone { get; set; }
 		public string Password { get; set; }
-		public byte Role { get; set; } = 2; //Default is Customer
+		public string RoleKey { get; set; }
 		public string FullName { get; set; }
 	}
 }

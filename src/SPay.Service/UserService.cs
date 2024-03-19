@@ -46,7 +46,7 @@ namespace SPay.Service
 		public async Task<bool> CreateUserAsync(CreateUserModel model)
 		{
 			var user = _mapper.Map<User>(model);
-			user.Role = model.Role;
+			user.RoleKey = model.RoleKey;
 			user.Status = (byte)UserStatusEnum.Active;
 			user.InsDate = DateTimeHelper.GetDateTimeNow();
 			return await _repo.CreateUserAsync(user);
@@ -100,7 +100,7 @@ namespace SPay.Service
 			{
 				new Claim(JwtRegisteredClaimNames.Jti, user.UserKey),
 				new Claim(JwtRegisteredClaimNames.Sub, user.Fullname.ToString()),
-				new Claim(ClaimTypes.Role, user.Role.ToString())
+				new Claim(ClaimTypes.Role, user.RoleKeyNavigation.RoleName.ToString())
 			};
 
 			//Add expiredTime of token

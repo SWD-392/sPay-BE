@@ -7,21 +7,19 @@ namespace SPay.BO.DataBase.Models
     {
         public User()
         {
-            Admins = new HashSet<Admin>();
-            Customers = new HashSet<Customer>();
             Stores = new HashSet<Store>();
         }
 
         public string UserKey { get; set; } = null!;
-        public string Username { get; set; } = null!;
+        public string ZaloId { get; set; } = null!;
         public string Password { get; set; } = null!;
-        public byte Role { get; set; }
-        public byte Status { get; set; }
         public string Fullname { get; set; } = null!;
+        public string PhoneNumber { get; set; } = null!;
+        public string RoleKey { get; set; } = null!;
+        public byte Status { get; set; }
         public DateTime InsDate { get; set; }
 
-        public virtual ICollection<Admin> Admins { get; set; }
-        public virtual ICollection<Customer> Customers { get; set; }
+        public virtual Role RoleKeyNavigation { get; set; } = null!;
         public virtual ICollection<Store> Stores { get; set; }
     }
 }

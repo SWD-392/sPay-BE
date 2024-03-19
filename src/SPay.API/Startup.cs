@@ -28,7 +28,7 @@ namespace SPay.API
             services.AddApplication();
             services.AddMasterServices();        
             services.AddEndpointsApiExplorer();
-			services.AddDbContext<SPayDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")));
+			services.AddDbContext<SpayDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")));
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 				.AddJwtBearer(options =>
 				{

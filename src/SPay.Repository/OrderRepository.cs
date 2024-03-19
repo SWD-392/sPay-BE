@@ -18,61 +18,61 @@ namespace SPay.Repository
 		Task<bool> DeleteOrderAsync(Order existedOrder);
 		Task<bool> CreateOrderAsync(Order order);
 	}
-	public class OrderRepository : IOrderRepository
+	public class OrderRepository /*IOrderRepository*/
 	{
-		private readonly SPayDbContext _context;
+		private readonly SpayDBContext _context;
 
-		public OrderRepository(SPayDbContext context)
+		public OrderRepository(SpayDBContext context)
 		{
 			_context = context;
 		}
 
-		public async Task<bool> CreateOrderAsync(Order order)
-		{
-			_context.Orders.Add(order);
-			return await _context.SaveChangesAsync() > 0;
-		}
+		//public async Task<bool> CreateOrderAsync(Order order)
+		//{
+		//	_context.Orders.Add(order);
+		//	return await _context.SaveChangesAsync() > 0;
+		//}
 
-		public async Task<bool> DeleteOrderAsync(Order existedOrder)
-		{
-			existedOrder.Status = (byte)CardStatusEnum.Deleted;
-			return await _context.SaveChangesAsync() > 0;
-		}
+		//public async Task<bool> DeleteOrderAsync(Order existedOrder)
+		//{
+		//	existedOrder.Status = (byte)CardStatusEnum.Deleted;
+		//	return await _context.SaveChangesAsync() > 0;
+		//}
 
-		public async Task<IList<Order>> GetAllOrderTypeAsync()
-		{
-			var orders = await _context.Orders
-				.Include(o => o.CardKeyNavigation)
-				.Include(o => o.CustomerKeyNavigation.UserKeyNavigation)
-				.Include(o => o.StoreKeyNavigation.UserKeyNavigation)
-				.Where(o => o.Status != (byte)OrderStatusEnum.Deleted)
-				.ToListAsync();
-			return orders; 
-		}
+		//public async Task<IList<Order>> GetAllOrderTypeAsync()
+		//{
+		//	var orders = await _context.Orders
+		//		.Include(o => o.CardKeyNavigation)
+		//		.Include(o => o.CustomerKeyNavigation.UserKeyNavigation)
+		//		.Include(o => o.StoreKeyNavigation.UserKeyNavigation)
+		//		.Where(o => o.Status != (byte)OrderStatusEnum.Deleted)
+		//		.ToListAsync();
+		//	return orders; 
+		//}
 
-		public async Task<Order> GetOrderByKeyAsync(string key)
-		{
-			var orders = await _context.Orders
-				.Include(o => o.CardKeyNavigation)
-				.Include(o => o.CustomerKeyNavigation.UserKeyNavigation)
-				.Include(o => o.StoreKeyNavigation.UserKeyNavigation)
-				.Where(o => o.Status != (byte)OrderStatusEnum.Deleted)
-				.FirstOrDefaultAsync(o => o.OrderKey.Equals(key));
-			return orders;
-		}
+		//public async Task<Order> GetOrderByKeyAsync(string key)
+		//{
+		//	var orders = await _context.Orders
+		//		.Include(o => o.CardKeyNavigation)
+		//		.Include(o => o.CustomerKeyNavigation.UserKeyNavigation)
+		//		.Include(o => o.StoreKeyNavigation.UserKeyNavigation)
+		//		.Where(o => o.Status != (byte)OrderStatusEnum.Deleted)
+		//		.FirstOrDefaultAsync(o => o.OrderKey.Equals(key));
+		//	return orders;
+		//}
 
-		public async Task<IList<Order>> SearchOrderByNameAsync(OrderSearchRequest request)
-		{
-			var orders = await _context.Orders
-				.Include(o => o.CardKeyNavigation)
-				.Include(o => o.CustomerKeyNavigation.UserKeyNavigation)
-				.Include(o => o.StoreKeyNavigation.UserKeyNavigation)
-				.Where(o => o.CardKeyNavigation.CardName.Contains(request.CardName)
-				&& o.CustomerKeyNavigation.UserKeyNavigation.Fullname.Contains(request.FromCustomer)
-				&& o.StoreKeyNavigation.Name.Contains(request.CardName)
-				&& o.Status != (byte)OrderStatusEnum.Deleted)
-				.ToListAsync();
-			return orders;
-		}
+		//public async Task<IList<Order>> SearchOrderByNameAsync(OrderSearchRequest request)
+		//{
+		//	var orders = await _context.Orders
+		//		.Include(o => o.CardKeyNavigation)
+		//		.Include(o => o.CustomerKeyNavigation.UserKeyNavigation)
+		//		.Include(o => o.StoreKeyNavigation.UserKeyNavigation)
+		//		.Where(o => o.CardKeyNavigation.CardName.Contains(request.CardName)
+		//		&& o.CustomerKeyNavigation.UserKeyNavigation.Fullname.Contains(request.FromCustomer)
+		//		&& o.StoreKeyNavigation.Name.Contains(request.CardName)
+		//		&& o.Status != (byte)OrderStatusEnum.Deleted)
+		//		.ToListAsync();
+		//	return orders;
+		//}
 	}
 }

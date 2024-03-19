@@ -11,10 +11,10 @@ namespace SPay.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class OrderController : ControllerBase
+	public class OrderSController : ControllerBase
 	{
 		private readonly IOrderService _service;
-		public OrderController(IOrderService service)
+		public OrderSController(IOrderService service)
 		{
 			_service = service;
 		}

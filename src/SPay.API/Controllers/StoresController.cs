@@ -12,37 +12,24 @@ namespace SPay.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class StoreController : ControllerBase
+	public class StoresController : ControllerBase
 	{
 		private readonly IStoreService _service;
-		public StoreController(IStoreService _service)
+		public StoresController(IStoreService _service)
 		{
 			this._service = _service;
 		}
 
 		/// <summary>
-		/// Get all store
+		/// Get list store
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
 		[ProducesResponseType(typeof(SPayResponse<PaginatedList<StoreResponse>>), StatusCodes.Status200OK)]
 		[HttpGet]
-		public async Task<IActionResult> GetAllStore([FromQuery] GetAllStoreRequest request)
+		public async Task<IActionResult> GetListStore([FromQuery] GetAllStoreRequest request)
 		{
 			var response = await _service.GetAllStoreInfoAsync(request);
-			return Ok(response);
-		}
-
-		/// <summary>
-		/// Search stores by name
-		/// </summary>
-		/// <param name="request"></param>
-		/// <returns></returns>
-		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CardResponse>>), StatusCodes.Status200OK)]
-		[HttpGet("search")]
-		public async Task<IActionResult> SeachStoreByName([FromQuery] AdminSearchRequest request)
-		{
-			var response = await _service.SearchStoreAsync(request);
 			return Ok(response);
 		}
 
@@ -53,7 +40,7 @@ namespace SPay.API.Controllers
 		/// <returns></returns>
 		[HttpGet("{key}")]
 		[ProducesResponseType(typeof(SPayResponse<CardResponse>), StatusCodes.Status200OK)]
-		public async Task<IActionResult> SeachStoreByName(string key)
+		public async Task<IActionResult> GetStoreByKey(string key)
 		{
 			var response = await _service.GetStoreByKeyAsync(key);
 			return Ok(response);

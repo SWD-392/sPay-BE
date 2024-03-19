@@ -9,11 +9,11 @@ namespace SPay.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class StoreCategoryController : ControllerBase
+	public class StoreCategoriesController : ControllerBase
 	{
 		private readonly IStoreService _service;
 
-		public StoreCategoryController(IStoreService service)
+		public StoreCategoriesController(IStoreService service)
 		{
 			_service = service;
 		}
@@ -35,8 +35,8 @@ namespace SPay.API.Controllers
 		/// </summary>
 		/// <returns></returns>
 		[ProducesResponseType(typeof(SPayResponse<IList<StoreCateResponse>>), StatusCodes.Status200OK)]
-		[HttpGet("{storeCateKey}")]
-		public async Task<IActionResult> GetStoreCateByKeyAsync(string storeCateKey)
+		[HttpGet("{key}")]
+		public async Task<IActionResult> GetStoreCateByKeyAsync(string key)
 		{
 			var response = await _service.GetAllStoreCateAsync();
 			return Ok(response);

@@ -32,27 +32,14 @@ namespace SPay.API.Controllers
 		//[Authorize]
 		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CardResponse>>), StatusCodes.Status200OK)]
 		[HttpGet]
-		public async Task<IActionResult> GetAllcard([FromQuery] GetAllCardRequest request)
+		public async Task<IActionResult> GetListCard([FromQuery] GetListCardRequest request)
 		{
-			var response = await _service.GetAllCardsAsync(request);
+			var response = await _service.GetListCardsAsync(request);
 			return Ok(response);
 		}
 
 		/// <summary>
-		/// Search cards by name
-		/// </summary>
-		/// <param name="request"></param>
-		/// <returns></returns>
-		[ProducesResponseType(typeof(SPayResponse<PaginatedList<CardResponse>>), StatusCodes.Status200OK)]
-		[HttpGet("search")]
-		public async Task<IActionResult> SearchCardAsync([FromQuery] AdminSearchRequest request)
-		{
-			var response = await _service.SearchCardAsync(request);
-			return Ok(response);
-		}
-
-		/// <summary>
-		/// Get card by card key
+		/// Get card by key
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
@@ -61,19 +48,6 @@ namespace SPay.API.Controllers
 		public async Task<IActionResult> GetCardByKeyAsync(string key)
 		{
 			var response = await _service.GetCardByKeyAsync(key);
-			return Ok(response);
-		}
-
-		/// <summary>
-		/// Get card by customer key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		[HttpGet("/Card/customer/{key}")]
-		[ProducesResponseType(typeof(SPayResponse<CardResponse>), StatusCodes.Status200OK)]
-		public async Task<IActionResult> GetCardByCustomerKeyAsync(string key)
-		{
-			var response = await _service.GetListCardKeyByCustomerKey(key);
 			return Ok(response);
 		}
 

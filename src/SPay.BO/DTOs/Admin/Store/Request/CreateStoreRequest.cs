@@ -14,6 +14,7 @@ namespace SPay.BO.DTOs.Admin.Store.Request
 		public string OwnerName { get; set; }
 		public string PhoneNumber { get; set; }
 		public string Password { get; set; }
+		public string RoleKey { get; set; } = null!;
 		public decimal? Balance { get; set; }
 	}
 }

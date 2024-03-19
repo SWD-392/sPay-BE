@@ -12,10 +12,10 @@ namespace SPay.API.Controllers
 {
     [Route("api/")]
     [ApiController]
-    public class TransactionController : ControllerBase
+    public class TransactionsController : ControllerBase
     {
         private readonly ITransactionService _service;
-        public TransactionController(ITransactionService _service)
+        public TransactionsController(ITransactionService _service)
         {
             this._service = _service;
         }

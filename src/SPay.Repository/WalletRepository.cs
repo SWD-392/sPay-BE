@@ -15,34 +15,34 @@ namespace SPay.Repository
         Task<bool> CreateWalletAsync(Wallet wallet);
 		Task<IList<Wallet>> GetWalletCardByUserKeyAsync(string userKey);
 	}
-	public class WalletRepository : IWalletRepository
+	public class WalletRepository /*: IWalletRepository*/
     {
-        private readonly SPayDbContext _context;
-        public WalletRepository(SPayDbContext _context)
+        private readonly SpayDBContext _context;
+        public WalletRepository(SpayDBContext _context)
         {
             this._context = _context;
         }
-        public async Task<Wallet> GetBalanceOfUserAsync(GetBalanceModel models)
-        {
-            var result = await _context.Wallets
-                .FirstOrDefaultAsync(w => w.StoreKey.Equals(models.StoreKey) 
-                && w.CustomerKey.Equals(models.CustomerKey) 
-                && w.CardKey.Equals(models.CardKey));
-            return result;
-        }
+  //      public async Task<Wallet> GetBalanceOfUserAsync(GetBalanceModel models)
+  //      {
+  //          var result = await _context.Wallets
+  //              .FirstOrDefaultAsync(w => w.StoreKey.Equals(models.StoreKey) 
+  //              && w.CustomerKey.Equals(models.CustomerKey) 
+  //              && w.CardKey.Equals(models.CardKey));
+  //          return result;
+  //      }
 
-		public async Task<bool> CreateWalletAsync(Wallet wallet)
-		{
-			await _context.Wallets.AddAsync(wallet);
-            return await _context.SaveChangesAsync() > 0;
-		}
+		//public async Task<bool> CreateWalletAsync(Wallet wallet)
+		//{
+		//	await _context.Wallets.AddAsync(wallet);
+  //          return await _context.SaveChangesAsync() > 0;
+		//}
 
-		public async Task<IList<Wallet>> GetWalletCardByUserKeyAsync(string userKey)
-		{
-			var result = await _context.Wallets
-				.Where(w => w.CustomerKey.Equals(userKey)
-				&& !string.IsNullOrEmpty(w.CardKey)).ToListAsync();
-			return result;
-		}
+		//public async Task<IList<Wallet>> GetWalletCardByUserKeyAsync(string userKey)
+		//{
+		//	var result = await _context.Wallets
+		//		.Where(w => w.CustomerKey.Equals(userKey)
+		//		&& !string.IsNullOrEmpty(w.CardKey)).ToListAsync();
+		//	return result;
+		//}
 	}
 }
