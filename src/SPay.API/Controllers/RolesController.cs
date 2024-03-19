@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SPay.BO.DTOs.Auth.Request;
 using SPay.BO.DTOs.Auth.Response;
 using SPay.BO.Extention.Paginate;
+using SPay.Service;
 using SPay.Service.Response;
 
 namespace SPay.API.Controllers
@@ -10,6 +12,13 @@ namespace SPay.API.Controllers
 	[ApiController]
 	public class RolesController : ControllerBase
 	{
+		private readonly IRoleService _service;
+
+		public RolesController(IRoleService service)
+		{
+			_service = service;
+		}
+
 		/// <summary>
 		/// Get all GetListRole
 		/// </summary>
@@ -18,10 +27,10 @@ namespace SPay.API.Controllers
 		//[Authorize]
 		[ProducesResponseType(typeof(SPayResponse<PaginatedList<GetListRoleResponse>>), StatusCodes.Status200OK)]
 		[HttpGet]
-		public async Task<IActionResult> GetListGetListRole()
+		public async Task<IActionResult> GetGetListRole([FromQuery] GetListRoleRequest request)
 		{
-			//var response = await _service.GetListGetListRolesAsync(request);
-			return Ok(/*response*/);
+			var response = await _service.GetListRoleAsync(request);
+			return Ok(response);
 		}
 
 		/// <summary>
@@ -41,7 +50,7 @@ namespace SPay.API.Controllers
 		/// Delete a Role
 		/// </summary>
 		/// <param name="key"></param>
-		[HttpDelete("{key}")]
+		[HttpDelete("/api/Role/{key}")]
 		public async Task<IActionResult> DeleteGetListRoleAsync(string key)
 		{
 			//var response = await _service.DeleteGetListRoleAsync(key);

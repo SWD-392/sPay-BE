@@ -9,7 +9,6 @@ using SPay.BO.DTOs.Admin.Transaction.Request;
 using SPay.BO.DTOs.Admin.Transaction.Response;
 using SPay.BO.DTOs.Admin;
 using SPay.BO.DTOs.Admin.Store.Response;
-using SPay.BO.DTOs.Admin.Transaction.Response;
 using SPay.BO.Extention.Paginate;
 using SPay.Repository;
 using SPay.Service.Response;
@@ -20,7 +19,6 @@ namespace SPay.Service
     {
 		Task<SPayResponse<PaginatedList<TransactionResponse>>> GetAllTransactionsAsync(GetAllTransactionRequest request);
 		Task<SPayResponse<TransactionResponse>> GetTransactionByKeyAsync(string id);
-		Task<SPayResponse<PaginatedList<TransactionResponse>>> SearchTransactionAsync(AdminSearchRequest request);
 		Task<SPayResponse<bool>> DeleteTransactionAsync(string key);
 		Task<SPayResponse<bool>> CreateTransactionAsync(CreateTransactionRequest request);
 	}
@@ -50,11 +48,6 @@ namespace SPay.Service
 		}
 
 		public async Task<SPayResponse<TransactionResponse>> GetTransactionByKeyAsync(string id)
-		{
-			throw new NotImplementedException();
-		}
-
-		public async Task<SPayResponse<PaginatedList<TransactionResponse>>> SearchTransactionAsync(AdminSearchRequest request)
 		{
 			throw new NotImplementedException();
 		}

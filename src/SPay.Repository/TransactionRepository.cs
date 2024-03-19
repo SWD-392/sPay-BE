@@ -14,8 +14,8 @@ namespace SPay.Repository
     }
     public class TransactionRepository : ITransactionRepository
     {
-        private readonly SPayDbContext _context;
-        public TransactionRepository(SPayDbContext _context)
+        private readonly SpayDBContext _context;
+        public TransactionRepository(SpayDBContext _context)
         {
             this._context = _context;
         }

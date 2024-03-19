@@ -20,20 +20,25 @@ namespace SPay.API
 
         public static void AddMasterServices(this IServiceCollection services)
         {
-            services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped<ICustomerService, CustomerService>();
-            services.AddScoped<IStoreRepository, StoreRepository>();
-            services.AddScoped<IStoreService, StoreService>();
-            services.AddScoped<ICardService, CardService>();
-            services.AddScoped<ICardRepository, CardRepository>();
+            //services.AddScoped<ICustomerRepository, CustomerRepository>();
+            //services.AddScoped<ICustomerService, CustomerService>();
+            //services.AddScoped<IStoreRepository, StoreRepository>();
+            //services.AddScoped<IStoreService, StoreService>();
+            //services.AddScoped<ICardService, CardService>();
+            //services.AddScoped<ICardRepository, CardRepository>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
-            services.AddScoped<IWalletRepository, WalletRepository>();
-			services.AddScoped<IWalletService, WalletService>();
-			services.AddScoped<IUserService, UserService>();
-			services.AddScoped<IUserRepository, UserRepository>();
-			services.AddScoped<IOrderRepository, OrderRepository>();
-			services.AddScoped<IOrderService, OrderService>();
+            //services.AddScoped<IWalletRepository, WalletRepository>();
+			//services.AddScoped<IWalletService, WalletService>();
+			//services.AddScoped<IUserService, UserService>();
+			//services.AddScoped<IUserRepository, UserRepository>();
+			//services.AddScoped<IOrderRepository, OrderRepository>();
+			//services.AddScoped<IOrderService, OrderService>();
+			services.AddScoped<IPromotionPackageRepository, PromotionPackageRepository>();
+			services.AddScoped<IPromotionPackageService, PromotionPackageService>();
+
+			services.AddScoped<IRoleRepository, RoleRepository>();
+			services.AddScoped<IRoleService, RoleService>();
 
 		}
 	}

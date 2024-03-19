@@ -33,18 +33,6 @@ namespace SPay.API.Controllers
 			return Ok();
 		}
 
-		/// <summary>
-		/// Search cards by name
-		/// </summary>
-		/// <param name="request"></param>
-		/// <returns></returns>
-		[ProducesResponseType(typeof(SPayResponse<PaginatedList<TransactionResponse>>), StatusCodes.Status200OK)]
-		[HttpGet("search")]
-		public async Task<IActionResult> SearchTransactionAsync([FromQuery] AdminSearchRequest request)
-		{
-			var response = await _service.SearchTransactionAsync(request);
-			return Ok();
-		}
 
 		/// <summary>
 		/// Get order by key

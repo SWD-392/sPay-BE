@@ -16,7 +16,8 @@ namespace SPay.Repository.Enum
 		public static readonly string CARD_TYPE = "CT_";
 		public static readonly string TRANSACTION = "TR_";
 		public static readonly string WALLET = "WA_";
-		public static readonly string WALLET_TYPE = "WT_";
 		public static readonly string ORDER = "OR_";
+		public static readonly string PROMOTION_PACKAGE = "PK_";
+
 	}
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SPay.BO.DTOs.Auth.Request
+namespace SPay.BO.DTOs.CardType.Request
 {
-	public class GetListRoleRequest : PagingRequest
+	public class CreateOrUpdateCardTypeRequest
 	{
 	}
 }

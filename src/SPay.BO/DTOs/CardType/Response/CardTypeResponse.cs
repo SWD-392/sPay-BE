@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SPay.BO.DTOs.Admin.Card.Response
+namespace SPay.BO.DTOs.CardType.Response
 {
-	public class CardTypeResponse
+	public class CardTypeResponse 
 	{
 		public string CardTypeKey { get; set; } = null!;
 		public string? CardTypeName { get; set; }
-		public string? TypeDescription { get; set; }
-		public bool? WithdrawalAllowed { get; set; }
+		public string? Description { get; set; }
 	}
 }

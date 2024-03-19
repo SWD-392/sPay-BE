@@ -45,7 +45,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<Card>(entity =>
             {
                 entity.HasKey(e => e.CardKey)
-                    .HasName("PK__CARDS__5C3B5FF33E0D7EAB");
+                    .HasName("PK__CARDS__5C3B5FF39A5B1BA0");
 
                 entity.ToTable("CARDS");
 
@@ -96,7 +96,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<CardType>(entity =>
             {
                 entity.HasKey(e => e.CardTypeKey)
-                    .HasName("PK__CARD_TYP__2F24A98025F61E8F");
+                    .HasName("PK__CARD_TYP__2F24A9803E6D39DB");
 
                 entity.ToTable("CARD_TYPES");
 
@@ -123,7 +123,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<CardTypesStoreCategory>(entity =>
             {
                 entity.HasKey(e => new { e.CardTypeKey, e.StoreCateKey })
-                    .HasName("PK__CARD_TYP__B0478CED696256E8");
+                    .HasName("PK__CARD_TYP__B0478CED3CADCBFE");
 
                 entity.ToTable("CARD_TYPES_STORE_CATEGORIES");
 
@@ -141,11 +141,11 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<Membership>(entity =>
             {
                 entity.HasKey(e => new { e.UserKey, e.CardKey })
-                    .HasName("PK__MEMBERSH__7AD048C30762E0A4");
+                    .HasName("PK__MEMBERSH__7AD048C345A05BB0");
 
                 entity.ToTable("MEMBERSHIPS");
 
-                entity.HasIndex(e => e.MembershipKey, "UQ__MEMBERSH__9FFED3AF5E1D3C0A")
+                entity.HasIndex(e => e.MembershipKey, "UQ__MEMBERSH__9FFED3AFD38D59EB")
                     .IsUnique();
 
                 entity.Property(e => e.UserKey)
@@ -167,7 +167,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<MembershipsWallet>(entity =>
             {
                 entity.HasKey(e => new { e.MembershipKey, e.WalletKey })
-                    .HasName("PK__MEMBERSH__5DBF7650901F6932");
+                    .HasName("PK__MEMBERSH__5DBF7650A5035E38");
 
                 entity.ToTable("MEMBERSHIPS_WALLETS");
 
@@ -185,7 +185,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.HasKey(e => e.OrderKey)
-                    .HasName("PK__ORDERS__60FED20576EC00F3");
+                    .HasName("PK__ORDERS__60FED205E865A10D");
 
                 entity.ToTable("ORDERS");
 
@@ -231,7 +231,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<PromotionPackage>(entity =>
             {
                 entity.HasKey(e => e.PromotionPackageKey)
-                    .HasName("PK__PROMOTIO__907CFB851D186DA9");
+                    .HasName("PK__PROMOTIO__907CFB85AA557F0C");
 
                 entity.ToTable("PROMOTION_PACKAGES");
 
@@ -244,6 +244,8 @@ namespace SPay.BO.DataBase.Models
                     .HasMaxLength(255)
                     .HasColumnName("DESCRIPTION");
 
+                entity.Property(e => e.DiscountPercentage).HasColumnName("DISCOUNT_PERCENTAGE");
+
                 entity.Property(e => e.InsDate)
                     .HasColumnType("datetime")
                     .HasColumnName("INS_DATE");
@@ -252,13 +254,21 @@ namespace SPay.BO.DataBase.Models
                     .HasMaxLength(50)
                     .HasColumnName("NAME");
 
+                entity.Property(e => e.Price)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("PRICE");
+
                 entity.Property(e => e.Status).HasColumnName("STATUS");
+
+                entity.Property(e => e.ValueUsed)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("VALUE_USED");
             });
 
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasKey(e => e.RoleKey)
-                    .HasName("PK__ROLES__C88CECBB3CC48D3F");
+                    .HasName("PK__ROLES__C88CECBB8C1BE6D5");
 
                 entity.ToTable("ROLES");
 
@@ -283,7 +293,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<Store>(entity =>
             {
                 entity.HasKey(e => e.StoreKey)
-                    .HasName("PK__STORES__E5FD03F5F5283B4E");
+                    .HasName("PK__STORES__E5FD03F5B09EE9AB");
 
                 entity.ToTable("STORES");
 
@@ -337,7 +347,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<StoreCategory>(entity =>
             {
                 entity.HasKey(e => e.StoreCategoryKey)
-                    .HasName("PK__STORE_CA__74ED85658B1A0441");
+                    .HasName("PK__STORE_CA__74ED8565FAC7EEA9");
 
                 entity.ToTable("STORE_CATEGORIES");
 
@@ -403,11 +413,11 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.UserKey)
-                    .HasName("PK__USERS__5F13FD3CD206D7B3");
+                    .HasName("PK__USERS__5F13FD3C540DE867");
 
                 entity.ToTable("USERS");
 
-                entity.HasIndex(e => e.PhoneNumber, "UQ__USERS__D94A4FFB66FF7DA3")
+                entity.HasIndex(e => e.PhoneNumber, "UQ__USERS__D94A4FFBF45266B7")
                     .IsUnique();
 
                 entity.Property(e => e.UserKey)
@@ -455,7 +465,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<Wallet>(entity =>
             {
                 entity.HasKey(e => e.WalletKey)
-                    .HasName("PK__WALLETS__241A5FED34BF2004");
+                    .HasName("PK__WALLETS__241A5FEDE7A531F6");
 
                 entity.ToTable("WALLETS");
 
@@ -482,7 +492,7 @@ namespace SPay.BO.DataBase.Models
             modelBuilder.Entity<WithdrawInformation>(entity =>
             {
                 entity.HasKey(e => e.WithdrawKey)
-                    .HasName("PK__WITHDRAW__F02EFFAA1305F099");
+                    .HasName("PK__WITHDRAW__F02EFFAA7ED01FD1");
 
                 entity.ToTable("WITHDRAW_INFORMATIONS");
 

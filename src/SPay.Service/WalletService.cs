@@ -18,51 +18,52 @@ namespace SPay.Service
 		Task<IList<string>> GetListCardByUserKeyAsync(string userKey);
 
 	}
-	public class WalletService : IWalletService
+	public class WalletService /*IWalletService*/
 	{
 		private readonly IWalletRepository _repo;
         public WalletService(IWalletRepository _repo)
         {
             this._repo = _repo;
         }
-        public async Task<bool> CreateWalletAsync(CreateWalletModel model)
-		{
-			var wallet = new Wallet
-			{
-				WalletKey = model.WalletKey,
-				WalletTypeKey = model.WalletTypeKey,
-				CardKey = model.CardKey,
-				StoreKey = model.StoreKey,
-				CustomerKey = model.CustomerKey,
-				Balance = model.Balance,
-				Status = (byte)WalletStatusEnum.Active,
-				CreateAt = DateTimeHelper.GetDateTimeNow(),
-			};
-			return await _repo.CreateWalletAsync(wallet);
-		}
+  //      public async Task<bool> CreateWalletAsync(CreateWalletModel model)
+		//{
+		//	var wallet = new Wallet
+		//	{
+		//		WalletKey = model.WalletKey,
+		//		WalletTypeKey = model.WalletTypeKey,
+		//		CardKey = model.CardKey,
+		//		StoreKey = model.StoreKey,
+		//		CustomerKey = model.CustomerKey,
+		//		Balance = model.Balance,
+		//		Status = (byte)WalletStatusEnum.Active,
+		//		CreateAt = DateTimeHelper.GetDateTimeNow(),
+		//	};
+		//	return await _repo.CreateWalletAsync(wallet);
+		//}
 
-		public async Task<decimal?> GetBalanceOfUserAsync(GetBalanceModel model)
-		{
-			var wallet = await _repo.GetBalanceOfUserAsync(model);
-			if(wallet == null)
-			{
-				return 0;
-			}
-			return wallet.Balance;
-		}
+		//public async Task<decimal?> GetBalanceOfUserAsync(GetBalanceModel model)
+		//{
+		//	var wallet = await _repo.GetBalanceOfUserAsync(model);
+		//	if(wallet == null)
+		//	{
+		//		return 0;
+		//	}
+		//	return wallet.Balance;
+		//}
 
-		public async Task<IList<string>> GetListCardByUserKeyAsync(string userKey)
-		{
-			var wallets = await _repo.GetWalletCardByUserKeyAsync(userKey);
-			var result = new List<string>();
-			foreach(var wallet in wallets)
-			{
-				if (wallet.CardKey!=null)
-				{
-					result.Add(wallet.CardKey);
-				}
-			}
-			return result;
-		}
+		//public async Task<IList<string>> GetListCardByUserKeyAsync(string userKey)
+		//{
+		//	var wallets = await _repo.GetWalletCardByUserKeyAsync(userKey);
+		//	var result = new List<string>();
+		//	foreach(var wallet in wallets)
+		//	{
+		//		if (wallet.CardKey!=null)
+		//		{
+		//			result.Add(wallet.CardKey);
+		//		}
+		//	}
+		//	return result;
+		//}
+	
 	}
 }
