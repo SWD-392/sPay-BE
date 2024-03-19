@@ -20,13 +20,14 @@ namespace SPay.API
 
         public static void AddMasterServices(this IServiceCollection services)
         {
-            //services.AddScoped<ICustomerRepository, CustomerRepository>();
-            //services.AddScoped<ICustomerService, CustomerService>();
-            //services.AddScoped<IStoreRepository, StoreRepository>();
-            //services.AddScoped<IStoreService, StoreService>();
-            //services.AddScoped<ICardService, CardService>();
-            //services.AddScoped<ICardRepository, CardRepository>();
-            services.AddScoped<ITransactionService, TransactionService>();
+			//services.AddScoped<ICustomerRepository, CustomerRepository>();
+			//services.AddScoped<ICustomerService, CustomerService>();
+			//services.AddScoped<IStoreRepository, StoreRepository>();
+			//services.AddScoped<IStoreService, StoreService>();
+			//services.AddScoped<ICardService, CardService>();
+			services.AddScoped<ICardRepository, CardRepository>();
+
+			services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             //services.AddScoped<IWalletRepository, WalletRepository>();
 			//services.AddScoped<IWalletService, WalletService>();
@@ -40,6 +41,17 @@ namespace SPay.API
 			services.AddScoped<IRoleRepository, RoleRepository>();
 			services.AddScoped<IRoleService, RoleService>();
 
+			services.AddScoped<ICardService, CardService>();
+			services.AddScoped<ICardRepository, CardRepository>();
+
+			services.AddScoped<ICardTypeService, CardTypeService>();
+			services.AddScoped<ICardTypeRepository, CardTypeRepository>();
+
+			services.AddScoped<IStoreCategoryService, StoreCategoryService>();
+			services.AddScoped<IStoreCategoryRepository, StoreCategoryRepository>();
+
+			services.AddScoped<IStoreService, StoreService>();
+			services.AddScoped<IStoreRepository, StoreRepository>();
 		}
 	}
 }

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using SPay.BO.DataBase.Models;
-using SPay.BO.DTOs.Admin.Card.Response;
 using SPay.BO.DTOs.Admin.Order.Response;
 using SPay.BO.DTOs.PromotionPackage.Request;
 using SPay.BO.DTOs.PromotionPackage.Response;
@@ -112,7 +111,7 @@ namespace SPay.Service
 				}
 				response.Data = success;
 				response.Success = true;
-				response.Message = "Order delete successfully";
+				response.Message = "Promotion package delete successfully";
 			}
 			catch (Exception ex)
 			{

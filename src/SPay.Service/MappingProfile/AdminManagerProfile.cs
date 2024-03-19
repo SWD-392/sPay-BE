@@ -5,16 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using SPay.BO.DataBase.Models;
-using SPay.BO.DTOs.Admin.Card.Request;
-using SPay.BO.DTOs.Admin.Card.Response;
 using SPay.BO.DTOs.Admin.Order.Response;
-using SPay.BO.DTOs.Admin.Store.Response;
 using SPay.BO.DTOs.Admin.User;
+using SPay.BO.DTOs.Card.Request;
+using SPay.BO.DTOs.Card.Response;
 using SPay.BO.DTOs.CardType.Request;
 using SPay.BO.DTOs.CardType.Response;
 using SPay.BO.DTOs.PromotionPackage.Request;
 using SPay.BO.DTOs.PromotionPackage.Response;
 using SPay.BO.DTOs.Role.Response;
+using SPay.BO.DTOs.Store.Request;
+using SPay.BO.DTOs.Store.Response;
+using SPay.BO.DTOs.StoreCategory.Request;
+using SPay.BO.DTOs.StoreCategory.Response;
+
 
 namespace SPay.Service.MappingProfile
 {
@@ -29,6 +33,15 @@ namespace SPay.Service.MappingProfile
 
 			CreateMap<CardType, CardTypeResponse>();
 			CreateMap<CreateOrUpdateCardTypeRequest, CardType>();
+
+			CreateMap<StoreCategory, StoreCateResponse>();
+			CreateMap<CreateOrUpdateStoreCateRequest, StoreCategory>();
+
+			CreateMap<Store, StoreResponse>();
+			CreateMap<CreateOrUpdateStoreRequest, Store>();
+
+			CreateMap<Card, CardResponse>();
+			CreateMap<CreateOrUpdateCardRequest, Card>();
 
 			//CreateMap<Store, StoreResponse>()
 			//             .ForMember(dest => dest.No, opt => opt.Ignore())
@@ -85,7 +98,7 @@ namespace SPay.Service.MappingProfile
 			//	.ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))
 			//	.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
 
-			CreateMap<CreateCardRequest, CardType>().ReverseMap();
+			CreateMap<CreateOrUpdateCardRequest, CardType>().ReverseMap();
 
 		//	CreateMap<CreateUserModel, User>()
 		//		.ForMember(dest => dest.UserKey, opt => opt.MapFrom(src => src.UserKey))

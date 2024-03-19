@@ -11,7 +11,7 @@ namespace SPay.BO.DataBase.Models
         }
 
         public string CardTypeKey { get; set; } = null!;
-        public string? CardTypeName { get; set; }
+        public string CardTypeName { get; set; } = null!;
         public string? Description { get; set; }
         public byte Status { get; set; }
         public DateTime InsDate { get; set; }

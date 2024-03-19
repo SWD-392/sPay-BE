@@ -6,8 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using SPay.BO.DataBase.Models;
-using SPay.BO.DTOs.Admin.Card.Response;
-using SPay.BO.DTOs.Admin.Store.Response;
 
 namespace SPay.Service.MappingProfile
 {

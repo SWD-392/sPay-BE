@@ -8,7 +8,6 @@ using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Admin.Transaction.Request;
 using SPay.BO.DTOs.Admin.Transaction.Response;
 using SPay.BO.DTOs.Admin;
-using SPay.BO.DTOs.Admin.Store.Response;
 using SPay.BO.Extention.Paginate;
 using SPay.Repository;
 using SPay.Service.Response;

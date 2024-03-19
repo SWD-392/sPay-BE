@@ -15,5 +15,7 @@ namespace SPay.BO.DTOs.PromotionPackage.Response
 		public decimal? ValueUsed { get; set; }
 		public byte DiscountPercentage { get; set; }
 		public decimal? Price { get; set; }
+		public byte NumberDate { get; set; }
+		public bool WithdrawAllowed { get; set; }
 	}
 }

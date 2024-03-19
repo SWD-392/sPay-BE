@@ -1,87 +1,203 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using System.Transactions;
-//using AutoMapper;
-//using Microsoft.EntityFrameworkCore.Metadata.Internal;
-//using SPay.BO.DataBase.Models;
-//using SPay.BO.DTOs;
-//using SPay.BO.DTOs.Admin;
-//using SPay.BO.DTOs.Admin.Card.Response;
-//using SPay.BO.DTOs.Admin.Store.Request;
-//using SPay.BO.DTOs.Admin.Store.Response;
-//using SPay.BO.DTOs.Admin.User;
-//using SPay.BO.DTOs.Admin.Wallet;
-//using SPay.BO.Extention.Paginate;
-//using SPay.Repository;
-//using SPay.Repository.Enum;
-//using SPay.Service.Response;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Transactions;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using SPay.BO.DataBase.Models;
+using SPay.BO.DTOs;
+using SPay.BO.DTOs.Admin;
+using SPay.BO.DTOs.Admin.User;
+using SPay.BO.DTOs.Admin.Wallet;
+using SPay.BO.DTOs.Store.Request;
+using SPay.BO.DTOs.Store.Response;
+using SPay.BO.Extention.Paginate;
+using SPay.Repository;
+using SPay.Repository.Enum;
+using SPay.Service.Response;
+using SPay.Service.Utils;
+using Microsoft.IdentityModel.Tokens;
 
-//namespace SPay.Service
-//{
-//    public interface IStoreService
-//	{
-//		Task<SPayResponse<PaginatedList<StoreResponse>>> GetAllStoreInfoAsync(GetAllStoreRequest request);
-//		Task<SPayResponse<PaginatedList<StoreResponse>>> SearchStoreAsync();
-//		Task<SPayResponse<bool>> DeleteStoreAsync(string key);
-//		Task<SPayResponse<bool>> CreateStoreAsync(CreateStoreRequest request);
-//		Task<SPayResponse<StoreResponse>> GetStoreByKeyAsync(string key);
-//		Task<SPayResponse<IList<StoreCateResponse>>> GetAllStoreCateAsync();
-//		Task<SPayResponse<StoreCateResponse>> GetStoreCateByKeyAsync(string storeCateKey);
+namespace SPay.Service
+{
+	public interface IStoreService
+	{
+		Task<SPayResponse<PaginatedList<StoreResponse>>> GetListStoreAsync(GetListStoreRequest request);
+		Task<SPayResponse<StoreResponse>> GetStoreByKeyAsync(string key);
+		Task<SPayResponse<bool>> DeleteStoreAsync(string key);
+		Task<SPayResponse<bool>> CreateStoreAsync(CreateOrUpdateStoreRequest request);
+		Task<SPayResponse<bool>> UpdateStoreAsync(string key, CreateOrUpdateStoreRequest request);
 
-//	}
-//	public class StoreService : IStoreService
-//	{
-//		private readonly IStoreRepository _storeRepository;
-//		private readonly IMapper _mapper;
-//		private readonly IWalletRepository _walletRepo;
-//		private readonly IWalletService _walletService;
-//		private readonly IUserService _userService;
+	}
+	public class StoreService : IStoreService
+	{
+		private readonly IStoreRepository _repo;
+		private readonly IMapper _mapper;
 
-//		public StoreService(IStoreRepository _storeRepository, IMapper _mapper, IWalletRepository walletRepo, IWalletService _walletService, IUserService _userService)
-//		{
-//			this._storeRepository = _storeRepository;
-//			this._mapper = _mapper;
-//			_walletRepo = walletRepo;
-//			this._walletService = _walletService;
-//			this._userService = _userService;
-//		}
+		public StoreService(IStoreRepository repo, IMapper mapper)
+		{
+			_repo = repo;
+			_mapper = mapper;
+		}
 
-//		public Task<SPayResponse<bool>> CreateStoreAsync(CreateStoreRequest request)
-//		{
-//			throw new NotImplementedException();
-//		}
+		public async Task<SPayResponse<bool>> CreateStoreAsync(CreateOrUpdateStoreRequest request)
+		{
+			SPayResponse<bool> response = new SPayResponse<bool>();
+			try
+			{
+				if (request == null)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Request model is required!");
+					return response;
+				}
+				var createStoreInfo = _mapper.Map<Store>(request);
+				if (createStoreInfo == null)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+					return response;
+				}
+				createStoreInfo.StoreKey = string.Format("{0}{1}", PrefixKeyConstant.STORE_CATE, Guid.NewGuid().ToString().ToUpper());
+				createStoreInfo.InsDate = DateTimeHelper.GetDateTimeNow();
+				createStoreInfo.Status = (byte)BasicStatusEnum.Available;
+				if (!await _repo.CreateStoreAsync(createStoreInfo))
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+					return response;
+				}
+				response.Data = true;
+				response.Success = true;
+				response.Message = "Create a store successfully";
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
+		}
 
-//		public Task<SPayResponse<bool>> DeleteStoreAsync(string key)
-//		{
-//			throw new NotImplementedException();
-//		}
+		public async Task<SPayResponse<bool>> DeleteStoreAsync(string key)
+		{
+			SPayResponse<bool> response = new SPayResponse<bool>();
+			try
+			{
+				var existedStore = await _repo.GetStoreByKeyAsync(key);
+				if (existedStore.StoreKey.IsNullOrEmpty())
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Cannot find store to delete!");
+					response.Error = SPayResponseHelper.NOT_FOUND;
+					return response;
+				}
+				var success = await _repo.DeleteStoreAsync(existedStore);
+				if (success == false)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+					return response;
+				}
+				response.Data = success;
+				response.Success = true;
+				response.Message = "Store delete successfully";
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
+		}
 
-//		public Task<SPayResponse<IList<StoreCateResponse>>> GetAllStoreCateAsync()
-//		{
-//			throw new NotImplementedException();
-//		}
+		public async Task<SPayResponse<PaginatedList<StoreResponse>>> GetListStoreAsync(GetListStoreRequest request)
+		{
+			var response = new SPayResponse<PaginatedList<StoreResponse>>();
+			try
+			{
+				var storeCates = await _repo.GetListStoreAsync(request);
+				if (storeCates.Count <= 0)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Store has no row in database.");
+					return response;
+				}
+				var res = _mapper.Map<IList<StoreResponse>>(storeCates);
+				var count = 0;
+				foreach (var item in res)
+				{
+					item.No = ++count;
+				}
+				response.Data = await res.ToPaginateAsync(request); ;
+				response.Success = true;
+				response.Message = "Get list store successfully";
+				return response;
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
+		}
 
-//		public Task<SPayResponse<PaginatedList<StoreResponse>>> GetAllStoreInfoAsync(GetAllStoreRequest request)
-//		{
-//			throw new NotImplementedException();
-//		}
+		public async Task<SPayResponse<StoreResponse>> GetStoreByKeyAsync(string key)
+		{
+			var response = new SPayResponse<StoreResponse>();
+			try
+			{
+				var storeCate = await _repo.GetStoreByKeyAsync(key);
+				if (storeCate.StoreKey.IsNullOrEmpty())
+				{
+					SPayResponseHelper.SetErrorResponse(response, $"Not found store with key: {key}");
+					return response;
+				}
+				var res = _mapper.Map<StoreResponse>(storeCate);
+				response.Data = res;
+				response.Success = true;
+				response.Message = "Get store successfully";
+				return response;
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
+		}
 
-//		public Task<SPayResponse<StoreResponse>> GetStoreByKeyAsync(string key)
-//		{
-//			throw new NotImplementedException();
-//		}
+		public async Task<SPayResponse<bool>> UpdateStoreAsync(string key, CreateOrUpdateStoreRequest request)
+		{
+			SPayResponse<bool> response = new SPayResponse<bool>();
+			try
+			{
+				if (request == null)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Request model is required!");
+					return response;
+				}
 
-//		public Task<SPayResponse<StoreCateResponse>> GetStoreCateByKeyAsync(string storeCateKey)
-//		{
-//			throw new NotImplementedException();
-//		}
+				var existedStore = await _repo.GetStoreByKeyAsync(key);
+				if (existedStore.StoreKey.IsNullOrEmpty())
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Cannot find store to update!");
+					response.Error = SPayResponseHelper.NOT_FOUND;
+					return response;
+				}
 
-//		public Task<SPayResponse<PaginatedList<StoreResponse>>> SearchStoreAsync()
-//		{
-//			throw new NotImplementedException();
-//		}
-//	}
-//}
+				var updatedStore = _mapper.Map<Store>(request);
+				if (updatedStore == null)
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+					return response;
+				}
+				if (!await _repo.UpdateStoreAsync(key, updatedStore))
+				{
+					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+					return response;
+				}
+				response.Data = true;
+				response.Success = true;
+				response.Message = $"Update the store with key: {key} successfully";
+			}
+			catch (Exception ex)
+			{
+				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+			}
+			return response;
+		}
+	}
+}

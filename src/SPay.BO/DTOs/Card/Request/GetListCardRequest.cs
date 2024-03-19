@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SPay.BO.DTOs.Admin.Store.Request
+namespace SPay.BO.DTOs.Card.Request
 {
-    public class UpdateStoreRequest
+    public class GetListCardRequest : PagingRequest
     {
-
     }
 }

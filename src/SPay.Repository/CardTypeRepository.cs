@@ -57,7 +57,8 @@ namespace SPay.Repository
 
 		public async Task<bool> UpdateCardTypeAsync(string key, CardType updatedPackage)
 		{
-			var existedCardType = await _context.CardTypes.SingleOrDefaultAsync(p => p.CardTypeKey.Equals(key));
+			var existedCardType = await _context.CardTypes.SingleOrDefaultAsync(p => p.CardTypeKey.Equals(key)
+			&& !p.Status.Equals((byte)BasicStatusEnum.Deleted));
 			if (existedCardType == null)
 			{
 				return false;

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SPay.BO.DataBase.Models;
+using SPay.BO.DTOs.Card.Request;
 using SPay.Repository.Enum;
 using static System.Formats.Asn1.AsnWriter;
 
@@ -12,16 +13,13 @@ namespace SPay.Repository
 {
     public interface ICardRepository
     {
-		Task<IList<CardType>> GetAllCardTypeAsync();
-		Task<IList<CardType>> GetCardTypeByStoreCateKeyAsync(string storeCateKey);
-		Task<IList<Card>> GetAllAsync();
+		Task<IList<Card>> GetListCardAsync(GetListCardRequest request);
 		Task<Card> GetCardByKeyAsync(string key);
-		Task<IList<Card>> SearchCardByNameAsync(string keyWord);
-        Task<bool> DeleteCardAsync(Card existedCard);
-		Task<bool> CreateCardAsync(Card card);
-		Task<IList<Card>> GetListCardByCustomerKey(string customerKey);
+		Task<bool> DeleteCardAsync(Card cardExisted);
+		Task<bool> CreateCardAsync(Card item);
+		Task<bool> UpdateCardAsync(string key, Card updatedCard);
 	}
-	public class CardRepository /*ICardRepository*/
+	public class CardRepository: ICardRepository
     {
         private readonly SpayDBContext _context;
         public CardRepository(SpayDBContext _context)
@@ -29,58 +27,49 @@ namespace SPay.Repository
             this._context = _context;
         }
 
-		//public async Task<bool> DeleteCardAsync(Card existedCard)
-		//{
-  //          existedCard.Status = (byte)CardStatusEnum.Deleted;
-  //          return await _context.SaveChangesAsync() > 0;
-		//}
+		public async Task<bool> CreateCardAsync(Card item)
+		{
+			_context.Cards.Add(item);
+			return await _context.SaveChangesAsync() > 0;
+		}
 
-		//public async Task<IList<Card>> GetAllAsync()
-  //      {
-  //          var cards = await _context.Cards
-  //              .Where(c => c.Status != (byte)CardStatusEnum.Deleted)
-  //              .Include(c => c.CardTypeKeyNavigation)
-  //              .ToListAsync();
-  //          return cards;
-  //      }
+		public async Task<bool> DeleteCardAsync(Card cardExisted)
+		{
+			cardExisted.Status = (byte)BasicStatusEnum.Deleted;
+			return await _context.SaveChangesAsync() > 0;
+		}
 
-		//public async Task<Card> GetCardByKeyAsync(string key)
-		//{
-		//	var card = await _context.Cards
-	 //                   .Include(c => c.CardTypeKeyNavigation)
-	 //                   .FirstOrDefaultAsync(c => c.CardKey == key && c.Status != (byte)CardStatusEnum.Deleted);
-		//	return card;
-		//}
+		public async Task<Card> GetCardByKeyAsync(string key)
+		{
+			var response = await _context.Cards.SingleOrDefaultAsync(
+											ct => ct.CardKey.Equals(key)
+											&& !ct.Status.Equals((byte)BasicStatusEnum.Deleted));
 
-		//public async Task<bool> CreateCardAsync(Card card)
-		//{
-		//	_context.Cards.Add(card);
-		//	return await _context.SaveChangesAsync() > 0;
-		//}
+			return response ?? new Card();
+		}
 
-		//public async Task<IList<CardType>> GetAllCardTypeAsync()
-		//{
-		//	return await _context.CardTypes.ToListAsync();
-		//}
+		public async Task<IList<Card>> GetListCardAsync(GetListCardRequest request)
+		{
+			var response = await _context.Cards
+				.Where(pp => !pp.Status.Equals((byte)BasicStatusEnum.Deleted))
+				.ToListAsync();
+			return response;
+		}
 
-		//public async Task<IList<Card>> GetListCardByCustomerKey(string customerKey)
-		//{
-		//	var result = new List<Card>();
-		//	var keyList = await _context.Wallets.Where(w => w.CustomerKey.Equals(customerKey) && w.CardKey != null).Select(w => w.CardKey).ToListAsync();
-		//	foreach (var cardKey in keyList)
-		//	{
-		//		result.Add(await GetCardByKeyAsync(cardKey));
-		//	}
-		//	return result;
-		//}
+		public async Task<bool> UpdateCardAsync(string key, Card updatedCard)
+		{
+			var existedCard = await _context.Cards.SingleOrDefaultAsync(c => c.CardKey.Equals(key) 
+													&& !c.Status.Equals((byte)BasicStatusEnum.Deleted));
+			if (existedCard == null)
+			{
+				return false;
+			}
 
-		//public async Task<IList<CardType>> GetCardTypeByStoreCateKeyAsync(string storeCateKey)
-		//{
-		//	var cardTypes = await _context.CardTypes.Join(_context.CardStoreCategories.Where(x => x.StoreCategoryKey.Equals(storeCateKey)), 
-		//											ct => ct.CardTypeKey, 
-		//											cs => cs.CardTypeKey,
-		//											(ct, cs) => ct).ToListAsync();
-		//	return cardTypes;
-		//}
+			existedCard.CardTypeKey = updatedCard.CardTypeKey;
+			existedCard.CardName = updatedCard.CardName;
+			existedCard.Description = updatedCard.Description;
+			existedCard.PromotionPackageKey = updatedCard.PromotionPackageKey;
+			return await _context.SaveChangesAsync() > 0;
+		}
 	}
 }

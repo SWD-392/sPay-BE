@@ -22,7 +22,7 @@ namespace SPay.API.Controllers
 		}
 
 		/// <summary>
-		/// Get all GetListPromotionPackage
+		/// Get list promotion package
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
@@ -39,7 +39,7 @@ namespace SPay.API.Controllers
 		}
 
 		/// <summary>
-		/// Get GetListPromotionPackage by key
+		/// Get promotion package by key
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>

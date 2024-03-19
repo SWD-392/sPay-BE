@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SPay.BO.DataBase.Models;
+using SPay.BO.DTOs.StoreCategory.Request;
 using SPay.Repository.Enum;
 
 namespace SPay.Repository
 {
 	public interface IStoreCategoryRepository
 	{
-		Task<IList<StoreCategory>> GetListStoreCategoryAsync();
+		Task<IList<StoreCategory>> GetListStoreCategoryAsync(GetListStoreCateRequest request);
 		Task<StoreCategory> GetStoreCategoryByKeyAsync(string key);
 		Task<bool> DeleteStoreCategoryAsync(StoreCategory storeCategoryExisted);
 		Task<bool> CreateStoreCategoryAsync(StoreCategory item);
@@ -38,12 +39,16 @@ namespace SPay.Repository
 			return await _context.SaveChangesAsync() > 0;
 		}
 
-		public async Task<IList<StoreCategory>> GetListStoreCategoryAsync()
+		public async Task<IList<StoreCategory>> GetListStoreCategoryAsync(GetListStoreCateRequest request)
 		{
-			var response = await _context.StoreCategories
+			var query = _context.StoreCategories
 				.Where(pp => !pp.Status.Equals((byte)BasicStatusEnum.Deleted))
-				.ToListAsync();
-			return response;
+				.AsQueryable();
+			if (!string.IsNullOrEmpty(request.Name))
+			{
+				query = query.Where(p => p.CategoryName.Contains(request.Name));
+			} 
+			return await query.ToListAsync();
 		}
 
 		public async Task<StoreCategory> GetStoreCategoryByKeyAsync(string key)

@@ -11,7 +11,7 @@ namespace SPay.BO.DataBase.Models
         }
 
         public string RoleKey { get; set; } = null!;
-        public string? RoleName { get; set; }
+        public string RoleName { get; set; } = null!;
         public string? Description { get; set; }
         public DateTime InsDate { get; set; }
 

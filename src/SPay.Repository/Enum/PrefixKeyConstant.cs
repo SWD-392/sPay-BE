@@ -10,6 +10,8 @@ namespace SPay.Repository.Enum
 	public static class PrefixKeyConstant
 	{
 		public static readonly string STORE = "ST_";
+		public static readonly string STORE_CATE = "SC_";
+
 		public static readonly string CUSTOMER = "CU_";
 		public static readonly string USER = "US_";
 		public static readonly string CARD = "CA_";

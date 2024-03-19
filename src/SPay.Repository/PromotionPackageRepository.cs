@@ -63,7 +63,7 @@ namespace SPay.Repository
 				return false;
 			}
 
-			existedPackage.Name = updatedPackage.Name;
+			existedPackage.PackageName = updatedPackage.PackageName;
 			existedPackage.Description = updatedPackage.Description;
 			existedPackage.DiscountPercentage = updatedPackage.DiscountPercentage;
 			existedPackage.ValueUsed = updatedPackage.ValueUsed;
