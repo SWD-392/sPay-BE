@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Admin.Order.Response;
-using SPay.BO.DTOs.Admin.User;
 using SPay.BO.DTOs.Card.Request;
 using SPay.BO.DTOs.Card.Response;
 using SPay.BO.DTOs.CardType.Request;

@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs;
 using SPay.BO.DTOs.Admin;
-using SPay.BO.DTOs.Admin.User;
 using SPay.BO.DTOs.Admin.Wallet;
 using SPay.BO.DTOs.Store.Request;
 using SPay.BO.DTOs.Store.Response;
