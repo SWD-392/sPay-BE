@@ -17,7 +17,8 @@ using SPay.BO.DTOs.Store.Request;
 using SPay.BO.DTOs.Store.Response;
 using SPay.BO.DTOs.StoreCategory.Request;
 using SPay.BO.DTOs.StoreCategory.Response;
-
+using SPay.BO.DTOs.User.Request;
+using SPay.BO.DTOs.User.Response;
 
 namespace SPay.Service.MappingProfile
 {
@@ -41,6 +42,10 @@ namespace SPay.Service.MappingProfile
 
 			CreateMap<Card, CardResponse>();
 			CreateMap<CreateOrUpdateCardRequest, Card>();
+
+			CreateMap<User, UserResponse>();
+			CreateMap<CreateOrUpdateUserRequest, User>();
+
 
 			//CreateMap<Store, StoreResponse>()
 			//             .ForMember(dest => dest.No, opt => opt.Ignore())

@@ -9,7 +9,7 @@ using SPay.BO.DTOs.Store.Response;
 
 namespace SPay.API.Controllers
 {
-	[Route("api/v1/[controller]")]
+    [Route("api/v1/[controller]")]
 	[ApiController]
 	public class StoresController : ControllerBase
 	{

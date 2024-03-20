@@ -21,7 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace SPay.Service
 {
-	public interface IStoreService
+    public interface IStoreService
 	{
 		Task<SPayResponse<PaginatedList<StoreResponse>>> GetListStoreAsync(GetListStoreRequest request);
 		Task<SPayResponse<StoreResponse>> GetStoreByKeyAsync(string key);

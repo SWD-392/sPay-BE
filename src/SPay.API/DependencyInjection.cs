@@ -52,6 +52,9 @@ namespace SPay.API
 
 			services.AddScoped<IStoreService, StoreService>();
 			services.AddScoped<IStoreRepository, StoreRepository>();
+
+			services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IUserRepository, UserRepository>();
 		}
 	}
 }
