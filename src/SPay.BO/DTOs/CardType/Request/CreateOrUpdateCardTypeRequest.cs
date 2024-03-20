@@ -8,5 +8,7 @@ namespace SPay.BO.DTOs.CardType.Request
 {
 	public class CreateOrUpdateCardTypeRequest
 	{
+		public string CardTypeName { get; set; } = null!;
+		public string? Description { get; set; }
 	}
 }

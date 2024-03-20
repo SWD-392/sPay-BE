@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using SPay.BO.DataBase.Models;
+using SPay.BO.DTOs.Card.Request;
 using SPay.BO.DTOs.CardType.Request;
 using SPay.BO.DTOs.CardType.Response;
 using SPay.BO.DTOs.PromotionPackage.Response;
@@ -29,11 +30,13 @@ namespace SPay.Service
 	public class CardTypeService : ICardTypeService
 	{
 		private readonly ICardTypeRepository _repo;
+		private readonly ICardRepository _repoCard;
 		private readonly IMapper _mapper;
 
-		public CardTypeService(ICardTypeRepository repo, IMapper mapper)
+		public CardTypeService(ICardTypeRepository repo, ICardRepository repoCard, IMapper mapper)
 		{
 			_repo = repo;
+			_repoCard = repoCard;
 			_mapper = mapper;
 		}
 
@@ -141,6 +144,8 @@ namespace SPay.Service
 				foreach (var item in res)
 				{
 					item.No = ++count;
+					var cardList = await _repoCard.GetListCardAsync(new GetListCardRequest { CardTypeKey = item.CardTypeKey });
+					item.TotalCardUse = cardList.Count; 
 				}
 				response.Data = await res.ToPaginateAsync(request); ;
 				response.Success = true;

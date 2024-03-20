@@ -50,10 +50,20 @@ namespace SPay.Repository
 
 		public async Task<IList<Card>> GetListCardAsync(GetListCardRequest request)
 		{
-			var response = await _context.Cards
+			var query = _context.Cards
 				.Where(pp => !pp.Status.Equals((byte)BasicStatusEnum.Deleted))
-				.ToListAsync();
-			return response;
+				.AsQueryable();
+			if (!string.IsNullOrEmpty(request.CardTypeKey))
+			{
+				query = query.Where(p => p.CardTypeKey.Equals(request.CardTypeKey));
+			}
+
+			if (!string.IsNullOrEmpty(request.PromotionPackageKey))
+			{
+				query = query.Where(p => p.PromotionPackageKey.Equals(request.PromotionPackageKey));
+			}
+
+			return await query.ToListAsync();
 		}
 
 		public async Task<bool> UpdateCardAsync(string key, Card updatedCard)

@@ -12,5 +12,6 @@ namespace SPay.BO.DTOs.CardType.Response
 		public string CardTypeKey { get; set; } = null!;
 		public string? CardTypeName { get; set; }
 		public string? Description { get; set; }
+		public int TotalCardUse { get; set; }
 	}
 }

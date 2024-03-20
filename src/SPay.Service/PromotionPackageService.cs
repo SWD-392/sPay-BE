@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Admin.Order.Response;
+using SPay.BO.DTOs.Card.Request;
 using SPay.BO.DTOs.PromotionPackage.Request;
 using SPay.BO.DTOs.PromotionPackage.Response;
 using SPay.BO.Extention.Paginate;
@@ -29,11 +30,13 @@ namespace SPay.Service
 	public class PromotionPackageService : IPromotionPackageService
 	{
 		private readonly IPromotionPackageRepository _repo;
+		private readonly ICardRepository _repoCard;
 		private readonly IMapper _mapper;
 
-		public PromotionPackageService(IPromotionPackageRepository repo, IMapper mapper)
+		public PromotionPackageService(IPromotionPackageRepository repo, ICardRepository repoCard, IMapper mapper)
 		{
 			_repo = repo;
+			_repoCard = repoCard;
 			_mapper = mapper;
 		}
 
@@ -53,6 +56,8 @@ namespace SPay.Service
 				foreach (var item in res)
 				{
 					item.No = ++count;
+					var cardList = await _repoCard.GetListCardAsync(new GetListCardRequest { PromotionPackageKey = item.PromotionPackageKey });
+					item.TotalCardUse = cardList.Count;
 				}
 				response.Data = await res.ToPaginateAsync(request); ;
 				response.Success = true;
