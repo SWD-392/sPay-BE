@@ -7,6 +7,7 @@ namespace SPay.BO.DataBase.Models
     {
         public string CardKey { get; set; } = null!;
         public string CardTypeKey { get; set; } = null!;
+        public string CardNo { get; set; } = null!;
         public string CardName { get; set; } = null!;
         public string? Description { get; set; }
         public string PromotionPackageKey { get; set; } = null!;

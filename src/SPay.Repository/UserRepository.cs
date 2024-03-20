@@ -13,7 +13,6 @@ using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Auth.Request;
 using SPay.BO.DTOs.Auth.Response;
 using SPay.BO.DTOs.User.Request;
-using SPay.BO.DTOs.User.Request;
 using SPay.Repository.Enum;
 
 namespace SPay.Repository
@@ -22,7 +21,7 @@ namespace SPay.Repository
 	{
 		//Task<User> LoginAsync(LoginRequest request);
 		Task<IList<User>> GetListUserAsync(GetListUserRequest request, bool isStore = false);
-		Task<User> GetUserByKeyAsync(string key);
+		Task<User> GetUserByKeyAsync(string key, bool isStore = false);
 		Task<bool> DeleteUserAsync(User UserExisted);
 		Task<bool> CreateUserAsync(User item, bool isStore = false);
 		Task<bool> UpdateUserAsync(string key, User updatedUser);
@@ -62,7 +61,7 @@ namespace SPay.Repository
 
 		public async Task<IList<User>> GetListUserAsync(GetListUserRequest request, bool isStore = false)
 		{
-			var roleKey = GetRoleKeyAsync(isStore);
+			var roleKey = await GetRoleKeyAsync(isStore);
 			var query = _context.Users
 				.Where(u => !u.Status.Equals((byte)BasicStatusEnum.Deleted)
 							&& u.RoleKey.Equals(roleKey))
@@ -80,10 +79,12 @@ namespace SPay.Repository
 			return await query.ToListAsync();
 		}
 
-		public async Task<User> GetUserByKeyAsync(string key)
+		public async Task<User> GetUserByKeyAsync(string key, bool isStore = false)
 		{
+			var roleKey = await GetRoleKeyAsync(isStore);
 			var response = await _context.Users.SingleOrDefaultAsync(
 											u => u.UserKey.Equals(key)
+											&& u.RoleKey.Equals(roleKey)
 											&& !u.Status.Equals((byte)BasicStatusEnum.Deleted));
 
 			return response ?? new User();

@@ -55,6 +55,7 @@ namespace SPay.Service
 					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
 					return response;
 				}
+				createCardInfo.CardNo = DateTimeHelper.GenerateUniqueQRCode();
 				createCardInfo.CardKey = string.Format("{0}{1}", PrefixKeyConstant.CARD, Guid.NewGuid().ToString().ToUpper());
 				createCardInfo.InsDate = DateTimeHelper.GetDateTimeNow();
 				createCardInfo.Status = (byte)BasicStatusEnum.Available;

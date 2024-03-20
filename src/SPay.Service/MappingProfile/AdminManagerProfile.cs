@@ -40,7 +40,15 @@ namespace SPay.Service.MappingProfile
 			CreateMap<Store, StoreResponse>();
 			CreateMap<CreateOrUpdateStoreRequest, Store>();
 
-			CreateMap<Card, CardResponse>();
+			CreateMap<Card, CardResponse>()
+				             .ForMember(dest => dest.No, opt => opt.Ignore())
+							 .ForMember(dest => dest.CardTypeName, opt => opt.MapFrom(src => src.CardTypeKeyNavigation.CardTypeName))
+							 .ForMember(dest => dest.ValueUsed, opt => opt.MapFrom(src => src.PromotionPackageKeyNavigation.ValueUsed))
+							 .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.PromotionPackageKeyNavigation.DiscountPercentage))
+							 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.PromotionPackageKeyNavigation.Price))
+							 .ForMember(dest => dest.NumberDate, opt => opt.MapFrom(src => src.PromotionPackageKeyNavigation.NumberDate))
+							 .ForMember(dest => dest.PackageName, opt => opt.MapFrom(src => src.PromotionPackageKeyNavigation.PackageName));
+
 			CreateMap<CreateOrUpdateCardRequest, Card>();
 
 			CreateMap<User, UserResponse>();

@@ -41,16 +41,18 @@ namespace SPay.Repository
 
 		public async Task<Card> GetCardByKeyAsync(string key)
 		{
-			var response = await _context.Cards.SingleOrDefaultAsync(
-											ct => ct.CardKey.Equals(key)
-											&& !ct.Status.Equals((byte)BasicStatusEnum.Deleted));
-
+			var response = await _context.Cards.Include(c => c.CardTypeKeyNavigation)
+									.Include(c => c.PromotionPackageKeyNavigation)
+									.SingleOrDefaultAsync(ct => ct.CardKey.Equals(key)
+														&& !ct.Status.Equals((byte)BasicStatusEnum.Deleted));
 			return response ?? new Card();
 		}
 
 		public async Task<IList<Card>> GetListCardAsync(GetListCardRequest request)
 		{
 			var query = _context.Cards
+				.Include(c => c.CardTypeKeyNavigation)
+				.Include(c => c.PromotionPackageKeyNavigation)
 				.Where(pp => !pp.Status.Equals((byte)BasicStatusEnum.Deleted))
 				.AsQueryable();
 			if (!string.IsNullOrEmpty(request.CardTypeKey))
