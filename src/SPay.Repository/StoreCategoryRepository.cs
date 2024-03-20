@@ -42,11 +42,12 @@ namespace SPay.Repository
 		public async Task<IList<StoreCategory>> GetListStoreCategoryAsync(GetListStoreCateRequest request)
 		{
 			var query = _context.StoreCategories
-				.Where(pp => !pp.Status.Equals((byte)BasicStatusEnum.Deleted))
+				.Where(st => !st.Status.Equals((byte)BasicStatusEnum.Deleted))
+				.OrderByDescending(st => st.InsDate)
 				.AsQueryable();
 			if (!string.IsNullOrEmpty(request.Name))
 			{
-				query = query.Where(p => p.CategoryName.Contains(request.Name));
+				query = query.Where(st => st.CategoryName.Contains(request.Name));
 			} 
 			return await query.ToListAsync();
 		}
@@ -54,15 +55,15 @@ namespace SPay.Repository
 		public async Task<StoreCategory> GetStoreCategoryByKeyAsync(string key)
 		{
 			var response = await _context.StoreCategories.SingleOrDefaultAsync(
-											ct => ct.StoreCategoryKey.Equals(key)
-											&& !ct.Status.Equals((byte)BasicStatusEnum.Deleted));
+											st => st.StoreCategoryKey.Equals(key)
+											&& !st.Status.Equals((byte)BasicStatusEnum.Deleted));
 
 			return response ?? new StoreCategory();
 		}
 
 		public async Task<bool> UpdateStoreCategoryAsync(string key, StoreCategory updatedStoreCate)
 		{
-			var existedStoreCate = await _context.StoreCategories.SingleOrDefaultAsync(p => p.StoreCategoryKey.Equals(key));
+			var existedStoreCate = await _context.StoreCategories.SingleOrDefaultAsync(st => st.StoreCategoryKey.Equals(key));
 			if (existedStoreCate == null)
 			{
 				return false;

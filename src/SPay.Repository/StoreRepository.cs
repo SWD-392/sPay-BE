@@ -46,10 +46,11 @@ namespace SPay.Repository
 		{
 			var query = _context.Stores
 				.Where(pp => !pp.Status.Equals((byte)BasicStatusEnum.Deleted))
+				.OrderByDescending(s => s.InsDate)
 				.AsQueryable();
 			if (!string.IsNullOrEmpty(request.Name))
 			{
-				query = query.Where(p => p.StoreName.Contains(request.Name));
+				query = query.Where(s => s.StoreName.Contains(request.Name));
 			}
 			return await query.ToListAsync();
 		}
@@ -57,20 +58,19 @@ namespace SPay.Repository
 		public async Task<Store> GetStoreByKeyAsync(string key)
 		{
 			var response = await _context.Stores.SingleOrDefaultAsync(
-											ct => ct.StoreKey.Equals(key)
-											&& !ct.Status.Equals((byte)BasicStatusEnum.Deleted));
+											s => s.StoreKey.Equals(key)
+											&& !s.Status.Equals((byte)BasicStatusEnum.Deleted));
 
 			return response ?? new Store();
 		}
 
 		public async Task<bool> UpdateStoreAsync(string key, Store updatedStore)
 		{
-			var existedStore = await _context.Stores.SingleOrDefaultAsync(p => p.StoreKey.Equals(key));
+			var existedStore = await _context.Stores.SingleOrDefaultAsync(s => s.StoreKey.Equals(key));
 			if (existedStore == null)
 			{
 				return false;
 			}
-
 			existedStore.StoreName = updatedStore.StoreName;
 			existedStore.Description = updatedStore.Description;
 			return await _context.SaveChangesAsync() > 0;

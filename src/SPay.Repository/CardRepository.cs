@@ -54,6 +54,7 @@ namespace SPay.Repository
 				.Include(c => c.CardTypeKeyNavigation)
 				.Include(c => c.PromotionPackageKeyNavigation)
 				.Where(pp => !pp.Status.Equals((byte)BasicStatusEnum.Deleted))
+				.OrderByDescending(e => e.InsDate)
 				.AsQueryable();
 			if (!string.IsNullOrEmpty(request.CardTypeKey))
 			{

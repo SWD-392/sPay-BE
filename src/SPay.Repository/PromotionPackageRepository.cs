@@ -30,6 +30,7 @@ namespace SPay.Repository
 		{
 			var response = await _context.PromotionPackages
 				.Where(pp => !pp.Status.Equals((byte)BasicStatusEnum.Deleted))
+				.OrderByDescending(pp => pp.InsDate)
 				.ToListAsync();
 			return response;
 		}

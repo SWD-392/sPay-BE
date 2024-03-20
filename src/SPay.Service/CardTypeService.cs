@@ -133,7 +133,7 @@ namespace SPay.Service
 			var response = new SPayResponse<PaginatedList<CardTypeResponse>>();
 			try
 			{
-				var cards = await _repo.GetListCardTypeAsync();
+				var cards = await _repo.GetListCardTypeAsync(request);
 				if (cards.Count <= 0)
 				{
 					SPayResponseHelper.SetErrorResponse(response, "Card type has no row in database.");
