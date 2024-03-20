@@ -68,6 +68,8 @@ namespace SPay.Repository
 			existedPackage.DiscountPercentage = updatedPackage.DiscountPercentage;
 			existedPackage.ValueUsed = updatedPackage.ValueUsed;
 			existedPackage.Price = updatedPackage.Price;
+			existedPackage.WithdrawAllowed = updatedPackage.WithdrawAllowed;
+			existedPackage.NumberDate = updatedPackage.NumberDate;
 			return await _context.SaveChangesAsync() > 0;
 		}
 	}

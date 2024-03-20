@@ -182,7 +182,7 @@ namespace SPay.Service
 				}
 				if (!await _repo.UpdatePromotionPackageAsync(key, updatedPackage))
 				{
-					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+					SPayResponseHelper.SetErrorResponse(response, "Error cause nothing change or something in update function in repository!");
 					return response;
 				}
 				response.Data = true;
