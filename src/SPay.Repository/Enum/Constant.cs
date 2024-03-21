@@ -22,8 +22,8 @@ namespace SPay.Repository.Enum
 
 		public static class Wallet
 		{
-			public const string DES_FOR_DEFAULT_MEMBERSHIP = "Ví sử dụng cho thẻ {0}";
-			public const string DES_FOR_OTHER_MEMBERSHIP = "The email has already used";
+			public const string DES_FOR_DEFAULT_MEMBERSHIP = "Ví dành cho membership default";
+			public const string DES_FOR_OTHER_MEMBERSHIP = "Ví sử dụng cho thẻ {0}";
 			public const decimal DEFAULT_BALANCE = 0;
 		}
 

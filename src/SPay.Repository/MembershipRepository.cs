@@ -101,7 +101,7 @@ namespace SPay.Repository
 					// Thêm một wallet mới và một membershipsWallet mới vào context
 					if (item.CardKey != null)
 					{
-						var cardInfo = await _context.Cards.SingleOrDefaultAsync(c => c.CardKey.Equals(item.CardKey));
+						var cardInfo = await _context.Cards.Include(c => c.PromotionPackageKeyNavigation).SingleOrDefaultAsync(c => c.CardKey.Equals(item.CardKey));
 
 						if (cardInfo == null)
 						{
