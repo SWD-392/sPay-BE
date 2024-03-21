@@ -12,7 +12,8 @@ namespace SPay.BO.DataBase.Models
 
         public string MembershipKey { get; set; } = null!;
         public string UserKey { get; set; } = null!;
-        public string CardKey { get; set; } = null!;
+        public string? CardKey { get; set; }
+        public bool IsDefaultMembership { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
     }

@@ -19,6 +19,7 @@ namespace SPay.BO.DataBase.Models
         public byte Status { get; set; }
         public DateTime InsDate { get; set; }
 
+        public virtual StoreCategory StoreCateKeyNavigation { get; set; } = null!;
         public virtual User UserKeyNavigation { get; set; } = null!;
         public virtual Wallet WalletKeyNavigation { get; set; } = null!;
         public virtual ICollection<Order> Orders { get; set; }

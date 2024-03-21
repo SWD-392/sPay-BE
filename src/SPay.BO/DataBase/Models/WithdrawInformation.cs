@@ -7,7 +7,7 @@ namespace SPay.BO.DataBase.Models
     {
         public string WithdrawKey { get; set; } = null!;
         public string UserKey { get; set; } = null!;
-        public decimal? Value { get; set; }
+        public decimal? TotalAmount { get; set; }
         public byte Status { get; set; }
         public DateTime InsDate { get; set; }
     }

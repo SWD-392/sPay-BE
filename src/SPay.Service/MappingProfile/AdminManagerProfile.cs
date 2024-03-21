@@ -10,6 +10,8 @@ using SPay.BO.DTOs.Card.Request;
 using SPay.BO.DTOs.Card.Response;
 using SPay.BO.DTOs.CardType.Request;
 using SPay.BO.DTOs.CardType.Response;
+using SPay.BO.DTOs.Membership.Request;
+using SPay.BO.DTOs.Membership.Response;
 using SPay.BO.DTOs.PromotionPackage.Request;
 using SPay.BO.DTOs.PromotionPackage.Response;
 using SPay.BO.DTOs.Role.Response;
@@ -37,13 +39,21 @@ namespace SPay.Service.MappingProfile
 			CreateMap<StoreCategory, StoreCateResponse>();
 			CreateMap<CreateOrUpdateStoreCateRequest, StoreCategory>();
 
-			CreateMap<Store, StoreResponse>();
+			CreateMap<Membership, MembershipResponse>();
+			CreateMap<CreateOrUpdateMembershipRequest, Membership>();
+
+			CreateMap<Store, StoreResponse>()
+				.ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.UserKeyNavigation.Fullname))
+				.ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.UserKeyNavigation.PhoneNumber))
+				.ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.WalletKeyNavigation.Balance))
+				.ForMember(dest => dest.StoreCategoryName, opt => opt.MapFrom(src => src.StoreCateKeyNavigation.CategoryName));
+			;
 			CreateMap<CreateOrUpdateStoreRequest, Store>();
 
 			CreateMap<Card, CardResponse>()
 				             .ForMember(dest => dest.No, opt => opt.Ignore())
 							 .ForMember(dest => dest.CardTypeName, opt => opt.MapFrom(src => src.CardTypeKeyNavigation.CardTypeName))
-							 .ForMember(dest => dest.ValueUsed, opt => opt.MapFrom(src => src.PromotionPackageKeyNavigation.ValueUsed))
+							 .ForMember(dest => dest.UsaebleAmount, opt => opt.MapFrom(src => src.PromotionPackageKeyNavigation.UsaebleAmount))
 							 .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.PromotionPackageKeyNavigation.DiscountPercentage))
 							 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.PromotionPackageKeyNavigation.Price))
 							 .ForMember(dest => dest.NumberDate, opt => opt.MapFrom(src => src.PromotionPackageKeyNavigation.NumberDate))

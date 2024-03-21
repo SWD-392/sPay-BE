@@ -20,6 +20,8 @@ namespace SPay.Repository.Enum
 		public static readonly string WALLET = "WA_";
 		public static readonly string ORDER = "OR_";
 		public static readonly string PROMOTION_PACKAGE = "PK_";
+		public static readonly string MEMBERSHIP = "ME_";
+
 
 	}
 }

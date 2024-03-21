@@ -46,12 +46,31 @@ namespace SPay.Repository
 		{
 			var query = _context.Stores
 				.Where(pp => !pp.Status.Equals((byte)BasicStatusEnum.Deleted))
+				.Include(s => s.UserKeyNavigation)
+				.Include(s => s.WalletKeyNavigation)
+				.Include(s => s.StoreCateKeyNavigation)
 				.OrderByDescending(s => s.InsDate)
 				.AsQueryable();
-			if (!string.IsNullOrEmpty(request.Name))
+			if (!string.IsNullOrEmpty(request.StoreName))
 			{
-				query = query.Where(s => s.StoreName.Contains(request.Name));
+				query = query.Where(s => s.StoreName.Contains(request.StoreName));
 			}
+
+			if (!string.IsNullOrEmpty(request.StoreCateKey))
+			{
+				query = query.Where(s => s.StoreCateKey.Contains(request.StoreCateKey));
+			}
+
+			if (!string.IsNullOrEmpty(request.OwnerName))
+			{
+				query = query.Where(s => s.UserKeyNavigation.Fullname.Contains(request.OwnerName));
+			}
+
+			if (!string.IsNullOrEmpty(request.OwnerNumberPhone))
+			{
+				query = query.Where(s => s.UserKeyNavigation.PhoneNumber.Contains(request.OwnerNumberPhone));
+			}
+
 			return await query.ToListAsync();
 		}
 

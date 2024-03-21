@@ -9,6 +9,7 @@ namespace SPay.BO.DataBase.Models
         public string MembershipKey { get; set; } = null!;
         public string StoreKey { get; set; } = null!;
         public string? Description { get; set; }
+        public decimal? TotalAmount { get; set; }
         public byte Status { get; set; }
         public DateTime InsDate { get; set; }
 

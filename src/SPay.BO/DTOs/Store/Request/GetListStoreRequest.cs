@@ -8,6 +8,9 @@ namespace SPay.BO.DTOs.Store.Request
 {
     public class GetListStoreRequest : PagingRequest
     {
-        public string? Name { get; set; } = null;
-    }
+        public string? StoreName { get; set; } = null;
+		public string? OwnerName { get; set; } = null;
+		public string? OwnerNumberPhone { get; set; } = null;
+		public string? StoreCateKey { get; set; } = null;
+	}
 }

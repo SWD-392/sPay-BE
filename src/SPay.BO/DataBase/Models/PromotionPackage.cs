@@ -13,7 +13,7 @@ namespace SPay.BO.DataBase.Models
         public string PromotionPackageKey { get; set; } = null!;
         public string PackageName { get; set; } = null!;
         public string? Description { get; set; }
-        public decimal ValueUsed { get; set; }
+        public decimal UsaebleAmount { get; set; }
         public byte DiscountPercentage { get; set; }
         public decimal? Price { get; set; }
         public byte NumberDate { get; set; }

@@ -55,6 +55,9 @@ namespace SPay.API
 
 			services.AddScoped<IUserService, UserService>();
 			services.AddScoped<IUserRepository, UserRepository>();
+
+			services.AddScoped<IMembershipService, MembershipService>();
+			services.AddScoped<IMembershipRepository, MembershipRepository>();
 		}
 	}
 }

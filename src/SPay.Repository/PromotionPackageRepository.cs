@@ -67,7 +67,7 @@ namespace SPay.Repository
 			existedPackage.PackageName = updatedPackage.PackageName;
 			existedPackage.Description = updatedPackage.Description;
 			existedPackage.DiscountPercentage = updatedPackage.DiscountPercentage;
-			existedPackage.ValueUsed = updatedPackage.ValueUsed;
+			existedPackage.UsaebleAmount = updatedPackage.UsaebleAmount;
 			existedPackage.Price = updatedPackage.Price;
 			existedPackage.WithdrawAllowed = updatedPackage.WithdrawAllowed;
 			existedPackage.NumberDate = updatedPackage.NumberDate;
