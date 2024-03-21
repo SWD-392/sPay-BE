@@ -14,8 +14,5 @@ namespace SPay.Repository.Enum
 
 		[Description("Hết hạn")]
 		Expired = 2,
-
-		[Description("Đã bị xoá")]
-		Deleted = 3,
 	}
 }

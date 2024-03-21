@@ -28,29 +28,52 @@ namespace SPay.Repository
 	}
 	public class UserRepository : IUserRepository
 	{
-		private const string CUSTOMER_ROLE = "Customer";
-		private const string STORE_ROLE = "Customer";
 
 		private readonly SpayDBContext _context;
-        public UserRepository(SpayDBContext _context)
+		private readonly IMembershipRepository _memRepo;
+        public UserRepository(SpayDBContext _context, IMembershipRepository _memRepo)
         {
             this._context = _context;
+			this._memRepo = _memRepo;
         }
 
 		public async Task<bool> CreateUserAsync(User item ,bool isStore = false)
 		{
+			using (var transaction = _context.Database.BeginTransaction())
+			{
+				try
+				{
+					var roleKey = await GetRoleKeyAsync(isStore);
+					if (roleKey == null)
+					{
+						return false;
+					}
 
-			var roleKey = await GetRoleKeyAsync(isStore);
-			if (roleKey != null)
-			{
-				item.RoleKey = roleKey;
-				_context.Users.Add(item);
-				return await _context.SaveChangesAsync() > 0;
+					item.RoleKey = roleKey;
+					_context.Users.Add(item);
+
+					var defaultMembership = new Membership();
+					defaultMembership.MembershipKey = string.Format("{0}{1}", PrefixKeyConstant.MEMBERSHIP, Guid.NewGuid().ToString().ToUpper());
+					defaultMembership.CardKey = null;
+					defaultMembership.UserKey = item.UserKey;
+					await _memRepo.CreateMembershipAsync(defaultMembership);
+
+					// Lưu các thay đổi vào cơ sở dữ liệu
+					await _context.SaveChangesAsync();
+
+					// Commit transaction nếu thành công
+					await transaction.CommitAsync();
+
+					// Trả về true nếu thành công
+					return true;
+				}
+				catch (Exception ex)
+				{
+					await transaction.RollbackAsync();
+					throw new Exception(ex.Message + "so all change was roll back");
+				}
 			}
-			else
-			{
-				return false;
-			}
+
 		}
 
 		public async Task<bool> DeleteUserAsync(User userCategoryExisted)
@@ -116,14 +139,14 @@ namespace SPay.Repository
 			var roleQuery = _context.Roles.AsQueryable();
 			if (isStore)
 			{
-				roleQuery = roleQuery.Where(r => r.RoleName.Equals(STORE_ROLE));
+				roleQuery = roleQuery.Where(r => r.RoleName.Equals(Constant.Role.STORE_ROLE));
 			}
 			else
 			{
-				roleQuery = roleQuery.Where(r => r.RoleName.Equals(CUSTOMER_ROLE));
+				roleQuery = roleQuery.Where(r => r.RoleName.Equals(Constant.Role.CUSTOMER_ROLE));
 			}
 
-			var role = await roleQuery.FirstOrDefaultAsync();
+			var role = await roleQuery.SingleOrDefaultAsync();
 			if (role != null)
 			{
 				return role.RoleKey;

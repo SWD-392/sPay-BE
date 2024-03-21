@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Membership.Request;
 using SPay.Repository.Enum;
@@ -89,8 +92,64 @@ namespace SPay.Repository
 
 		public async Task<bool> CreateMembershipAsync(Membership item)
 		{
-			_context.Memberships.Add(item);
-			return await _context.SaveChangesAsync() > 0;
+			using (var transaction = _context.Database.BeginTransaction())
+			{
+				try
+				{
+
+					var walletInfo = new Wallet();
+					// Thêm một wallet mới và một membershipsWallet mới vào context
+					if (item.CardKey != null)
+					{
+						var cardInfo = await _context.Cards.SingleOrDefaultAsync(c => c.CardKey.Equals(item.CardKey));
+
+						if (cardInfo == null)
+						{
+							throw new Exception($"Card with key '{item.CardKey}' not found.");
+						}
+
+						//Set due date for using membership
+						item.ExpiritionDate = GetDateTimeNow().AddDays(cardInfo.PromotionPackageKeyNavigation.NumberDate);
+
+						//Create wallet following card info
+						walletInfo.Balance = cardInfo.PromotionPackageKeyNavigation.UsaebleAmount;
+						walletInfo.Description = string.Format(Constant.Wallet.DES_FOR_OTHER_MEMBERSHIP, cardInfo.CardName);
+					}
+					else
+					{
+						
+						walletInfo.Balance = Constant.Wallet.DEFAULT_BALANCE;
+						walletInfo.Description = Constant.Wallet.DES_FOR_DEFAULT_MEMBERSHIP;
+					}
+					walletInfo.WalletKey = string.Format("{0}{1}", PrefixKeyConstant.WALLET, Guid.NewGuid().ToString().ToUpper());
+					walletInfo.Status = (byte)WalletStatusEnum.Active;
+					walletInfo.InsDate = GetDateTimeNow();
+					// Thêm membership vào context
+					_context.Memberships.Add(item);
+
+					_context.Wallets.Add(walletInfo);
+					var membershipWalletRelation = new MembershipsWallet { MembershipKey = item.MembershipKey, WalletKey = walletInfo.WalletKey };
+					_context.MembershipsWallets.Add(membershipWalletRelation);
+
+					// Lưu các thay đổi vào cơ sở dữ liệu
+					await _context.SaveChangesAsync();
+
+					// Commit transaction nếu thành công
+					await transaction.CommitAsync();
+
+					// Trả về true nếu thành công
+					return true;
+				}
+				catch (Exception ex)
+				{
+					await transaction.RollbackAsync();
+					throw new Exception(ex.Message + "so all change was roll back");
+				}
+			}
+		}
+		private DateTime GetDateTimeNow()
+		{
+			return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
 		}
 	}
 }

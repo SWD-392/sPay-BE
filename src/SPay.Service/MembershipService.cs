@@ -21,6 +21,8 @@ namespace SPay.Service
 		Task<SPayResponse<PaginatedList<MembershipResponse>>> GetListMembershipAsync(GetListMembershipRequest request);
 		Task<SPayResponse<MembershipResponse>> GetMembershipByKeyAsync(string key);
 		Task<SPayResponse<bool>> CreateMembershipAsync(CreateOrUpdateMembershipRequest request);
+		Task<bool> CreateDefaultMembershipAsync(string UserKey);
+
 	}
 	public class MembershipService : IMembershipService
 	{
@@ -117,6 +119,11 @@ namespace SPay.Service
 				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
 			}
 			return response;
+		}
+
+		public Task<bool> CreateDefaultMembershipAsync(string UserKey)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

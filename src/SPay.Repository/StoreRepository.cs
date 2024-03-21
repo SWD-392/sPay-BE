@@ -76,9 +76,12 @@ namespace SPay.Repository
 
 		public async Task<Store> GetStoreByKeyAsync(string key)
 		{
-			var response = await _context.Stores.SingleOrDefaultAsync(
-											s => s.StoreKey.Equals(key)
-											&& !s.Status.Equals((byte)BasicStatusEnum.Deleted));
+			var response = await _context.Stores
+										.Include(s => s.UserKeyNavigation)
+										.Include(s => s.WalletKeyNavigation)
+										.Include(s => s.StoreCateKeyNavigation)
+										.SingleOrDefaultAsync(s => s.StoreKey.Equals(key)
+										&& !s.Status.Equals((byte)BasicStatusEnum.Deleted));
 			if (response == null)
 			{
 				throw new Exception($"Store with key '{key}' not found.");

@@ -48,7 +48,7 @@ namespace SPay.Service.MappingProfile
 				.ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.UserKeyNavigation.PhoneNumber))
 				.ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.WalletKeyNavigation.Balance))
 				.ForMember(dest => dest.StoreCategoryName, opt => opt.MapFrom(src => src.StoreCateKeyNavigation.CategoryName));
-			;
+
 			CreateMap<CreateOrUpdateStoreRequest, Store>();
 
 			CreateMap<Card, CardResponse>()
