@@ -82,12 +82,7 @@ namespace SPay.Service
 			try
 			{
 				var existedStore = await _repo.GetStoreByKeyAsync(key);
-				if (existedStore.StoreKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find store to delete!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
+
 				var success = await _repo.DeleteStoreAsync(existedStore);
 				if (success == false)
 				{
@@ -140,11 +135,6 @@ namespace SPay.Service
 			try
 			{
 				var storeCate = await _repo.GetStoreByKeyAsync(key);
-				if (storeCate.StoreKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, $"Not found store with key: {key}");
-					return response;
-				}
 				var res = _mapper.Map<StoreResponse>(storeCate);
 				response.Data = res;
 				response.Success = true;
@@ -170,12 +160,6 @@ namespace SPay.Service
 				}
 
 				var existedStore = await _repo.GetStoreByKeyAsync(key);
-				if (existedStore.StoreKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find store to update!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
 
 				var updatedStore = _mapper.Map<Store>(request);
 				if (updatedStore == null)
@@ -183,11 +167,8 @@ namespace SPay.Service
 					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
 					return response;
 				}
-				if (!await _repo.UpdateStoreAsync(key, updatedStore))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
-					return response;
-				}
+				await _repo.UpdateStoreAsync(key, updatedStore);
+
 				response.Data = true;
 				response.Success = true;
 				response.Message = $"Update the store with key: {key} successfully";

@@ -81,12 +81,7 @@ namespace SPay.Service
 			try
 			{
 				var existedCardType = await _repo.GetCardTypeByKeyAsync(key);
-				if (existedCardType.CardTypeKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find card type to delete!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
+
 				var success = await _repo.DeleteCardTypeAsync(existedCardType);
 				if (success == false)
 				{
@@ -110,11 +105,6 @@ namespace SPay.Service
 			try
 			{
 				var cardType = await _repo.GetCardTypeByKeyAsync(key);
-				if (cardType.CardTypeKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, $"Not found card type with key: {key}");
-					return response;
-				}
 				var res = _mapper.Map<CardTypeResponse>(cardType);
 				response.Data = res;
 				response.Success = true;
@@ -171,12 +161,6 @@ namespace SPay.Service
 				}
 
 				var existedCardType = await _repo.GetCardTypeByKeyAsync(key);
-				if (existedCardType.CardTypeKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find card type to update!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
 
 				var updatedCardType = _mapper.Map<CardType>(request);
 				if (updatedCardType == null)
@@ -184,11 +168,7 @@ namespace SPay.Service
 					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
 					return response;
 				}
-				if (!await _repo.UpdateCardTypeAsync(key, updatedCardType))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
-					return response;
-				}
+				await _repo.UpdateCardTypeAsync(key, updatedCardType);
 				response.Data = true;
 				response.Success = true;
 				response.Message = $"Update the card type with key: {key} successfully";

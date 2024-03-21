@@ -57,8 +57,11 @@ namespace SPay.Repository
 			var response = await _context.StoreCategories.SingleOrDefaultAsync(
 											st => st.StoreCategoryKey.Equals(key)
 											&& !st.Status.Equals((byte)BasicStatusEnum.Deleted));
-
-			return response ?? new StoreCategory();
+			if (response == null)
+			{
+				throw new Exception($"Store category with key '{key}' not found.");
+			}
+			return response;
 		}
 
 		public async Task<bool> UpdateStoreCategoryAsync(string key, StoreCategory updatedStoreCate)
@@ -71,7 +74,11 @@ namespace SPay.Repository
 
 			existedStoreCate.CategoryName = updatedStoreCate.CategoryName;
 			existedStoreCate.Description = updatedStoreCate.Description;
-			return await _context.SaveChangesAsync() > 0;
+			if (await _context.SaveChangesAsync() <= 0)
+			{
+				throw new Exception($"Nothing is update!");
+			}
+			return true;
 		}
 	}
 }

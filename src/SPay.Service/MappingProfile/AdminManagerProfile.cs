@@ -21,6 +21,7 @@ using SPay.BO.DTOs.StoreCategory.Request;
 using SPay.BO.DTOs.StoreCategory.Response;
 using SPay.BO.DTOs.User.Request;
 using SPay.BO.DTOs.User.Response;
+using SPay.Repository.ResponseDTO;
 
 namespace SPay.Service.MappingProfile
 {
@@ -63,6 +64,19 @@ namespace SPay.Service.MappingProfile
 
 			CreateMap<User, UserResponse>();
 			CreateMap<CreateOrUpdateUserRequest, User>();
+
+			CreateMap<MembershipResponseDTO, MembershipResponse>()
+				.ForMember(dest => dest.MembershipKey, opt => opt.MapFrom(src => src.Membership.MembershipKey))
+				.ForMember(dest => dest.UserKey, opt => opt.MapFrom(src => src.Membership.UserKey))
+				.ForMember(dest => dest.CardName, opt => opt.MapFrom(src => src.Card.CardName))
+				.ForMember(dest => dest.CardTypeName, opt => opt.MapFrom(src => src.CardType.CardTypeName))
+				.ForMember(dest => dest.CardDescription, opt => opt.MapFrom(src => src.Card.Description))
+				.ForMember(dest => dest.StoreCateName, opt => opt.MapFrom(src => src.StoreCategory.CategoryName))
+				.ForMember(dest => dest.UsaebleAmount, opt => opt.MapFrom(src => src.PromotionPackage.UsaebleAmount))
+				.ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.Wallet.Balance))
+				.ForMember(dest => dest.WithdrawAllowed, opt => opt.MapFrom(src => src.PromotionPackage.WithdrawAllowed))
+				.ForMember(dest => dest.ExpiredDate, opt => opt.MapFrom(src => src.Membership.ExpiritionDate))
+				.ForMember(dest => dest.IsDefaultMembership, opt => opt.MapFrom(src => src.Membership.IsDefaultMembership));
 
 
 			//CreateMap<Store, StoreResponse>()

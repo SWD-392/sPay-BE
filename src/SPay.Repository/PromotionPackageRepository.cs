@@ -40,8 +40,11 @@ namespace SPay.Repository
 			var response = await _context.PromotionPackages.SingleOrDefaultAsync(
 											pp => pp.PromotionPackageKey.Equals(key)
 											&& !pp.Status.Equals((byte)BasicStatusEnum.Deleted));
-
-			return response ?? new PromotionPackage();
+			if (response == null)
+			{
+				throw new Exception($"Promotion package with key '{key}' not found.");
+			}
+			return response;
 		}
 
 		public async Task<bool> DeletePromotionPackageAsync(PromotionPackage packageExisted)
@@ -71,7 +74,11 @@ namespace SPay.Repository
 			existedPackage.Price = updatedPackage.Price;
 			existedPackage.WithdrawAllowed = updatedPackage.WithdrawAllowed;
 			existedPackage.NumberDate = updatedPackage.NumberDate;
-			return await _context.SaveChangesAsync() > 0;
+			if (await _context.SaveChangesAsync() <= 0)
+			{
+				throw new Exception($"Nothing is update!");
+			}
+			return true;
 		}
 	}
 }

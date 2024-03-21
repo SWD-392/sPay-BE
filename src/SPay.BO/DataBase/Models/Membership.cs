@@ -14,6 +14,7 @@ namespace SPay.BO.DataBase.Models
         public string UserKey { get; set; } = null!;
         public string? CardKey { get; set; }
         public bool IsDefaultMembership { get; set; }
+        public DateTime? ExpiritionDate { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
     }

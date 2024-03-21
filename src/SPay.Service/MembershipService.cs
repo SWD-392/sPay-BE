@@ -71,13 +71,13 @@ namespace SPay.Service
 			var response = new SPayResponse<MembershipResponse>();
 			try
 			{
-				var Membership = await _repo.GetMembershipByKeyAsync(key);
-				if (Membership.MembershipKey.IsNullOrEmpty())
+				var membershipRes = await _repo.GetMembershipByKeyAsync(key);
+				if (membershipRes.Membership.MembershipKey.IsNullOrEmpty())
 				{
 					SPayResponseHelper.SetErrorResponse(response, $"Not found Membership with key: {key}");
 					return response;
 				}
-				var res = _mapper.Map<MembershipResponse>(Membership);
+				var res = _mapper.Map<MembershipResponse>(membershipRes);
 				response.Data = res;
 				response.Success = true;
 				response.Message = "Get Membership successfully";
@@ -95,13 +95,13 @@ namespace SPay.Service
 			var response = new SPayResponse<PaginatedList<MembershipResponse>>();
 			try
 			{
-				var Memberships = await _repo.GetListMembershipAsync(request);
-				if (Memberships.Count <= 0)
+				var memberships = await _repo.GetListMembershipAsync(request);
+				if (memberships.Count <= 0)
 				{
 					SPayResponseHelper.SetErrorResponse(response, "Membership has no row in database.");
 					return response;
 				}
-				var res = _mapper.Map<IList<MembershipResponse>>(Memberships);
+				var res = _mapper.Map<IList<MembershipResponse>>(memberships);
 				var count = 0;
 				foreach (var item in res)
 				{

@@ -78,12 +78,6 @@ namespace SPay.Service
 			try
 			{
 				var existedStoreCate = await _repo.GetStoreCategoryByKeyAsync(key);
-				if (existedStoreCate.StoreCategoryKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find store category to delete!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
 				var success = await _repo.DeleteStoreCategoryAsync(existedStoreCate);
 				if (success == false)
 				{
@@ -136,11 +130,6 @@ namespace SPay.Service
 			try
 			{
 				var storeCate = await _repo.GetStoreCategoryByKeyAsync(key);
-				if (storeCate.StoreCategoryKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, $"Not found store category with key: {key}");
-					return response;
-				}
 				var res = _mapper.Map<StoreCateResponse>(storeCate);
 				response.Data = res;
 				response.Success = true;
@@ -166,12 +155,6 @@ namespace SPay.Service
 				}
 
 				var existedStoreCate = await _repo.GetStoreCategoryByKeyAsync(key);
-				if (existedStoreCate.StoreCategoryKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find store category to update!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
 
 				var updatedStoreCate = _mapper.Map<StoreCategory>(request);
 				if (updatedStoreCate == null)
@@ -179,11 +162,7 @@ namespace SPay.Service
 					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
 					return response;
 				}
-				if (!await _repo.UpdateStoreCategoryAsync(key, updatedStoreCate))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
-					return response;
-				}
+				await _repo.UpdateStoreCategoryAsync(key, updatedStoreCate);
 				response.Data = true;
 				response.Success = true;
 				response.Message = $"Update the store category with key: {key} successfully";

@@ -78,11 +78,6 @@ namespace SPay.Service
 			try
 			{
 				var promotionPackage = await _repo.GetPromotionPackageByKeyAsync(key);
-				if (promotionPackage.PromotionPackageKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, $"Not found promotion package with key: {key}");
-					return response;
-				}
 				var res = _mapper.Map<PromotionPackageResponse>(promotionPackage);
 				response.Data = res;
 				response.Success = true;
@@ -102,12 +97,6 @@ namespace SPay.Service
 			try
 			{
 				var existedProPackage = await _repo.GetPromotionPackageByKeyAsync(key);
-				if (existedProPackage.PromotionPackageKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find promotion package to delete!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
 				var success = await _repo.DeletePromotionPackageAsync(existedProPackage);
 				if (success == false)
 				{
@@ -172,24 +161,15 @@ namespace SPay.Service
 				}
 
 				var existedProPackage = await _repo.GetPromotionPackageByKeyAsync(key);
-				if (existedProPackage.PromotionPackageKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find promotion package to update!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
 
 				var updatedPackage = _mapper.Map<PromotionPackage>(request);
 				if (updatedPackage == null)
 				{
-					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
+					SPayResponseHelper.SetErrorResponse(response, "Something was wrong in Mapper!");
 					return response;
 				}
-				if (!await _repo.UpdatePromotionPackageAsync(key, updatedPackage))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Error cause nothing change or something in update function in repository!");
-					return response;
-				}
+				await _repo.UpdatePromotionPackageAsync(key, updatedPackage);
+
 				response.Data = true;
 				response.Success = true;
 				response.Message = $"Update the promotion package with key: {key} successfully";

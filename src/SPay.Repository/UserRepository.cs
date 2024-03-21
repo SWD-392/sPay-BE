@@ -86,8 +86,11 @@ namespace SPay.Repository
 											u => u.UserKey.Equals(key)
 											&& u.RoleKey.Equals(roleKey)
 											&& !u.Status.Equals((byte)BasicStatusEnum.Deleted));
-
-			return response ?? new User();
+			if (response == null)
+			{
+				throw new Exception($"User with key '{key}' not found.");
+			}
+			return response;
 		}
 
 		public async Task<bool> UpdateUserAsync(string key, User updatedUser)
@@ -101,7 +104,11 @@ namespace SPay.Repository
 			existedUser.Fullname = updatedUser.Fullname;
 			existedUser.Password = updatedUser.Password;
 			existedUser.PhoneNumber = updatedUser.PhoneNumber;
-			return await _context.SaveChangesAsync() > 0;
+			if (await _context.SaveChangesAsync() <= 0)
+			{
+				throw new Exception($"Nothing is update!");
+			}
+			return true;
 		}
 
 		private async Task<string> GetRoleKeyAsync(bool isStore)

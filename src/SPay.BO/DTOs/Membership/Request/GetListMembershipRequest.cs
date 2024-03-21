@@ -9,5 +9,6 @@ namespace SPay.BO.DTOs.Membership.Request
 	public class GetListMembershipRequest : PagingRequest
 	{
 		public string? UserKey { get; set; } = null;
+		public string? StoreCateKey { get; set; } = null;
 	}
 }

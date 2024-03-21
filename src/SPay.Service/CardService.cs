@@ -81,12 +81,7 @@ namespace SPay.Service
 			try
 			{
 				var existedcard = await _repo.GetCardByKeyAsync(key);
-				if (existedcard.CardKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find card to delete!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
+
 				var success = await _repo.DeleteCardAsync(existedcard);
 				if (success == false)
 				{
@@ -110,11 +105,6 @@ namespace SPay.Service
 			try
 			{
 				var card = await _repo.GetCardByKeyAsync(key);
-				if (card.CardKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, $"Not found card with key: {key}");
-					return response;
-				}
 				var res = _mapper.Map<CardResponse>(card);
 				response.Data = res;
 				response.Success = true;
@@ -169,12 +159,6 @@ namespace SPay.Service
 				}
 
 				var existedCard = await _repo.GetCardByKeyAsync(key);
-				if (existedCard.CardKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find card to update!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
 
 				var updatedCard = _mapper.Map<Card>(request);
 				if (updatedCard == null)
@@ -182,11 +166,7 @@ namespace SPay.Service
 					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
 					return response;
 				}
-				if (!await _repo.UpdateCardAsync(key, updatedCard))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
-					return response;
-				}
+				await _repo.UpdateCardAsync(key, updatedCard);
 				response.Data = true;
 				response.Success = true;
 				response.Message = $"Update the card with key: {key} successfully";

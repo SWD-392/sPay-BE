@@ -95,12 +95,7 @@ namespace SPay.Service
 			try
 			{
 				var existedUser = await _repo.GetUserByKeyAsync(key);
-				if (existedUser.UserKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find User to delete!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
+
 				var success = await _repo.DeleteUserAsync(existedUser);
 				if (success == false)
 				{
@@ -153,11 +148,7 @@ namespace SPay.Service
 			try
 			{
 				var UserCate = await _repo.GetUserByKeyAsync(key);
-				if (UserCate.UserKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, $"Not found User with key: {key}");
-					return response;
-				}
+
 				var res = _mapper.Map<UserResponse>(UserCate);
 				response.Data = res;
 				response.Success = true;
@@ -183,12 +174,6 @@ namespace SPay.Service
 				}
 
 				var existedUser = await _repo.GetUserByKeyAsync(key);
-				if (existedUser.UserKey.IsNullOrEmpty())
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Cannot find User to update!");
-					response.Error = SPayResponseHelper.NOT_FOUND;
-					return response;
-				}
 
 				var updatedUser = _mapper.Map<User>(request);
 				if (updatedUser == null)
@@ -196,11 +181,7 @@ namespace SPay.Service
 					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
 					return response;
 				}
-				if (!await _repo.UpdateUserAsync(key, updatedUser))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
-					return response;
-				}
+				await _repo.UpdateUserAsync(key, updatedUser);
 				response.Data = true;
 				response.Success = true;
 				response.Message = $"Update the User with key: {key} successfully";

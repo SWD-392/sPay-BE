@@ -79,8 +79,11 @@ namespace SPay.Repository
 			var response = await _context.Stores.SingleOrDefaultAsync(
 											s => s.StoreKey.Equals(key)
 											&& !s.Status.Equals((byte)BasicStatusEnum.Deleted));
-
-			return response ?? new Store();
+			if (response == null)
+			{
+				throw new Exception($"Store with key '{key}' not found.");
+			}
+			return response;
 		}
 
 		public async Task<bool> UpdateStoreAsync(string key, Store updatedStore)
@@ -92,7 +95,11 @@ namespace SPay.Repository
 			}
 			existedStore.StoreName = updatedStore.StoreName;
 			existedStore.Description = updatedStore.Description;
-			return await _context.SaveChangesAsync() > 0;
+			if (await _context.SaveChangesAsync() <= 0)
+			{
+				throw new Exception($"Nothing is update!");
+			}
+			return true;
 		}
 	}
 }

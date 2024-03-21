@@ -45,7 +45,11 @@ namespace SPay.Repository
 									.Include(c => c.PromotionPackageKeyNavigation)
 									.SingleOrDefaultAsync(ct => ct.CardKey.Equals(key)
 														&& !ct.Status.Equals((byte)BasicStatusEnum.Deleted));
-			return response ?? new Card();
+			if (response == null)
+			{
+				throw new Exception($"Card with key '{key}' not found.");
+			}
+			return response;
 		}
 
 		public async Task<IList<Card>> GetListCardAsync(GetListCardRequest request)
@@ -82,7 +86,11 @@ namespace SPay.Repository
 			existedCard.CardName = updatedCard.CardName;
 			existedCard.Description = updatedCard.Description;
 			existedCard.PromotionPackageKey = updatedCard.PromotionPackageKey;
-			return await _context.SaveChangesAsync() > 0;
+			if (await _context.SaveChangesAsync() <= 0)
+			{
+				throw new Exception($"Nothing is update!");
+			}
+			return true;
 		}
 	}
 }

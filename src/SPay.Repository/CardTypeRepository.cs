@@ -45,8 +45,11 @@ namespace SPay.Repository
 			var response = await _context.CardTypes.SingleOrDefaultAsync(
 											ct => ct.CardTypeKey.Equals(key)
 											&& !ct.Status.Equals((byte)BasicStatusEnum.Deleted));
-
-			return response ?? new CardType();
+			if (response == null)
+			{
+				throw new Exception($"Card type with key '{key}' not found.");
+			}
+			return response;
 		}
 
 		public async Task<IList<CardType>> GetListCardTypeAsync(GetListCardTypeRequest request)
@@ -84,7 +87,11 @@ namespace SPay.Repository
 
 			existedCardType.CardTypeName = updatedCardType.CardTypeName;
 			existedCardType.Description = updatedCardType.Description;
-			return await _context.SaveChangesAsync() > 0;
+			if (await _context.SaveChangesAsync() <= 0)
+			{
+				throw new Exception($"Nothing is update!");
+			}
+			return true;
 		}
 	}
 }
