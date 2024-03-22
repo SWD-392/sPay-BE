@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SPay.BO.DTOs.Auth.Request;
 using SPay.BO.DTOs.Auth.Response;
@@ -45,6 +46,29 @@ namespace SPay.API.Controllers
 				});
 			return Ok(loginResponse);
 		}
+
+		[HttpPost("logout")]
+		[Authorize]
+		public async Task<IActionResult> Logout()
+		{
+			try
+			{
+				// Xác thực người dùng và lấy thông tin đăng nhập
+				var claimsIdentity = HttpContext.User.Identity as ClaimsIdentity;
+				if (claimsIdentity == null)
+				{
+					return Unauthorized();
+				}
+
+				// Hủy bỏ token của người dùng bằng cách xóa token khỏi danh sách lưu trữ hoặc cơ sở dữ liệu
+				return Ok(new { message = "Logout successful" });
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+			}
+		}
+
 
 		//[AllowAnonymous]
 		//[HttpPost("sign-up")]

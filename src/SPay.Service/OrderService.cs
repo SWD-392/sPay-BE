@@ -102,7 +102,7 @@ namespace SPay.Service
 				}
 
 				var transactionOrder = new Transaction();
-				transactionOrder.TransactionKey = string.Format("{0}{1}", PrefixKeyConstant.ORDER, Guid.NewGuid().ToString().ToUpper());
+				transactionOrder.TransactionKey = string.Format("{0}{1}", PrefixKeyConstant.TRANSACTION, Guid.NewGuid().ToString().ToUpper());
 				transactionOrder.Status = createOrderInfo.Status;
 				transactionOrder.OrderKey = createOrderInfo.OrderKey;
 				transactionOrder.InsDate = createOrderInfo.InsDate;
