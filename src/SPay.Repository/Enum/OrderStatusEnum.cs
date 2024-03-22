@@ -17,5 +17,8 @@ namespace SPay.Repository.Enum
 
 		[Description("Đã bị xoá")]
 		Deleted = 3,
+
+		[Description("Đang xử lý")]
+		Processing = 0,
 	}
 }

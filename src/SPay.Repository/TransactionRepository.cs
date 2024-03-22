@@ -12,15 +12,24 @@ namespace SPay.Repository
     public interface ITransactionRepository
     {
         Task<IList<Transaction>> GetListTransactionInfoAsync(GetListTransactionRequest request);
-    }
-    public class TransactionRepository : ITransactionRepository
+		Task<bool> CreateTransactionAsync(Transaction request);
+
+	}
+	public class TransactionRepository : ITransactionRepository
     {
         private readonly SpayDBContext _context;
         public TransactionRepository(SpayDBContext _context)
         {
             this._context = _context;
         }
-        public async Task<IList<Transaction>> GetListTransactionInfoAsync(GetListTransactionRequest request)
+
+		public async Task<bool> CreateTransactionAsync(Transaction request)
+		{
+			_context.Transactions.Add(request);
+			return await _context.SaveChangesAsync() > 0;
+		}
+
+		public async Task<IList<Transaction>> GetListTransactionInfoAsync(GetListTransactionRequest request)
         {
             return await _context.Transactions
                 .Include(t => t.OrderKeyNavigation)

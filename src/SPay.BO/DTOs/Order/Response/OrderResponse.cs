@@ -11,7 +11,7 @@ namespace SPay.BO.DTOs.Order.Response
 		public int No { get; set; } = 0;
 		public string OrderKey { get; set; } = null!;
 		public string FromUserName { get; set; } = null!;
-		public string ByCardName { get; set; }
+		public string ByCardName { get; set; } = null!;
 		public string ToStoreName { get; set; } = null!;
 		public string StoreCateName { get; set; } = null!;
 		public string? Description { get; set; }

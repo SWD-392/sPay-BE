@@ -11,6 +11,6 @@ namespace SPay.BO.DTOs.Order.Request
 		public string MembershipKey { get; set; } = null!;
 		public string StoreKey { get; set; } = null!;
 		public string? Description { get; set; }
-		public decimal? TotalAmount { get; set; }
+		public decimal TotalAmount { get; set; }
 	}
 }

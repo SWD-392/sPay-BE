@@ -27,25 +27,26 @@ namespace SPay.Service
 	public class OrderService : IOrderService
 	{
 		private readonly IOrderRepository _repo;
-		private readonly IUserRepository _repoU;
-		private readonly ICardRepository _repoC;
-		private readonly ICardTypeRepository _repoCt;
-		private readonly IStoreRepository _repoS;
-		private readonly IMembershipRepository _repoMb;
-
+		private readonly IUserRepository _repoUser;
+		private readonly ICardRepository _repoCard;
+		private readonly ICardTypeRepository _repoCardType;
+		private readonly IStoreRepository _repoStore;
+		private readonly IMembershipRepository _repoMembership;
+		private readonly ITransactionRepository _repoTrans;
 
 
 		private readonly IMapper _mapper;
 
-		public OrderService(IOrderRepository repo, IUserRepository repoU, ICardRepository repoC, IStoreRepository repoS, ICardTypeRepository repoCt, IMembershipRepository repoMb, IMapper mapper)
+		public OrderService(IOrderRepository repo, IUserRepository repoU, ICardRepository repoC, IStoreRepository repoS, ICardTypeRepository repoCt, IMembershipRepository repoMb, ITransactionRepository repoTrans, IMapper mapper)
 		{
 			_repo = repo;
-			_repoU = repoU;
-			_repoC = repoC;
+			_repoUser = repoU;
+			_repoCard = repoC;
 			_mapper = mapper;
-			_repoCt = repoCt;
-			_repoS = repoS;
-			_repoMb = repoMb;
+			_repoCardType = repoCt;
+			_repoStore = repoS;
+			_repoMembership = repoMb;
+			_repoTrans = repoTrans;
 		}
 
 		public async Task<SPayResponse<bool>> CreateOrderAsync(CreateOrderRequest request)
@@ -82,16 +83,37 @@ namespace SPay.Service
 				}
 				createOrderInfo.OrderKey = string.Format("{0}{1}", PrefixKeyConstant.ORDER, Guid.NewGuid().ToString().ToUpper());
 				createOrderInfo.InsDate = DateTimeHelper.GetDateTimeNow();
-				createOrderInfo.Status = (byte)OrderStatusEnum.Succeeded;
+				createOrderInfo.Status = (byte)OrderStatusEnum.Processing;
 
-				//if (!await _repo.CreateOrderAsync(createOrderInfo))
-				//{
-				//	SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
-				//	return response;
-				//}
-				//response.Data = true;
-				//response.Success = true;
-				//response.Message = "Create a order successfully";
+				//Reduce money of membership
+				if (!(await _repo.ProcessMoney(await _repoMembership.GetMembershipByKeyAsync(request.MembershipKey), request)))
+				{
+					createOrderInfo.Status = (byte)OrderStatusEnum.Failed;
+					SPayResponseHelper.SetErrorResponse(response, "Error when process money");
+				}
+				else
+				{
+					createOrderInfo.Status = (byte)OrderStatusEnum.Succeeded;
+				}
+
+				if (!await _repo.CreateOrderAsync(createOrderInfo))
+				{
+					throw new Exception("Create order failed!");
+				}
+
+				var transactionOrder = new Transaction();
+				transactionOrder.TransactionKey = string.Format("{0}{1}", PrefixKeyConstant.ORDER, Guid.NewGuid().ToString().ToUpper());
+				transactionOrder.Status = createOrderInfo.Status;
+				transactionOrder.OrderKey = createOrderInfo.OrderKey;
+				transactionOrder.InsDate = createOrderInfo.InsDate;
+				if (!await _repoTrans.CreateTransactionAsync(transactionOrder))
+				{
+					throw new Exception("Create transaction failed!");
+				};
+
+				response.Data = true;
+				response.Success = true;
+				response.Message = "Create a order successfully";
 			}
 			catch (Exception ex)
 			{
@@ -144,8 +166,8 @@ namespace SPay.Service
 				foreach (var item in ordersRes)
 				{
 					item.No = ++count;
-					item.FromUserName = (await _repoU.GetUserByKeyAsync(item.FromUserName)).Fullname;
-					item.ByCardName = (await _repoC.GetCardByKeyAsync(item.ByCardName)).CardName;
+					item.FromUserName = (await _repoUser.GetUserByKeyAsync(item.FromUserName)).Fullname;
+					item.ByCardName = (await _repoCard.GetCardByKeyAsync(item.ByCardName)).CardName;
 				}
 				response.Data = await ordersRes.ToPaginateAsync(request); ;
 				response.Success = true;
@@ -187,13 +209,13 @@ namespace SPay.Service
 
 		private async Task<bool> IsValidCardTypeStoreCate(CreateOrderRequest request)
 		{
-			var store = await _repoS.GetStoreByKeyAsync(request.StoreKey);
+			var store = await _repoStore.GetStoreByKeyAsync(request.StoreKey);
 			var storeCate = store.StoreCateKey;
 
-			var cardNow = await _repoC.GetCardByMemberShipKeyAsync(request.MembershipKey);
+			var cardNow = await _repoCard.GetCardByMemberShipKeyAsync(request.MembershipKey);
 			var cardTypeNow = cardNow.CardTypeKey;
 
-			var listRelation = await _repoCt.GetRelationListAsync();
+			var listRelation = await _repoCardType.GetRelationListAsync();
 
 			var isRelationExist = listRelation.Any(r => r.StoreCateKey == storeCate && r.CardTypeKey == cardTypeNow);
 
@@ -202,20 +224,20 @@ namespace SPay.Service
 
 		private async Task<bool> IsExpiriedDateMembership(string memberShipKey)
 		{
-			var memberShip = await _repoMb.GetMembershipByKeyAsync(memberShipKey);
+			var memberShip = await _repoMembership.GetMembershipByKeyAsync(memberShipKey);
 			var expiriedDate = memberShip.Membership.ExpiritionDate;
 			return expiriedDate < DateTimeHelper.GetDateTimeNow();
 		}
 
 		private async Task<bool> IsValidBalanceMembership(CreateOrderRequest request)
 		{
-			var memberShip = await _repoMb.GetMembershipByKeyAsync(request.MembershipKey);
-			var balance = memberShip.Wallet.Balance;
+			var memberShip = await _repoMembership.GetMembershipByKeyAsync(request.MembershipKey);
+			var balance = memberShip.Wallet.Balance; //Số dư
 			if(balance <= 0)
 			{
 				return false;
 			}
-			return balance >= request.TotalAmount;
+			return balance <= request.TotalAmount; //số dư vs số tiền tính
 		}
 	}
 }

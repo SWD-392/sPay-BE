@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Membership.Request;
+using SPay.BO.DTOs.Order.Request;
 using SPay.Repository.Enum;
 using SPay.Repository.ResponseDTO;
 
@@ -155,5 +157,6 @@ namespace SPay.Repository
 		{
 			return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
 		}
+
 	}
 }

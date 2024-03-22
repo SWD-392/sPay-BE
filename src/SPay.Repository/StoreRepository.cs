@@ -9,8 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs.Store.Request;
 using SPay.Repository.Enum;
-
-
 namespace SPay.Repository
 {
     public interface IStoreRepository
