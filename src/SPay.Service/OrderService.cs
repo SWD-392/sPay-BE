@@ -155,7 +155,7 @@ namespace SPay.Service
 			var response = new SPayResponse<PaginatedList<OrderResponse>>();
 			try
 			{
-				var orders = await _repo.GetAllOrderTypeAsync();
+				var orders = await _repo.GetAllOrderTypeAsync(request);
 				if (orders == null)
 				{
 					SPayResponseHelper.SetErrorResponse(response, "Order has no row in database.");

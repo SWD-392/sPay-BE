@@ -13,7 +13,7 @@ namespace SPay.Repository
 {
 	public interface IOrderRepository
 	{
-		Task<IList<Order>> GetAllOrderTypeAsync();
+		Task<IList<Order>> GetAllOrderTypeAsync(GetListOrderRequest request);
 		Task<Order> GetOrderByKeyAsync(string key);
 		Task<bool> DeleteOrderAsync(Order existedOrder);
 		Task<bool> CreateOrderAsync(Order order);
@@ -40,15 +40,24 @@ namespace SPay.Repository
 			return await _context.SaveChangesAsync() > 0;
 		}
 
-		public async Task<IList<Order>> GetAllOrderTypeAsync()
+		public async Task<IList<Order>> GetAllOrderTypeAsync(GetListOrderRequest request)
 		{
-			var orders = await _context.Orders
+			var query =  _context.Orders
 				.Include(o => o.StoreKeyNavigation)
 				.Include(o => o.StoreKeyNavigation.StoreCateKeyNavigation)
 				.Include(o => o.MembershipKeyNavigation)
 				.Where(o => o.Status != (byte)OrderStatusEnum.Deleted)
-				.ToListAsync();
-			return orders;
+				.AsQueryable();
+
+			if (!string.IsNullOrEmpty(request.StoreKey))
+			{
+				query = query.Where(o => o.StoreKey.Equals(request.StoreKey));
+			}
+			if (!string.IsNullOrEmpty(request.MembershipKey))
+			{
+				query = query.Where(o => o.MembershipKey.Equals(request.MembershipKey));
+			}
+			return await query.ToListAsync();
 		}
 
 		public async Task<Order> GetOrderByKeyAsync(string key)

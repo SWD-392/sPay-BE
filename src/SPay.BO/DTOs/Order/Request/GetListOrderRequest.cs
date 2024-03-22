@@ -8,9 +8,7 @@ namespace SPay.BO.DTOs.Order.Request
 {
 	public class GetListOrderRequest : PagingRequest
 	{
-		public string? MembershipKey { get; set; } 
-		public string? StoreKey { get; set; } 
-		public string? Description { get; set; }
-		public decimal? TotalAmount { get; set; }
+		public string? MembershipKey { get; set; } = string.Empty;
+		public string? StoreKey { get; set; } = string.Empty;
 	}
 }
