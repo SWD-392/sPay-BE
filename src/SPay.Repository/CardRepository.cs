@@ -15,6 +15,7 @@ namespace SPay.Repository
     {
 		Task<IList<Card>> GetListCardAsync(GetListCardRequest request);
 		Task<Card> GetCardByKeyAsync(string key);
+		Task<Card> GetCardByMemberShipKeyAsync(string key);
 		Task<bool> DeleteCardAsync(Card cardExisted);
 		Task<bool> CreateCardAsync(Card item);
 		Task<bool> UpdateCardAsync(string key, Card updatedCard);
@@ -41,6 +42,26 @@ namespace SPay.Repository
 
 		public async Task<Card> GetCardByKeyAsync(string key)
 		{
+			var response = await _context.Cards.Include(c => c.CardTypeKeyNavigation)
+									.Include(c => c.PromotionPackageKeyNavigation)
+									.SingleOrDefaultAsync(ct => ct.CardKey.Equals(key)
+														&& !ct.Status.Equals((byte)BasicStatusEnum.Deleted));
+			if (response == null)
+			{
+				throw new Exception($"Card with key '{key}' not found.");
+			}
+			return response;
+		}
+
+		public async Task<Card> GetCardByMemberShipKeyAsync(string membershipKey)
+		{
+			var card = (await _context.Memberships.SingleOrDefaultAsync(m => m.MembershipKey.Equals(membershipKey)));
+			if(card == null)
+			{
+				throw new Exception($"User dont have membership with key {membershipKey}");
+			}
+			var key = card.CardKey;
+
 			var response = await _context.Cards.Include(c => c.CardTypeKeyNavigation)
 									.Include(c => c.PromotionPackageKeyNavigation)
 									.SingleOrDefaultAsync(ct => ct.CardKey.Equals(key)

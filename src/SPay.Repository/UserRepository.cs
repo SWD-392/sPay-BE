@@ -7,6 +7,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SPay.BO.DataBase.Models;
@@ -19,7 +20,7 @@ namespace SPay.Repository
 {
 	public interface IUserRepository
 	{
-		//Task<User> LoginAsync(LoginRequest request);
+		Task<User> LoginAsync(LoginRequest request);
 		Task<IList<User>> GetListUserAsync(GetListUserRequest request, bool isStore = false);
 		Task<User> GetUserByKeyAsync(string key, bool isStore = false);
 		Task<bool> DeleteUserAsync(User UserExisted);
@@ -31,50 +32,46 @@ namespace SPay.Repository
 
 		private readonly SpayDBContext _context;
 		private readonly IMembershipRepository _memRepo;
-        public UserRepository(SpayDBContext _context, IMembershipRepository _memRepo)
-        {
-            this._context = _context;
-			this._memRepo = _memRepo;
-        }
-
-		public async Task<bool> CreateUserAsync(User item ,bool isStore = false)
+		public UserRepository(SpayDBContext _context, IMembershipRepository _memRepo)
 		{
-			using (var transaction = _context.Database.BeginTransaction())
+			this._context = _context;
+			this._memRepo = _memRepo;
+		}
+
+		public async Task<bool> CreateUserAsync(User item, bool isStore = false)
+		{
+			try
 			{
-				try
+				if (!isStore)
 				{
-					var roleKey = await GetRoleKeyAsync(isStore);
-					if (roleKey == null)
-					{
-						return false;
-					}
-
-					item.RoleKey = roleKey;
-					_context.Users.Add(item);
-
 					var defaultMembership = new Membership();
 					defaultMembership.MembershipKey = string.Format("{0}{1}", PrefixKeyConstant.MEMBERSHIP, Guid.NewGuid().ToString().ToUpper());
 					defaultMembership.CardKey = null;
 					defaultMembership.UserKey = item.UserKey;
-					await _memRepo.CreateMembershipAsync(defaultMembership);
 
-					// Lưu các thay đổi vào cơ sở dữ liệu
-					await _context.SaveChangesAsync();
-
-					// Commit transaction nếu thành công
-					await transaction.CommitAsync();
-
-					// Trả về true nếu thành công
-					return true;
+					// Thực hiện tạo membership trong transaction
+					bool membershipCreated = await _memRepo.CreateMembershipAsync(defaultMembership);
 				}
-				catch (Exception ex)
+
+				var roleKey = await GetRoleKeyAsync(isStore);
+				if (roleKey == null)
 				{
-					await transaction.RollbackAsync();
-					throw new Exception(ex.Message + "so all change was roll back");
+					return false;
 				}
-			}
 
+				item.RoleKey = roleKey;
+				_context.Users.Add(item);
+
+				// Trả về true nếu thành công
+				return true;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error creating user.", ex);
+			}
 		}
+
+
 
 		public async Task<bool> DeleteUserAsync(User userCategoryExisted)
 		{
@@ -123,10 +120,14 @@ namespace SPay.Repository
 			{
 				return false;
 			}
-
-			existedUser.Fullname = updatedUser.Fullname;
-			existedUser.Password = updatedUser.Password;
-			existedUser.PhoneNumber = updatedUser.PhoneNumber;
+			if (!string.IsNullOrEmpty(updatedUser.Fullname))
+			{
+				existedUser.Fullname = updatedUser.Fullname;
+			}
+			if (!string.IsNullOrEmpty(updatedUser.Password))
+			{
+				existedUser.Password = updatedUser.Password;
+			}
 			if (await _context.SaveChangesAsync() <= 0)
 			{
 				throw new Exception($"Nothing is update!");
@@ -156,22 +157,25 @@ namespace SPay.Repository
 				return string.Empty;
 			}
 		}
-
+		public async Task<User> LoginAsync(LoginRequest request)
+		{
+			var user = await _context.Users.Include(u => u.RoleKeyNavigation)
+				.SingleOrDefaultAsync(u =>
+				u.PhoneNumber.Equals(request.PhoneNumber) &&
+				u.Password.Equals(request.Password) &&
+				u.Status == (byte)UserStatusEnum.Active);
+			if (user == null)
+			{
+				throw new Exception($"Incorrect username or password.");
+			}
+			return user; ;
+		}
 
 		#region Comment ref
 		//      public async Task<bool> CreateUserAsync(User user)
 		//{
 		//	_context.Users.Add(user);
 		//	return await _context.SaveChangesAsync() > 0;
-		//}
-
-		//public async Task<User> LoginAsync(LoginRequest request)
-		//{
-		//	var user = await _context.Users.SingleOrDefaultAsync(u =>
-		//		u.Username.Equals(request.PhoneNumber) &&
-		//		u.Password.Equals(request.Password) &&
-		//		u.Status == (byte)UserStatusEnum.Active);
-		//	return user ?? new User();
 		//}
 
 

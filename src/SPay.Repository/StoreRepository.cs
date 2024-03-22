@@ -20,6 +20,7 @@ namespace SPay.Repository
 		Task<bool> DeleteStoreAsync(Store storeExisted);
 		Task<bool> CreateStoreAsync(Store item);
 		Task<bool> UpdateStoreAsync(string key, Store updatedStore);
+		Task<string> GetStoreKeyByUserKey(string phoneNumber);
 	}
 	public class StoreRepository : IStoreRepository
     {
@@ -28,6 +29,16 @@ namespace SPay.Repository
 		public StoreRepository(SpayDBContext context)
 		{
 			_context = context;
+		}
+
+		public async Task<string> GetStoreKeyByUserKey(string phoneNumber)
+		{
+			var store = await _context.Stores.SingleOrDefaultAsync(s => s.UserKeyNavigation.PhoneNumber.Equals(phoneNumber));
+			if (store == null)
+			{
+				throw new Exception($"Store with phoneNumber: {phoneNumber} not found!");
+			}
+			return store.StoreKey;
 		}
 
 		public async Task<bool> CreateStoreAsync(Store item)
@@ -96,9 +107,21 @@ namespace SPay.Repository
 			{
 				return false;
 			}
-			existedStore.StoreName = updatedStore.StoreName;
-			existedStore.Description = updatedStore.Description;
-			if (await _context.SaveChangesAsync() <= 0)
+			if (!string.IsNullOrEmpty(updatedStore.StoreName))
+			{
+				existedStore.StoreName = updatedStore.StoreName;
+
+			}
+			if (!string.IsNullOrEmpty(updatedStore.Description))
+			{
+				existedStore.Description = updatedStore.Description;
+			}
+
+			if (!string.IsNullOrEmpty(updatedStore.StoreCateKey))
+			{
+				existedStore.StoreCateKey = updatedStore.StoreCateKey;
+			}
+			if (!(await _context.SaveChangesAsync() > 0))
 			{
 				throw new Exception($"Nothing is update!");
 			}

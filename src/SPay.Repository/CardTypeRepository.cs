@@ -15,8 +15,9 @@ namespace SPay.Repository
 	{
 		Task<IList<CardType>> GetListCardTypeAsync(GetListCardTypeRequest request);
 		Task<CardType> GetCardTypeByKeyAsync(string key);
+		Task<IList<CardTypesStoreCategory>> GetRelationListAsync();
 		Task<bool> DeleteCardTypeAsync(CardType cardTypeExisted);
-		Task<bool> CreateCardTypeAsync(CardType item);
+		Task<bool> CreateCardTypeAsync(CardType item, string storeCateKey);
 		Task<bool> UpdateCardTypeAsync(string key, CardType updatedCardType);
 	}
 	public class CardTypeRepository : ICardTypeRepository
@@ -28,9 +29,10 @@ namespace SPay.Repository
 			_context = context;
 		}
 
-		public async Task<bool> CreateCardTypeAsync(CardType item)
+		public async Task<bool> CreateCardTypeAsync(CardType item, string storeCateKey)
 		{
 			_context.CardTypes.Add(item);
+			_context.CardTypesStoreCategories.Add(new CardTypesStoreCategory() { CardTypeKey = item.CardTypeKey, StoreCateKey = storeCateKey });
 			return await _context.SaveChangesAsync() > 0;
 		}
 
@@ -74,6 +76,11 @@ namespace SPay.Repository
 			}
 
 			return await query.ToListAsync();
+		}
+
+		public async Task<IList<CardTypesStoreCategory>> GetRelationListAsync()
+		{
+			return await _context.CardTypesStoreCategories.ToListAsync();
 		}
 
 		public async Task<bool> UpdateCardTypeAsync(string key, CardType updatedCardType)

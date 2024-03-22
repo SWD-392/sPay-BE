@@ -10,5 +10,6 @@ namespace SPay.BO.DTOs.CardType.Request
 	{
 		public string CardTypeName { get; set; } = null!;
 		public string? Description { get; set; }
+		public string StoreCateKey { get; set; } = null!;
 	}
 }

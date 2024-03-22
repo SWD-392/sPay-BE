@@ -9,5 +9,6 @@ namespace SPay.BO.DTOs.StoreCategory.Request
 	public class GetListStoreCateRequest : PagingRequest
 	{
 		public string? Name { get; set; } = null;
+
 	}
 }

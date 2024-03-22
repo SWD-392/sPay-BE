@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using SPay.BO.DataBase.Models;
-using SPay.BO.DTOs.Admin.Order.Response;
 using SPay.BO.DTOs.Card.Request;
 using SPay.BO.DTOs.PromotionPackage.Request;
 using SPay.BO.DTOs.PromotionPackage.Response;
@@ -96,6 +95,12 @@ namespace SPay.Service
 			SPayResponse<bool> response = new SPayResponse<bool>();
 			try
 			{
+				var cardList = (await _repoCard.GetListCardAsync(new GetListCardRequest { PromotionPackageKey = key })).Count();
+
+				if (cardList > 0)
+				{
+					throw new Exception("Cannot update the promotion package arleady using in card");
+				}
 				var existedProPackage = await _repo.GetPromotionPackageByKeyAsync(key);
 				var success = await _repo.DeletePromotionPackageAsync(existedProPackage);
 				if (success == false)
@@ -154,6 +159,12 @@ namespace SPay.Service
 			SPayResponse<bool> response = new SPayResponse<bool>();
 			try
 			{
+				var cardList = (await _repoCard.GetListCardAsync(new GetListCardRequest { PromotionPackageKey = key })).Count();
+				if (cardList > 0)
+				{
+					throw new Exception("Cannot update the promotion package arleady using in card");
+				}
+
 				if (request == null)
 				{
 					SPayResponseHelper.SetErrorResponse(response, "Request model is required!");

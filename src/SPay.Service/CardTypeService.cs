@@ -59,7 +59,7 @@ namespace SPay.Service
 				createCardTypeInfo.CardTypeKey = string.Format("{0}{1}", PrefixKeyConstant.CARD_TYPE, Guid.NewGuid().ToString().ToUpper());
 				createCardTypeInfo.InsDate = DateTimeHelper.GetDateTimeNow();
 				createCardTypeInfo.Status = (byte)BasicStatusEnum.Available;
-				if (!await _repo.CreateCardTypeAsync(createCardTypeInfo))
+				if (!await _repo.CreateCardTypeAsync(createCardTypeInfo, request.StoreCateKey))
 				{
 					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
 					return response;
@@ -80,6 +80,13 @@ namespace SPay.Service
 			SPayResponse<bool> response = new SPayResponse<bool>();
 			try
 			{
+				var cardList = (await _repoCard.GetListCardAsync(new GetListCardRequest { CardTypeKey = key })).Count();
+
+				if (cardList > 0)
+				{
+					throw new Exception("Cannot delete the card type arleady using in card");
+				}
+
 				var existedCardType = await _repo.GetCardTypeByKeyAsync(key);
 
 				var success = await _repo.DeleteCardTypeAsync(existedCardType);
@@ -158,6 +165,13 @@ namespace SPay.Service
 				{
 					SPayResponseHelper.SetErrorResponse(response, "Request model is required!");
 					return response;
+				}
+
+				var cardList = (await _repoCard.GetListCardAsync(new GetListCardRequest { CardTypeKey = key })).Count();
+				
+				if(cardList > 0)
+				{
+					throw new Exception("Cannot update the card type arleady using in card");
 				}
 
 				var existedCardType = await _repo.GetCardTypeByKeyAsync(key);

@@ -14,6 +14,8 @@ using SPay.Repository.Enum;
 using SPay.Service.Utils;
 using SPay.BO.DTOs.StoreCategory.Response;
 using SPay.BO.DTOs.StoreCategory.Request;
+using SPay.BO.DTOs.Store.Request;
+using SPay.BO.DTOs.Card.Request;
 
 namespace SPay.Service
 {
@@ -29,11 +31,13 @@ namespace SPay.Service
 	public class StoreCategoryService : IStoreCategoryService
 	{
 		private readonly IStoreCategoryRepository _repo;
+		private readonly IStoreRepository _repoStore;
 		private readonly IMapper _mapper;
 
-		public StoreCategoryService(IStoreCategoryRepository repo, IMapper mapper)
+		public StoreCategoryService(IStoreCategoryRepository repo, IStoreRepository repoStore, IMapper mapper)
 		{
 			_repo = repo;
+			_repoStore = repoStore;
 			_mapper = mapper;
 		}
 
@@ -77,6 +81,11 @@ namespace SPay.Service
 			SPayResponse<bool> response = new SPayResponse<bool>();
 			try
 			{
+				var storeList = (await _repoStore.GetListStoreAsync(new GetListStoreRequest { StoreCateKey = key })).Count();
+				if (storeList > 0)
+				{
+					throw new Exception("Cannot delele the store category arleady using in store");
+				}
 				var existedStoreCate = await _repo.GetStoreCategoryByKeyAsync(key);
 				var success = await _repo.DeleteStoreCategoryAsync(existedStoreCate);
 				if (success == false)
@@ -111,6 +120,7 @@ namespace SPay.Service
 				foreach (var item in res)
 				{
 					item.No = ++count;
+					item.TotalStoreUse = (await _repoStore.GetListStoreAsync(new GetListStoreRequest { StoreCateKey = item.StoreCategoryKey })).Count();
 				}
 				response.Data = await res.ToPaginateAsync(request); ;
 				response.Success = true;
@@ -148,6 +158,11 @@ namespace SPay.Service
 			SPayResponse<bool> response = new SPayResponse<bool>();
 			try
 			{
+				var storeList = (await _repoStore.GetListStoreAsync(new GetListStoreRequest { StoreCateKey = key })).Count();
+				if (storeList > 0)
+				{
+					throw new Exception("Cannot update the store category arleady using in store");
+				}
 				if (request == null)
 				{
 					SPayResponseHelper.SetErrorResponse(response, "Request model is required!");

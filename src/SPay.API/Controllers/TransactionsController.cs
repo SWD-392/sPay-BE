@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SPay.BO.DTOs.Admin.Transaction.Request;
-using SPay.BO.DTOs.Admin.Transaction.Response;
-using SPay.BO.DTOs.Admin;
 using SPay.BO.Extention.Paginate;
 using SPay.Service;
 using SPay.Service.Response;
+using SPay.BO.DTOs.Transaction.Request;
+using SPay.BO.DTOs.Transaction.Response;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SPay.API.Controllers
 {
-    [Route("api/")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class TransactionsController : ControllerBase
     {
@@ -27,55 +26,13 @@ namespace SPay.API.Controllers
 		/// <returns></returns>
 		[ProducesResponseType(typeof(SPayResponse<PaginatedList<TransactionResponse>>), StatusCodes.Status200OK)]
 		[HttpGet]
-		public async Task<IActionResult> GetAllTransaction([FromQuery] GetAllTransactionRequest request)
+		public async Task<IActionResult> GetAllTransaction([FromQuery] GetListTransactionRequest request)
 		{
 			var response = await _service.GetAllTransactionsAsync(request);
-			return Ok();
-		}
-
-
-		/// <summary>
-		/// Get order by key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		[HttpGet("{key}")]
-		[ProducesResponseType(typeof(SPayResponse<TransactionResponse>), StatusCodes.Status200OK)]
-		public async Task<IActionResult> GetTransactionByKeyAsync(string key)
-		{
-			var response = await _service.GetTransactionByKeyAsync(key);
-			return Ok(response);
-		}
-
-		/// <summary>
-		/// Create a card
-		/// </summary>
-		/// <param name="request"></param>
-		[HttpPost]
-		public async Task<IActionResult> CreateTransactionAsync([FromBody] CreateTransactionRequest request)
-		{
-			var response = await _service.CreateTransactionAsync(request);
-			if (!response.Success)
+			if (response.Error == "404")
 			{
-				return BadRequest(/*response*/);
+				return NotFound(response);
 			}
-			return Ok(/*response*/);
-		}
-
-		/// <summary>
-		/// Delete a order
-		/// </summary>
-		/// <param name="key"></param>
-		[HttpDelete("{key}")]
-		public async Task<IActionResult> DeleteTransactionAsync(string key)
-		{
-			var response = await _service.DeleteTransactionAsync(key);
-
-			if (!response.Success)
-			{
-				return BadRequest(response);
-			}
-
 			return Ok(response);
 		}
 	}

@@ -8,8 +8,6 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs;
-using SPay.BO.DTOs.Admin;
-using SPay.BO.DTOs.Admin.Wallet;
 using SPay.BO.DTOs.Store.Request;
 using SPay.BO.DTOs.Store.Response;
 using SPay.BO.Extention.Paginate;
@@ -26,24 +24,30 @@ namespace SPay.Service
 		Task<SPayResponse<PaginatedList<StoreResponse>>> GetListStoreAsync(GetListStoreRequest request);
 		Task<SPayResponse<StoreResponse>> GetStoreByKeyAsync(string key);
 		Task<SPayResponse<bool>> DeleteStoreAsync(string key);
-		Task<SPayResponse<bool>> CreateStoreAsync(CreateOrUpdateStoreRequest request);
-		Task<SPayResponse<bool>> UpdateStoreAsync(string key, CreateOrUpdateStoreRequest request);
+		Task<SPayResponse<bool>> CreateStoreAsync(CreateStoreRequest request);
+		Task<SPayResponse<bool>> UpdateStoreAsync(string key, UpdateStoreRequest request);
 
 	}
 	public class StoreService : IStoreService
 	{
 		private readonly IStoreRepository _repo;
+		private readonly IWalletRepository _repoW;
+		private readonly IUserRepository _repoU;
 		private readonly IMapper _mapper;
 
-		public StoreService(IStoreRepository repo, IMapper mapper)
+		public StoreService(IStoreRepository repo, IWalletRepository repoW, IUserRepository repoS, IMapper mapper)
 		{
 			_repo = repo;
+			_repoW = repoW;
+			_repoU = repoS;
 			_mapper = mapper;
 		}
 
-		public async Task<SPayResponse<bool>> CreateStoreAsync(CreateOrUpdateStoreRequest request)
+		public async Task<SPayResponse<bool>> CreateStoreAsync(CreateStoreRequest request)
 		{
 			SPayResponse<bool> response = new SPayResponse<bool>();
+			bool rollback = false;
+
 			try
 			{
 				if (request == null)
@@ -51,30 +55,77 @@ namespace SPay.Service
 					SPayResponseHelper.SetErrorResponse(response, "Request model is required!");
 					return response;
 				}
-				var createStoreInfo = _mapper.Map<Store>(request);
-				if (createStoreInfo == null)
+
+				using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
 				{
-					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
-					return response;
+					var walletKey = string.Format("{0}{1}", PrefixKeyConstant.WALLET, Guid.NewGuid().ToString().ToUpper());
+					var defaultStoreWallet = new Wallet();
+					defaultStoreWallet.Balance = Constant.Wallet.DEFAULT_BALANCE;
+					defaultStoreWallet.Description = Constant.Wallet.DES_FOR_DEFAULT_MEMBERSHIP;
+					defaultStoreWallet.WalletKey = walletKey;
+					defaultStoreWallet.Status = (byte)WalletStatusEnum.Active;
+					defaultStoreWallet.InsDate = DateTimeHelper.GetDateTimeNow();
+
+					if (!await _repoW.CreateWalletAsync(defaultStoreWallet))
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Create default wallet failed!");
+						return response;
+					}
+
+					var storeKey = string.Format("{0}{1}", PrefixKeyConstant.STORE, Guid.NewGuid().ToString().ToUpper());
+					var userKey = string.Format("{0}{1}", PrefixKeyConstant.USER, Guid.NewGuid().ToString().ToUpper());
+					var userInfo = _mapper.Map<User>(request);
+					userInfo.UserKey = userKey;
+					userInfo.ZaloId = storeKey;
+					userInfo.InsDate = DateTimeHelper.GetDateTimeNow();
+					userInfo.Status = (byte)BasicStatusEnum.Available;
+					if (!await _repoU.CreateUserAsync(userInfo, isStore: true))
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Create user failed!");
+						return response;
+					}
+
+					var createStoreInfo = _mapper.Map<Store>(request);
+					if (createStoreInfo == null)
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Store mapping failed!");
+						return response;
+					}
+
+					createStoreInfo.UserKey = userKey;
+					createStoreInfo.StoreKey = storeKey;
+					createStoreInfo.WalletKey = walletKey;
+					createStoreInfo.InsDate = DateTimeHelper.GetDateTimeNow();
+					createStoreInfo.Status = (byte)BasicStatusEnum.Available;
+
+					if (!await _repo.CreateStoreAsync(createStoreInfo))
+					{
+						SPayResponseHelper.SetErrorResponse(response, "Create store failed!");
+						return response;
+					}
+
+					scope.Complete();
+
+					response.Data = true;
+					response.Success = true;
+					response.Message = "Create a store successfully";
 				}
-				createStoreInfo.StoreKey = string.Format("{0}{1}", PrefixKeyConstant.STORE_CATE, Guid.NewGuid().ToString().ToUpper());
-				createStoreInfo.InsDate = DateTimeHelper.GetDateTimeNow();
-				createStoreInfo.Status = (byte)BasicStatusEnum.Available;
-				if (!await _repo.CreateStoreAsync(createStoreInfo))
-				{
-					SPayResponseHelper.SetErrorResponse(response, "Something was wrong!");
-					return response;
-				}
-				response.Data = true;
-				response.Success = true;
-				response.Message = "Create a store successfully";
 			}
 			catch (Exception ex)
 			{
-				SPayResponseHelper.SetErrorResponse(response, "Error", ex.Message);
+				rollback = true;
+				SPayResponseHelper.SetErrorResponse(response, "Error creating store", ex.Message);
+			}
+			finally
+			{
+				if (rollback && System.Transactions.Transaction.Current != null)
+				{
+					System.Transactions.Transaction.Current.Rollback();
+				}
 			}
 			return response;
 		}
+
 
 		public async Task<SPayResponse<bool>> DeleteStoreAsync(string key)
 		{
@@ -148,7 +199,7 @@ namespace SPay.Service
 			return response;
 		}
 
-		public async Task<SPayResponse<bool>> UpdateStoreAsync(string key, CreateOrUpdateStoreRequest request)
+		public async Task<SPayResponse<bool>> UpdateStoreAsync(string key, UpdateStoreRequest request)
 		{
 			SPayResponse<bool> response = new SPayResponse<bool>();
 			try
@@ -168,6 +219,11 @@ namespace SPay.Service
 					return response;
 				}
 				await _repo.UpdateStoreAsync(key, updatedStore);
+
+				var storeOwner = await _repoU.GetUserByKeyAsync(existedStore.UserKey, isStore: true);
+				var updatedStoreOwn = _mapper.Map<User>(request);
+
+				await _repoU.UpdateUserAsync(existedStore.UserKey, updatedStoreOwn);
 
 				response.Data = true;
 				response.Success = true;

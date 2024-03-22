@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SPay.BO.DTOs.Admin;
 using SPay.BO.Extention.Paginate;
 using SPay.Service.Response;
 using SPay.Service;
@@ -60,7 +59,7 @@ namespace SPay.API.Controllers
 		/// <param name="request"></param>
 		/// <returns></returns>
 		[HttpPost()]
-		public async Task<IActionResult> CreateAStoreAsync([FromBody] CreateOrUpdateStoreRequest request)
+		public async Task<IActionResult> CreateAStoreAsync([FromBody] CreateStoreRequest request)
 		{
 			var response = await _service.CreateStoreAsync(request);
 
@@ -78,7 +77,7 @@ namespace SPay.API.Controllers
 		/// <param name="request"></param>
 		/// <returns></returns>
 		[HttpPut()]
-		public async Task<IActionResult> UpdateAStoreAsync(string key, [FromBody] CreateOrUpdateStoreRequest request)
+		public async Task<IActionResult> UpdateAStoreAsync(string key, [FromBody] UpdateStoreRequest request)
 		{
 			var response = await _service.UpdateStoreAsync(key, request);
 

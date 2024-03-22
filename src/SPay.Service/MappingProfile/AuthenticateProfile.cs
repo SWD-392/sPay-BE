@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,8 @@ namespace SPay.Service.MappingProfile
 	{
 		public AuthenticateProfile() {
 			CreateMap<User, LoginRequest>();
-			CreateMap<LoginResponse, User>();
+			CreateMap< User, LoginResponse > ()
+				.ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.RoleKeyNavigation.RoleName));
 		}
 	}
 }

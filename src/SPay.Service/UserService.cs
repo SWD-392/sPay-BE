@@ -17,8 +17,6 @@ using SPay.BO.DTOs.Auth.Request;
 using SPay.BO.DTOs.Auth.Response;
 using SPay.BO.DTOs.User.Request;
 using SPay.BO.DTOs.User.Response;
-using SPay.BO.DTOs.User.Request;
-using SPay.BO.DTOs.User.Response;
 using SPay.BO.Extention.Paginate;
 using SPay.Repository;
 using SPay.Repository.Enum;
@@ -29,7 +27,6 @@ namespace SPay.Service
 {
 	public interface IUserService
 	{
-		//public Task<PaginatedList<GetAccountResponse>> GetAllAccounts(int page, int size);
 		//public void CreateAccount(CreateAccountRequest createAccountRequest);
 		//public Task<UpdateAccountResponse> UpdateAccountInformation(int id, UpdateAccountRequest updateAccountRequest);
 		//public Task<bool> DeleteAccountStatus(int id);

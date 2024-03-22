@@ -12,5 +12,6 @@ namespace SPay.BO.DTOs.StoreCategory.Response
 		public string StoreCategoryKey { get; set; } = null!;
 		public string CategoryName { get; set; } = null!;
 		public string? Description { get; set; }
+		public int? TotalStoreUse { get; set; } = 0;
 	}
 }

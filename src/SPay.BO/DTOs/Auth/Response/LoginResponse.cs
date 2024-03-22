@@ -11,9 +11,9 @@ namespace SPay.BO.DTOs.Auth.Response
 		public string AccessToken { get; set; } = null!;
 		public string UserKey { get; set; } = null!;
 		public string PhoneNumber { get; set; } = null!;
-		public string Password { get; set; } = null!;
 		public string FullName { get; set; } = null!;
-		public byte Role { get; set; }
+		public string Role { get; set; } = null!;
+		public string? StoreKey { get; set; } = null;
 		public byte Status { get; set; }
 	}
 }

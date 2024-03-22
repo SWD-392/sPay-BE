@@ -418,7 +418,6 @@ namespace SPay.BO.DataBase.Models
                 entity.HasOne(d => d.OrderKeyNavigation)
                     .WithMany()
                     .HasForeignKey(d => d.OrderKey)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TRANSACTION_ORDER");
 
                 entity.HasOne(d => d.WithdrawKeyNavigation)

@@ -96,6 +96,7 @@ namespace SPay.Repository
 			{
 				try
 				{
+					
 
 					var walletInfo = new Wallet();
 					// Thêm một wallet mới và một membershipsWallet mới vào context
@@ -110,14 +111,14 @@ namespace SPay.Repository
 
 						//Set due date for using membership
 						item.ExpiritionDate = GetDateTimeNow().AddDays(cardInfo.PromotionPackageKeyNavigation.NumberDate);
-
+						item.IsDefaultMembership = false;
 						//Create wallet following card info
 						walletInfo.Balance = cardInfo.PromotionPackageKeyNavigation.UsaebleAmount;
 						walletInfo.Description = string.Format(Constant.Wallet.DES_FOR_OTHER_MEMBERSHIP, cardInfo.CardName);
 					}
 					else
 					{
-						
+						item.IsDefaultMembership = true;
 						walletInfo.Balance = Constant.Wallet.DEFAULT_BALANCE;
 						walletInfo.Description = Constant.Wallet.DES_FOR_DEFAULT_MEMBERSHIP;
 					}
@@ -127,7 +128,10 @@ namespace SPay.Repository
 					// Thêm membership vào context
 					_context.Memberships.Add(item);
 
+					//Thêm wallet
 					_context.Wallets.Add(walletInfo);
+
+					// Tạo mqh giữa membership và wallet
 					var membershipWalletRelation = new MembershipsWallet { MembershipKey = item.MembershipKey, WalletKey = walletInfo.WalletKey };
 					_context.MembershipsWallets.Add(membershipWalletRelation);
 

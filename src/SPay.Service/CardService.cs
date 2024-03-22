@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
 using SPay.BO.DataBase.Models;
 using SPay.BO.DTOs;
-using SPay.BO.DTOs.Admin;
 using SPay.BO.DTOs.Card.Request;
 using SPay.BO.DTOs.Card.Response;
 using SPay.BO.Extention.Paginate;

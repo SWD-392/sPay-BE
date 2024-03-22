@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SPay.BO.DTOs.Admin.Transaction.Request
+namespace SPay.BO.DTOs.WithdrawInfomation.Request
 {
-	public class GetAllTransactionRequest : PagingRequest
+	public class GetListWithdrawInfomationRequest : PagingRequest
 	{
 	}
 }

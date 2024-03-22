@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SPay.BO.DataBase.Models;
+using SPay.BO.DTOs.Transaction.Request;
 
 namespace SPay.Repository
 {
     public interface ITransactionRepository
     {
-        Task<IList<Transaction>> GetAllTransactionInfoAsync();
+        Task<IList<Transaction>> GetListTransactionInfoAsync(GetListTransactionRequest request);
     }
     public class TransactionRepository : ITransactionRepository
     {
@@ -19,9 +20,13 @@ namespace SPay.Repository
         {
             this._context = _context;
         }
-        public async Task<IList<Transaction>> GetAllTransactionInfoAsync()
+        public async Task<IList<Transaction>> GetListTransactionInfoAsync(GetListTransactionRequest request)
         {
-            return await _context.Transactions.ToListAsync();
+            return await _context.Transactions
+                .Include(t => t.OrderKeyNavigation)
+                .Include(t => t.WithdrawKeyNavigation)
+                .Include(t => t.OrderKeyNavigation.MembershipKeyNavigation)
+				.ToListAsync();
         }
     }
 }
