@@ -58,6 +58,10 @@ namespace SPay.Repository
 			{
 				query = query.Where(s => s.Membership.UserKey.Equals(request.UserKey));
 			}
+			if (!string.IsNullOrEmpty(request.StoreCateKey))
+			{
+				query = query.Where(s => s.StoreCategory.StoreCategoryKey.Equals(request.StoreCateKey));
+			}
 
 			return await query.ToListAsync();
 		}

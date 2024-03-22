@@ -23,6 +23,8 @@ using SPay.BO.DTOs.StoreCategory.Response;
 using SPay.BO.DTOs.Transaction.Response;
 using SPay.BO.DTOs.User.Request;
 using SPay.BO.DTOs.User.Response;
+using SPay.BO.DTOs.WithdrawInfomation.Request;
+using SPay.BO.DTOs.WithdrawInfomation.Response;
 using SPay.Repository.Enum;
 using SPay.Repository.ResponseDTO;
 using SPay.Service.Utils;
@@ -105,9 +107,9 @@ namespace SPay.Service.MappingProfile
 			CreateMap<CreateOrderRequest, Order>();
 
 			CreateMap<User, UserResponse>();
-
 			
 			CreateMap<CreateOrUpdateUserRequest, User>();
+			CreateMap<CreateWithdrawInfomationRequest, WithdrawInformation>();
 
 			CreateMap<MembershipResponseDTO, MembershipResponse>()
 				.ForMember(dest => dest.MembershipKey, opt => opt.MapFrom(src => src.Membership.MembershipKey))
@@ -121,6 +123,18 @@ namespace SPay.Service.MappingProfile
 				.ForMember(dest => dest.WithdrawAllowed, opt => opt.MapFrom(src => src.PromotionPackage.WithdrawAllowed))
 				.ForMember(dest => dest.ExpiredDate, opt => opt.MapFrom(src => src.Membership.ExpiritionDate))
 				.ForMember(dest => dest.IsDefaultMembership, opt => opt.MapFrom(src => src.Membership.IsDefaultMembership));
+
+			CreateMap<WithdrawInformation, WithdrawInformationResponse>()
+				.ForMember(dest => dest.UserName, opt => opt
+					.MapFrom(src => src.UserKeyNavigation.Fullname))
+				.ForMember(dest => dest.PhoneNumber, opt => opt
+					.MapFrom(src => src.UserKeyNavigation.PhoneNumber))
+				.ForMember(dest => dest.Type, opt => opt
+					.MapFrom(src => src.UserKeyNavigation.RoleKeyNavigation.RoleName.Equals(Constant.Role.CUSTOMER_ROLE) ? 
+					Constant.WithdrawInfo.CUSTOMER_TYPE : Constant.WithdrawInfo.STORE_TYPE))
+				.ForMember(dest => dest.Status, opt => opt
+					.MapFrom(src => EnumHelper.GetDescription((TransactionStatusEnum)Enum.Parse(typeof(TransactionStatusEnum), src.Status.ToString()))));
+
 		}
 	}
 }

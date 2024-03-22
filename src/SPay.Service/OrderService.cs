@@ -194,6 +194,8 @@ namespace SPay.Service
 					return response;
 				}
 				var orderRes = _mapper.Map<OrderResponse>(order);
+				orderRes.FromUserName = (await _repoUser.GetUserByKeyAsync(orderRes.FromUserName)).Fullname;
+				orderRes.ByCardName = (await _repoCard.GetCardByKeyAsync(orderRes.ByCardName)).CardName;
 
 				response.Data = orderRes;
 				response.Success = true;

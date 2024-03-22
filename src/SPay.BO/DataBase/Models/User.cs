@@ -8,6 +8,7 @@ namespace SPay.BO.DataBase.Models
         public User()
         {
             Stores = new HashSet<Store>();
+            WithdrawInformations = new HashSet<WithdrawInformation>();
         }
 
         public string UserKey { get; set; } = null!;
@@ -21,5 +22,6 @@ namespace SPay.BO.DataBase.Models
 
         public virtual Role RoleKeyNavigation { get; set; } = null!;
         public virtual ICollection<Store> Stores { get; set; }
+        public virtual ICollection<WithdrawInformation> WithdrawInformations { get; set; }
     }
 }

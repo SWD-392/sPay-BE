@@ -8,5 +8,9 @@ namespace SPay.BO.DTOs.WithdrawInfomation.Request
 {
 	public class GetListWithdrawInfomationRequest : PagingRequest
 	{
+		public string? PhoneNumber { get; set; } = null;
+		public string? UserName { get; set; } = null;
+
+
 	}
 }

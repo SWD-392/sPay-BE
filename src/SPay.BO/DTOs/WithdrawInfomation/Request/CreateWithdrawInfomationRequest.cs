@@ -8,5 +8,7 @@ namespace SPay.BO.DTOs.WithdrawInfomation.Request
 {
 	public class CreateWithdrawInfomationRequest
 	{
+		public string UserKey { get; set; } = null!;
+		public decimal? TotalAmount { get; set; }
 	}
 }

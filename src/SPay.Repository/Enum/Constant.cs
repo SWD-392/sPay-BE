@@ -45,5 +45,14 @@ namespace SPay.Repository.Enum
 			public const string WITHDRAW_DETAILS_DES = "Giao dịch rút tiền";
 			public const decimal UNDEFINE_AMOUNT = -1;
 		}
+
+		public static class WithdrawInfo
+		{
+			public const string CUSTOMER_TYPE = "Khách hàng rút tiền";
+			public const string CUSTOMER_DESCRIPTION = "Người dùng {0} đã rút {1} VNĐ";
+			public const string STORE_TYPE = "Cửa hàng rút tiền";
+			public const string STORE_DESCRIPTION = "Người dùng {0} đã rút {1} VNĐ từ cửa hàng {2}";
+
+		}
 	}
 }

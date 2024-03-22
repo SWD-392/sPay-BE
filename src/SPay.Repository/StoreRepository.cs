@@ -65,6 +65,11 @@ namespace SPay.Repository
 				query = query.Where(s => s.StoreName.Contains(request.StoreName));
 			}
 
+			if (!string.IsNullOrEmpty(request.UserKey))
+			{
+				query = query.Where(s => s.UserKey.Contains(request.UserKey));
+			}
+
 			if (!string.IsNullOrEmpty(request.StoreCateKey))
 			{
 				query = query.Where(s => s.StoreCateKey.Contains(request.StoreCateKey));

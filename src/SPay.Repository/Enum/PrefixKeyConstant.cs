@@ -11,8 +11,6 @@ namespace SPay.Repository.Enum
 	{
 		public static readonly string STORE = "ST_";
 		public static readonly string STORE_CATE = "SC_";
-
-		public static readonly string CUSTOMER = "CU_";
 		public static readonly string USER = "US_";
 		public static readonly string CARD = "CA_";
 		public static readonly string CARD_TYPE = "CT_";
@@ -21,7 +19,6 @@ namespace SPay.Repository.Enum
 		public static readonly string ORDER = "OR_";
 		public static readonly string PROMOTION_PACKAGE = "PK_";
 		public static readonly string MEMBERSHIP = "ME_";
-
-
+		public static readonly string WITHDRAW_INFO = "WI_";
 	}
 }

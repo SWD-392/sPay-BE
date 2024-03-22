@@ -46,50 +46,5 @@ namespace SPay.API.Controllers
 				});
 			return Ok(loginResponse);
 		}
-
-		[HttpPost("logout")]
-		[Authorize]
-		public async Task<IActionResult> Logout()
-		{
-			try
-			{
-				// Xác thực người dùng và lấy thông tin đăng nhập
-				var claimsIdentity = HttpContext.User.Identity as ClaimsIdentity;
-				if (claimsIdentity == null)
-				{
-					return Unauthorized();
-				}
-
-				// Hủy bỏ token của người dùng bằng cách xóa token khỏi danh sách lưu trữ hoặc cơ sở dữ liệu
-				return Ok(new { message = "Logout successful" });
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-			}
-		}
-
-
-		//[AllowAnonymous]
-		//[HttpPost("sign-up")]
-		//[ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-		//[ProducesErrorResponseType(typeof(UnauthorizedObjectResult))]
-		//public async Task<IActionResult> SignUp(SignUpRequest signUpRequest)
-		//{
-		//	try
-		//	{
-		//		var response = await _service.SignUp(signUpRequest);
-		//		return Ok(response);
-		//	}
-		//	catch (Exception)
-		//	{
-		//		return BadRequest(new
-		//		{
-		//			StatusCode = StatusCodes.Status400BadRequest,
-		//			Error = MessageConstant.SignUpMessage.EmailHasAlreadyUsed,
-		//			TimeStamp = DateTime.Now
-		//		});
-		//	}
-		//}
 	}
 }

@@ -31,6 +31,15 @@ namespace SPay.BO.DataBase.Models
         public virtual DbSet<Wallet> Wallets { get; set; } = null!;
         public virtual DbSet<WithdrawInformation> WithdrawInformations { get; set; } = null!;
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=(local);uid=sa;pwd=12345;database=FINAL_SPAY_DB;TrustServerCertificate=True;");
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Card>(entity =>
@@ -532,6 +541,12 @@ namespace SPay.BO.DataBase.Models
                     .HasMaxLength(40)
                     .IsUnicode(false)
                     .HasColumnName("USER_KEY");
+
+                entity.HasOne(d => d.UserKeyNavigation)
+                    .WithMany(p => p.WithdrawInformations)
+                    .HasForeignKey(d => d.UserKey)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_WITHDRAW_USER");
             });
 
             OnModelCreatingPartial(modelBuilder);

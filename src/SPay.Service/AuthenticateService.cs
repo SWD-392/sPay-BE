@@ -36,15 +36,24 @@ namespace SPay.Service
 
 		public async Task<LoginResponse> Login(LoginRequest loginRequest)
 		{
-			var userLogin = await _repo.LoginAsync(loginRequest);
-			var response = _mapper.Map<LoginResponse>(userLogin);
-			if (response.Role.Equals(Constant.Role.STORE_ROLE))
+			var response = new LoginResponse();
+			try
 			{
-				response.StoreKey = await _repoS.GetStoreKeyByUserKey(response.PhoneNumber);
+				var userLogin = await _repo.LoginAsync(loginRequest);
+				response = _mapper.Map<LoginResponse>(userLogin);
+				if (response.Role.Equals(Constant.Role.STORE_ROLE))
+				{
+					response.StoreKey = await _repoS.GetStoreKeyByUserKey(response.PhoneNumber);
+				}
+				var token = GenerateJwtToken(userLogin);
+				response.AccessToken = token;
 			}
-			var token = GenerateJwtToken(userLogin);
-			response.AccessToken = token;
+			catch (Exception ex)
+			{
+				throw new Exception("Login failed: " + ex.Message);
+			}
 			return response;
+
 		}
 
 		private string GenerateJwtToken(User user)
