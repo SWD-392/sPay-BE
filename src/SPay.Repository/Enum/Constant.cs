@@ -37,7 +37,7 @@ namespace SPay.Repository.Enum
 		public static class Transaction
 		{
 			public const string DES_FOR_WITHDRAWL = "{0}: {1} đã rút tiền. Số tiền {2}";
-			public const string DES_FOR_PURCHASE = "{0}: {1} đã thanh toáncho cửa hàng {2}. Số tiền: {3}";
+			public const string DES_FOR_PURCHASE = "{0}: {1} đã thanh toán cho cửa hàng {2}. Số tiền: {3}";
 			public const string TYPE_PURCHASE = "Chuyển tiền";
 			public const string TYPE_WITHDRAWL = "Rút tiền";
 			public const string UNDEFINE_STR = "Không xác định";

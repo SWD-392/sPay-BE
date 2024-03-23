@@ -54,7 +54,7 @@ namespace SPay.Service
 					{
 						item.Receiver = (await _repoS.GetStoreByKeyForTransactionAsync(item.Receiver)).StoreName;
 						item.Sender = (await _repoU.GetUserByKeyForTransactionAsync(item.Sender)).Fullname;
-						item.DescriptionTrans = string.Format(Constant.Transaction.DES_FOR_PURCHASE, item.Type, item.Sender, item.Sender, item.Amount);
+						item.DescriptionTrans = string.Format(Constant.Transaction.DES_FOR_PURCHASE, item.Type, item.Sender, item.Receiver, item.Amount);
 					}
 					else
 					{
