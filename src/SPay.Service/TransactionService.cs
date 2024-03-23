@@ -58,7 +58,7 @@ namespace SPay.Service
 					}
 					else
 					{
-						item.Receiver = (await _repoU.GetUserByKeyForTransactionAsync(item.Receiver,isStore:true)).Fullname;
+						item.Receiver = (await _repoU.GetUserByKeyForTransactionAsync(item.Receiver)).Fullname;
 						item.DescriptionTrans = string.Format(Constant.Transaction.DES_FOR_WITHDRAWL, item.Type, item.Receiver, item.Amount);
 					}
 					item.Status = EnumHelper.GetDescription((TransactionStatusEnum)Enum.Parse(typeof(TransactionStatusEnum), item.Status));
