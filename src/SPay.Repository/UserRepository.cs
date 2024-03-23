@@ -62,9 +62,9 @@ namespace SPay.Repository
 
 				item.RoleKey = roleKey;
 				_context.Users.Add(item);
-
+				
 				// Trả về true nếu thành công
-				return true;
+				return await _context.SaveChangesAsync() > 0;
 			}
 			catch (Exception ex)
 			{
