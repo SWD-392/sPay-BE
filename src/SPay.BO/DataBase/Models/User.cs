@@ -12,7 +12,7 @@ namespace SPay.BO.DataBase.Models
         }
 
         public string UserKey { get; set; } = null!;
-        public string ZaloId { get; set; } = null!;
+        public string? ZaloId { get; set; }
         public string Password { get; set; } = null!;
         public string Fullname { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;

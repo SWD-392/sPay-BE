@@ -10,7 +10,6 @@ namespace SPay.BO.DTOs.User.Response
 	{
 		public int No { get; set; } = 0;
 		public string UserKey { get; set; } = null!;
-		public string ZaloId { get; set; } = null!;
 		public string Fullname { get; set; } = null!;
 		public string PhoneNumber { get; set; } = null!;
 	}
