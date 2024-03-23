@@ -86,6 +86,7 @@ namespace SPay.Repository
 			var query = _context.Users
 				.Where(u => !u.Status.Equals((byte)BasicStatusEnum.Deleted)
 							&& u.RoleKey.Equals(roleKey))
+				.OrderByDescending(t => t.InsDate)
 				.AsQueryable();
 			if (!string.IsNullOrEmpty(request.Name))
 			{

@@ -46,6 +46,7 @@ namespace SPay.Repository
 				.Include(o => o.StoreKeyNavigation)
 				.Include(o => o.StoreKeyNavigation.StoreCateKeyNavigation)
 				.Include(o => o.MembershipKeyNavigation)
+				.OrderByDescending(t => t.InsDate)
 				.Where(o => o.Status != (byte)OrderStatusEnum.Deleted)
 				.AsQueryable();
 

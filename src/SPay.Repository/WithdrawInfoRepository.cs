@@ -46,6 +46,7 @@ namespace SPay.Repository
 				.Include(w => w.UserKeyNavigation)
 				.Include(w => w.UserKeyNavigation.RoleKeyNavigation)
 				.Where(o => o.Status != (byte)OrderStatusEnum.Deleted)
+				.OrderByDescending(t => t.InsDate)
 				.AsQueryable();
 
 			if (!string.IsNullOrEmpty(request.PhoneNumber))

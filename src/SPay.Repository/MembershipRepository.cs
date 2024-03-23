@@ -60,10 +60,9 @@ namespace SPay.Repository
 			}
 			if (!string.IsNullOrEmpty(request.StoreCateKey))
 			{
-				query = query.Where(s => s.StoreCategory.StoreCategoryKey.Equals(request.StoreCateKey));
-			}
-
-			return await query.ToListAsync();
+				query = query.Where(s => s.StoreCategory.StoreCategoryKey.Equals(request.UserKey));
+			}			
+			return await query.OrderByDescending(t => t.Wallet.InsDate).ToListAsync();
 		}
 
 		public async Task<MembershipResponseDTO> GetMembershipByKeyAsync(string key)
