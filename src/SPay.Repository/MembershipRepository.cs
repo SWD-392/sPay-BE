@@ -53,14 +53,13 @@ namespace SPay.Repository
 							CardTypeStoreCategory = cs,
 							StoreCategory = sc
 						};
-
 			if (!string.IsNullOrEmpty(request.UserKey))
 			{
 				query = query.Where(s => s.Membership.UserKey.Equals(request.UserKey));
 			}
 			if (!string.IsNullOrEmpty(request.StoreCateKey))
 			{
-				query = query.Where(s => s.StoreCategory.StoreCategoryKey.Equals(request.UserKey));
+				query = query.Where(s => s.CardTypeStoreCategory.StoreCateKey.Equals(request.StoreCateKey));
 			}			
 			return await query.OrderByDescending(t => t.Wallet.InsDate).ToListAsync();
 		}
