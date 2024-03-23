@@ -19,9 +19,6 @@ namespace SPay.Service
     public interface ITransactionService
     {
 		Task<SPayResponse<PaginatedList<TransactionResponse>>> GetAllTransactionsAsync(GetListTransactionRequest request);
-		//Task<SPayResponse<TransactionResponse>> GetTransactionByKeyAsync(string id);
-		//Task<SPayResponse<bool>> DeleteTransactionAsync(string key);
-		//Task<SPayResponse<bool>> CreateTransactionAsync(CreateTransactionRequest request);
 	}
     public class TransactionService : ITransactionService
     {
@@ -45,7 +42,7 @@ namespace SPay.Service
 				var transactions = await _repo.GetListTransactionInfoAsync(request);
 				if (transactions.Count <= 0)
 				{
-					SPayResponseHelper.SetErrorResponse(response, "Store has no row in database.");
+					SPayResponseHelper.SetErrorResponse(response, "Transaction has no row in database.");
 					return response;
 				}
 				var res = _mapper.Map<IList<TransactionResponse>>(transactions);
@@ -55,15 +52,14 @@ namespace SPay.Service
 					item.No = ++count;
 					if(item.Type.Equals(Constant.Transaction.TYPE_PURCHASE))
 					{
-						item.Receiver = (await _repoS.GetStoreByKeyAsync(item.Receiver)).StoreName;
-						item.Sender = (await _repoU.GetUserByKeyAsync(item.Sender)).Fullname;
+						item.Receiver = (await _repoS.GetStoreByKeyForTransactionAsync(item.Receiver)).StoreName;
+						item.Sender = (await _repoU.GetUserByKeyForTransactionAsync(item.Sender)).Fullname;
 						item.DescriptionTrans = string.Format(Constant.Transaction.DES_FOR_PURCHASE, item.Type, item.Sender, item.Sender, item.Amount);
 					}
 					else
 					{
-						item.Receiver = (await _repoU.GetUserByKeyAsync(item.Receiver)).Fullname;
+						item.Receiver = (await _repoU.GetUserByKeyForTransactionAsync(item.Receiver,isStore:true)).Fullname;
 						item.DescriptionTrans = string.Format(Constant.Transaction.DES_FOR_WITHDRAWL, item.Type, item.Receiver, item.Amount);
-
 					}
 					item.Status = EnumHelper.GetDescription((TransactionStatusEnum)Enum.Parse(typeof(TransactionStatusEnum), item.Status));
 				}

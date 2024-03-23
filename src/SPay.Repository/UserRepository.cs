@@ -23,6 +23,7 @@ namespace SPay.Repository
 		Task<User> LoginAsync(LoginRequest request);
 		Task<IList<User>> GetListUserAsync(GetListUserRequest request, bool isStore = false);
 		Task<User> GetUserByKeyAsync(string key, bool isStore = false);
+		Task<User> GetUserByKeyForTransactionAsync(string key);
 		Task<bool> DeleteUserAsync(User UserExisted);
 		Task<bool> CreateUserAsync(User item, bool isStore = false);
 		Task<bool> UpdateUserAsync(string key, User updatedUser);
@@ -169,6 +170,17 @@ namespace SPay.Repository
 				throw new Exception($"Incorrect username or password.");
 			}
 			return user; ;
+		}
+
+		public async Task<User> GetUserByKeyForTransactionAsync(string key)
+		{
+			var response = await _context.Users.SingleOrDefaultAsync(
+											u => u.UserKey.Equals(key));
+			if (response == null)
+			{
+				throw new Exception($"User with key '{key}' not found.");
+			}
+			return response;
 		}
 
 		#region Comment ref

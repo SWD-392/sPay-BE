@@ -15,6 +15,7 @@ namespace SPay.Repository
     {
 		Task<IList<Store>> GetListStoreAsync(GetListStoreRequest request);
 		Task<Store> GetStoreByKeyAsync(string key);
+		Task<Store> GetStoreByKeyForTransactionAsync(string key);
 		Task<bool> DeleteStoreAsync(Store storeExisted);
 		Task<bool> CreateStoreAsync(Store item);
 		Task<bool> UpdateStoreAsync(string key, Store updatedStore);
@@ -129,6 +130,20 @@ namespace SPay.Repository
 				throw new Exception($"Nothing is update!");
 			}
 			return true;
+		}
+
+		public async Task<Store> GetStoreByKeyForTransactionAsync(string key)
+		{
+			var response = await _context.Stores
+							.Include(s => s.UserKeyNavigation)
+							.Include(s => s.WalletKeyNavigation)
+							.Include(s => s.StoreCateKeyNavigation)
+							.SingleOrDefaultAsync(s => s.StoreKey.Equals(key));
+			if (response == null)
+			{
+				throw new Exception($"Store with key '{key}' not found.");
+			}
+			return response;
 		}
 	}
 }
